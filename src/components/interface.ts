@@ -1,9 +1,9 @@
 interface Sign {
-    heart_rate: number
-    respiratory_rate: number
-    systolic_pressure: number
-    diastolic_pressure: number
-    detect_time: string
+    heartRate: number
+    respiratoryRate: number
+    systolicPressure: number
+    diastolicPressure: number
+    detectTime: string
 }
 // {
 //     "detect_time": "2024-01-01 01:01:01",
@@ -26,4 +26,10 @@ interface Person extends BasePerson {
     sign: Sign
 }
 
-export type { Sign, Person, BasePerson }
+interface Result{
+    code: number
+    msg: string
+    data: any
+}
+
+export type { Sign, Person, BasePerson, Result }

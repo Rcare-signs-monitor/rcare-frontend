@@ -6,7 +6,7 @@
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 欢迎 </span>
                         <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            homepage
+                            Homepage
                         </span>
                     </div>
                 </template>
@@ -37,15 +37,43 @@
                                         参数配置
                                     </el-button>
                                 </RouterLink>
-                                <el-button :icon="Setting" size="large" plain>启动雷达</el-button>
-                                <el-button :icon="Setting" size="large" plain>停止运行</el-button>
-                                <el-button :icon="Setting" size="large" plain>开始运行</el-button>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        启动雷达
+                                    </el-button>
+                                </RouterLink>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        停止运行
+                                    </el-button>
+                                </RouterLink>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        开始运行
+                                    </el-button>
+                                </RouterLink>
                             </el-row>
                             <el-row :gutter="80" justify="space-evenly">
-                                <el-button :icon="Setting" size="large" plain>采集数据</el-button>
-                                <el-button :icon="Setting" size="large" plain>特征提取</el-button>
-                                <el-button :icon="Setting" size="large" plain>训练模型</el-button>
-                                <el-button :icon="Setting" size="large" plain>模型测试</el-button>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        采集数据
+                                    </el-button>
+                                </RouterLink>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        特征提取
+                                    </el-button>
+                                </RouterLink>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        训练模型
+                                    </el-button>
+                                </RouterLink>
+                                <RouterLink to="/">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        模型测试
+                                    </el-button>
+                                </RouterLink>
                             </el-row>
                         </div>
                     </el-card>
@@ -129,7 +157,7 @@
                                 </el-radio-group>
                             </div>
                         </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000"/>
+                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000" />
                     </el-card>
                 </el-col>
                 <el-col :span="12">
@@ -179,7 +207,7 @@ import { ElNotification as notify } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import type { EChartsOption } from 'echarts'
 import Echarts from '@/components/Recharts.vue'
-import { get3dData, get2dData } from '../components/get3dData'
+import { expectancy, nebula } from '../components/getTestData'
 
 const radio1 = ref('近 1 小时')
 
@@ -196,9 +224,9 @@ const getTestData = () => {
 
 const option2 = ref({})
 const option3 = ref({})
-onMounted(async ()=>{
-    option2.value = await get3dData()
-    option3.value = await get2dData()
+onMounted(async () => {
+    option2.value = await expectancy()
+    option3.value = await nebula()
 })
 
 const option = {

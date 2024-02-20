@@ -6,7 +6,7 @@
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 个人信息 </span>
                         <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            personal information
+                            Personal Information
                         </span>
                     </div>
                 </template>
@@ -17,112 +17,16 @@
             <el-row style="margin-bottom: 40px">
                 <el-button plain :icon="Search" @click="dialog = true">条件查询成员列表</el-button>
                 <el-button plain :icon="Edit" @click="dialog2 = true">新增成员信息</el-button>
-                <div style="flex-grow: 1"></div>
-                <span style="margin-right: 0">
-                    <el-pagination
-                        v-model:current-page="currentPage4"
-                        v-model:page-size="pageSize4"
-                        :page-sizes="[5, 10, 15, 20]"
-                        :small="small"
-                        :disabled="disabled"
-                        :background="background"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="40"
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                    />
-                </span>
             </el-row>
-
-            <el-drawer
-                v-model="dialog"
-                title="条件查询成员列表"
-                :before-close="cancelForm"
-                direction="ltr"
-                class="demo-drawer"
-            >
-                <div class="demo-drawer__content">
-                    <el-form :model="form">
-                        <el-form-item label="姓名" :label-width="formLabelWidth">
-                            <el-input v-model="form.name" autocomplete="off" />
-                        </el-form-item>
-                        <el-form-item label="性别" :label-width="formLabelWidth">
-                            <el-checkbox v-model="gender0" label="男" />
-                            <el-checkbox v-model="gender1" label="女" />
-                        </el-form-item>
-                        <el-form-item label="年龄" :label-width="formLabelWidth">
-                            <el-input-number
-                                v-model="form.ageBegin"
-                                :min="0"
-                                :max="100"
-                                @change="handleChange1"
-                                controls-position="right"
-                            />
-                            <el-text class="mx-1"> - </el-text>
-                            <el-input-number
-                                v-model="form.ageEnd"
-                                :min="0"
-                                :max="100"
-                                @change="handleChange2"
-                                controls-position="right"
-                            />
-                        </el-form-item>
-                        <el-form-item label="地址" :label-width="formLabelWidth">
-                            <el-input v-model="form.address" autocomplete="off" />
-                        </el-form-item>
-                    </el-form>
-                    <div class="demo-drawer__footer" style="display: flex; justify-content: center">
-                        <el-button @click="cancelForm">取消</el-button>
-                        <el-button type="primary" :loading="loading" @click="handleClose">{{
-                            loading ? '查询中 ...' : '查询'
-                        }}</el-button>
-                    </div>
-                </div>
-            </el-drawer>
-            <el-drawer
-                v-model="dialog2"
-                title="新增成员信息"
-                :before-close="cancelForm2"
-                direction="ltr"
-                class="demo-drawer"
-            >
-                <div class="demo-drawer__content">
-                    <el-form :model="form2">
-                        <el-form-item label="姓名" :label-width="formLabelWidth">
-                            <el-input v-model="form2.name" autocomplete="off" />
-                        </el-form-item>
-                        <el-form-item label="性别" :label-width="formLabelWidth">
-                            <el-radio v-model="form2.gender" :label="1">男</el-radio>
-                            <el-radio v-model="form2.gender" :label="0">女</el-radio>
-                        </el-form-item>
-                        <el-form-item label="年龄" :label-width="formLabelWidth">
-                            <el-input-number v-model="form2.age" :min="0" :max="100" />
-                        </el-form-item>
-                        <el-form-item label="地址" :label-width="formLabelWidth">
-                            <el-input v-model="form2.address" autocomplete="off" />
-                        </el-form-item>
-                    </el-form>
-                    <div class="demo-drawer__footer" style="display: flex; justify-content: center">
-                        <el-button @click="cancelForm2">取消</el-button>
-                        <el-button type="primary" :loading="loading" @click="handleClose2">{{
-                            loading ? '提交中 ...' : '提交'
-                        }}</el-button>
-                    </div>
-                </div>
-            </el-drawer>
-            <el-row v-if="data.length !== 0" v-for="item in data">
-                <el-col :span="24">
+            <el-row v-if="data.length !== 0" :gutter="24" id="main-page">
+                <el-col :span="12" v-for="item in data">
                     <el-card body-style="padding: 30px;">
                         <el-row>
                             <span>
                                 <el-avatar
                                     style="height: 120px; width: 120px"
                                     shape="square"
-                                    :src="
-                                        item.image === ''
-                                            ? 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'
-                                            : item.image
-                                    "
+                                    :src="item.image === '' ? '/avatar.png' : item.image"
                                 />
                             </span>
                             <span style="margin-left: 30px">
@@ -136,13 +40,20 @@
                             <div style="flex-grow: 1"></div>
                             <span style="margin-right: 0">
                                 <el-row>
-                                    <el-button type="primary">详情</el-button>
-                                    <el-button>编辑信息</el-button>
-                                    <el-button>删除成员</el-button>
+                                    <RouterLink
+                                        :to="{ path: '/health_record', query: { id: item.id } }"
+                                        style="margin-right: 10px"
+                                        ><el-button type="primary">详情</el-button>
+                                    </RouterLink>
+                                    <el-button @click="setForm(item)">编辑信息</el-button>
+                                    <el-button @click="deleteMember(item.id)">删除成员</el-button>
                                 </el-row>
                                 <el-row justify="end">
-                                    <el-card body-style="background-color: #37D376; color: white">
-                                        某些状态信息说明
+                                    <el-card
+                                        body-style="background-color: #37D376; color: white; display:flex; align-items: center;"
+                                    >
+                                        <el-icon size="30"><Sunny /></el-icon
+                                        ><span>某些状态信息说明</span>
                                     </el-card>
                                 </el-row>
                             </span>
@@ -159,15 +70,24 @@
                                             src="../assets/xinlv.svg"
                                             style="margin-right: 20px"
                                         />
-                                        <span style="font-size: 20px">心率</span>
+                                        <span style="font-size: 18px">
+                                            心率
+                                            <el-tooltip content="参考值" placement="top">
+                                                <el-icon
+                                                    style="top: -10px; left: -5px; opacity: 0.5"
+                                                    :size="12"
+                                                >
+                                                    <Warning />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 40px">{{
-                                            item.sign.heart_rate
+                                        ><span style="font-size: 30px">{{
+                                            item.sign.heartRate
                                         }}</span
                                         >bpm</span
                                     >
-                                    <!-- TODO: 展示参考值大小 -->
                                 </el-card>
                             </el-col>
                             <el-col :span="12">
@@ -181,11 +101,21 @@
                                             src="../assets/shousuoya.svg"
                                             style="margin-right: 20px"
                                         />
-                                        <span style="font-size: 20px">收缩压</span>
+                                        <span style="font-size: 18px">
+                                            收缩压
+                                            <el-tooltip content="参考值" placement="top">
+                                                <el-icon
+                                                    style="top: -10px; left: -5px; opacity: 0.5"
+                                                    :size="12"
+                                                >
+                                                    <Warning />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 40px">{{
-                                            item.sign.systolic_pressure
+                                        ><span style="font-size: 30px">{{
+                                            item.sign.systolicPressure
                                         }}</span
                                         >mmHg</span
                                     >
@@ -204,11 +134,21 @@
                                             src="../assets/huxilv.svg"
                                             style="margin-right: 20px"
                                         />
-                                        <span style="font-size: 20px">呼吸率</span>
+                                        <span style="font-size: 18px">
+                                            呼吸率
+                                            <el-tooltip content="参考值" placement="top">
+                                                <el-icon
+                                                    style="top: -10px; left: -5px; opacity: 0.5"
+                                                    :size="12"
+                                                >
+                                                    <Warning />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 40px">{{
-                                            item.sign.respiratory_rate
+                                        ><span style="font-size: 30px">{{
+                                            item.sign.respiratoryRate
                                         }}</span
                                         >bpm</span
                                     >
@@ -225,11 +165,21 @@
                                             src="../assets/shuzhangya.svg"
                                             style="margin-right: 20px"
                                         />
-                                        <span style="font-size: 20px">舒张压</span>
+                                        <span style="font-size: 18px">
+                                            舒张压
+                                            <el-tooltip content="参考值" placement="top">
+                                                <el-icon
+                                                    style="top: -10px; left: -5px; opacity: 0.5"
+                                                    :size="12"
+                                                >
+                                                    <Warning />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 40px">{{
-                                            item.sign.diastolic_pressure
+                                        ><span style="font-size: 30px">{{
+                                            item.sign.diastolicPressure
                                         }}</span
                                         >mmHg</span
                                     >
@@ -242,90 +192,138 @@
             <el-empty v-else :image-size="200" />
         </el-main>
     </el-container>
+
+    <!-- 表单 -->
+    <el-drawer
+        v-model="dialog"
+        title="条件查询成员列表"
+        :before-close="cancelForm"
+        direction="ltr"
+        class="demo-drawer"
+    >
+        <div class="demo-drawer__content">
+            <el-form :model="form">
+                <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off" />
+                </el-form-item>
+                <el-form-item label="性别" :label-width="formLabelWidth">
+                    <el-radio-group v-model="form.gender">
+                        <el-radio :label="1">男</el-radio>
+                        <el-radio :label="0">女</el-radio>
+                        <el-radio :label="null">全选</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="年龄" :label-width="formLabelWidth">
+                    <el-input-number
+                        v-model="form.ageBegin"
+                        :min="0"
+                        :max="100"
+                        @change="handleChange1"
+                        controls-position="right"
+                    />
+                    <el-text class="mx-1"> - </el-text>
+                    <el-input-number
+                        v-model="form.ageEnd"
+                        :min="0"
+                        :max="100"
+                        @change="handleChange2"
+                        controls-position="right"
+                    />
+                </el-form-item>
+                <el-form-item label="地址" :label-width="formLabelWidth">
+                    <el-input v-model="form.address" autocomplete="off" />
+                </el-form-item>
+            </el-form>
+            <div class="demo-drawer__footer" style="display: flex; justify-content: center">
+                <el-button @click="cancelForm">取消</el-button>
+                <el-button type="primary" :loading="loading" @click="handleClose">{{
+                    loading ? '查询中 ...' : '查询'
+                }}</el-button>
+            </div>
+        </div>
+    </el-drawer>
+    <el-drawer
+        v-model="dialog2"
+        title="新增成员信息"
+        :before-close="cancelForm2"
+        direction="ltr"
+        class="demo-drawer"
+    >
+        <div class="demo-drawer__content">
+            <el-form :model="form2">
+                <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-input v-model="form2.name" autocomplete="off" />
+                </el-form-item>
+                <el-form-item label="性别" :label-width="formLabelWidth">
+                    <el-radio v-model="form2.gender" :label="1">男</el-radio>
+                    <el-radio v-model="form2.gender" :label="0">女</el-radio>
+                </el-form-item>
+                <el-form-item label="年龄" :label-width="formLabelWidth">
+                    <el-input-number v-model="form2.age" :min="0" :max="100" />
+                </el-form-item>
+                <el-form-item label="地址" :label-width="formLabelWidth">
+                    <el-input v-model="form2.address" autocomplete="off" />
+                </el-form-item>
+            </el-form>
+            <div class="demo-drawer__footer" style="display: flex; justify-content: center">
+                <el-button @click="cancelForm2">取消</el-button>
+                <el-button type="primary" :loading="loading" @click="handleClose2">{{
+                    loading ? '提交中 ...' : '提交'
+                }}</el-button>
+            </div>
+        </div>
+    </el-drawer>
+    <el-dialog v-model="dialogFormVisible" title="更新成员信息" width="500">
+        <el-form :model="form3">
+            <el-form-item label="姓名" :label-width="formLabelWidth2">
+                <el-input v-model="form3.name" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="性别" :label-width="formLabelWidth2">
+                <el-radio v-model="form3.gender" :label="1">男</el-radio>
+                <el-radio v-model="form3.gender" :label="0">女</el-radio>
+            </el-form-item>
+            <el-form-item label="年龄" :label-width="formLabelWidth2">
+                <el-input-number v-model="form3.age" :min="0" :max="100" />
+            </el-form-item>
+            <el-form-item label="地址" :label-width="formLabelWidth2">
+                <el-input v-model="form3.address" autocomplete="off" />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="cancelForm3">取消</el-button>
+                <el-button type="primary" :loading="loading" @click="handleClose3">{{
+                    loading ? '更新中 ...' : '更新'
+                }}</el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ElNotification as notify } from 'element-plus'
 import { ElDrawer, ElMessageBox } from 'element-plus'
-import { Edit, Search } from '@element-plus/icons-vue'
-import { onMounted, reactive, ref, watch } from 'vue'
-import type { Person, Sign } from '../components/interface'
+import { Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
+import { onMounted, reactive, ref } from 'vue'
+import type { Person } from '../components/interface'
+// import { getLastSign, getMembers } from '../components/getTestData'
+import { useRouter } from 'vue-router'
+import { getLastSign, getMembers, addMember, delMember } from '@/components/request'
 
 const data = ref<Person[]>([])
 
+const router = useRouter()
+
 const onBack = () => {
-    notify('Back')
+    router.push({ path: '/' })
 }
 
-const getTestData = () => {
-    var _data = [
-        {
-            id: 1,
-            name: '高松灯',
-            gender: 0,
-            age: 18,
-            address: 'abccc',
-            image: 'https://img.moegirl.org.cn/common/thumb/2/24/Gbp-tomori.png/300px-Gbp-tomori.png'
-        },
-        {
-            id: 2,
-            name: '千早爱音',
-            gender: 0,
-            age: 18,
-            address: 'dddddccc',
-            image: 'https://img.moegirl.org.cn/common/thumb/5/53/Gbp-anon.png/300px-Gbp-anon.png'
-        },
-        {
-            id: 3,
-            name: '要乐奈',
-            gender: 0,
-            age: 18,
-            address: 'dddddccc',
-            image: 'https://img.moegirl.org.cn/common/thumb/7/7d/Gbp-rana.png/300px-Gbp-rana.png'
-        },
-        {
-            id: 4,
-            name: '长崎爽世',
-            gender: 0,
-            age: 18,
-            address: 'dddddccc',
-            image: 'https://img.moegirl.org.cn/common/thumb/7/7d/Gbp-rana.png/300px-Gbp-rana.png'
-        },
-        {
-            id: 5,
-            name: '椎名立希',
-            gender: 0,
-            age: 18,
-            address: 'dddddccc',
-            image: 'https://img.moegirl.org.cn/common/thumb/0/0b/Gbp-taki.png/300px-Gbp-taki.png'
-        }
-    ] as Person[]
-    _data.map((item) => {
-        item.sign = {
-            detect_time: '',
-            heart_rate: 0,
-            respiratory_rate: 0,
-            systolic_pressure: 0,
-            diastolic_pressure: 0
-        }
+onMounted(async () => {
+    data.value = await getMembers()
+    // setInterval(() => {
+    data.value.map(async (item) => {
+        await getLastSign(item)
     })
-    return _data
-}
-
-onMounted(() => {
-    data.value = getTestData()
-    setInterval(() => {
-        data.value.forEach((item) => {
-            const new_sign = {
-                detect_time: new Date().toString(),
-                heart_rate: Number((Math.random() * 100).toFixed(2)),
-                respiratory_rate: Number((Math.random() * 100).toFixed(2)),
-                systolic_pressure: Number((Math.random() * 100).toFixed(2)),
-                diastolic_pressure: Number((Math.random() * 100).toFixed(2))
-            } as Sign
-            item.sign = new_sign
-        })
-    }, 1000)
+    // }, 1000)
 })
 
 /* 查询表单 */
@@ -343,40 +341,26 @@ const form = reactive({
     address: ''
 })
 
-// 性别选择
-const gender0 = ref<boolean>(true)
-const gender1 = ref<boolean>(true)
-
-watch(
-    () => [gender0.value, gender1.value],
-    (newValue, prevValue) => {
-        if (newValue[0] && newValue[1]) form.gender = null
-        else if (newValue[0]) form.gender = 0
-        else if (newValue[1]) form.gender = 1
-        else {
-            gender0.value = prevValue[0]
-            gender1.value = prevValue[1]
-            notify({
-                title: '通知',
-                message: '至少选择一个性别',
-                type: 'info'
-            })
-        }
-    }
-)
-
 const handleClose = () => {
     if (loading.value) {
         return
     }
     ElMessageBox.confirm('确定提交查询？').then(() => {
         loading.value = true
-        timer = setTimeout(() => {
+        timer = setTimeout(async () => {
             loading.value = false
             dialog.value = false
             setTimeout(() => {
                 loading.value = false
             }, 400)
+            console.log(form)
+            data.value = await getMembers(
+                form.name,
+                form.gender,
+                form.ageBegin,
+                form.ageEnd,
+                form.address
+            )
         }, 2000)
     })
 }
@@ -394,7 +378,7 @@ const form2 = reactive({
     name: '',
     gender: 0,
     age: 0,
-    address: ''
+    address: null as null | string
 })
 
 const handleClose2 = () => {
@@ -403,12 +387,21 @@ const handleClose2 = () => {
     }
     ElMessageBox.confirm('确定新增信息？').then(() => {
         loading.value = true
-        timer = setTimeout(() => {
+        timer = setTimeout(async () => {
             loading.value = false
             dialog2.value = false
             setTimeout(() => {
                 loading.value = false
             }, 400)
+            console.log(form2)
+            await addMember({
+                name: form2.name,
+                gender: form2.gender,
+                age: form2.age,
+                address: form2.address,
+                image: ''
+            })
+            data.value = await getMembers()
         }, 2000)
     })
 }
@@ -427,22 +420,60 @@ const handleChange2 = (cur: number, old: number) => {
     if (form.ageBegin && cur < form.ageBegin) form.ageEnd = old
 }
 
-/* 分页 */
-const currentPage4 = ref(2)
-const pageSize4 = ref(5)
-const small = ref(false)
-const background = ref(false)
-const disabled = ref(false)
+/* 修改表单 */
 
-const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`)
+const dialogFormVisible = ref(false)
+const formLabelWidth2 = '50px'
+
+const form3 = reactive({
+    name: '',
+    gender: 0,
+    age: 0,
+    address: null as null | string
+})
+
+const handleClose3 = () => {
+    if (loading.value) {
+        return
+    }
+    ElMessageBox.confirm('确定更新信息？').then(() => {
+        loading.value = true
+        timer = setTimeout(() => {
+            loading.value = false
+            dialogFormVisible.value = false
+            setTimeout(() => {
+                loading.value = false
+            }, 400)
+        }, 2000)
+    })
 }
-const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`)
+
+const cancelForm3 = () => {
+    loading.value = false
+    dialogFormVisible.value = false
+    clearTimeout(timer)
+}
+
+const setForm = (item: Person) => {
+    dialogFormVisible.value = true
+    form3.name = item.name
+    form3.gender = item.gender
+    form3.age = item.age
+    form3.address = item.address
+}
+
+/* 删除成员 */
+const deleteMember = async (id: number) => {
+    await delMember(id)
+    data.value = await getMembers()
 }
 </script>
 
 <style scoped>
+#main-page > .is-guttered {
+    padding-bottom: 24px;
+}
+
 .demo-pagination-block + .demo-pagination-block {
     margin-top: 10px;
 }

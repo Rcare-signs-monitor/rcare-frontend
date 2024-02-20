@@ -25,6 +25,7 @@ const initChart = (): void => {
     if (myChart !== undefined) {
         myChart.dispose()
     }
+    // myChart = init(myChartsRef.value as HTMLDivElement, 'dark')
     myChart = init(myChartsRef.value as HTMLDivElement)
 }
 

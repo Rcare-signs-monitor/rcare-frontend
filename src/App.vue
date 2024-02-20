@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import {
     Menu as IconMenu,
     PieChart,
@@ -10,9 +10,21 @@ import {
     Operation,
     LocationFilled
 } from '@element-plus/icons-vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 
 const isCollapse = ref(true)
+const activeIndex = ref('1')
+
+const route = useRoute()
+watch(
+    () => route.path,
+    (newValue, preValue) => {
+        // 修复侧边 active 与路径不同步
+        // console.log(newValue);
+        const pathList = ['', '/', '/person_info', '/health_record', '/paras', '/logs', '/settings']
+        activeIndex.value = pathList.findIndex((item) => item === newValue).toString()
+    }
+)
 </script>
 
 <template>
@@ -20,6 +32,7 @@ const isCollapse = ref(true)
         <el-aside width="collapse">
             <el-scrollbar>
                 <el-menu
+                    :default-active="activeIndex"
                     class="el-menu-vertical-demo"
                     :collapse="isCollapse"
                     background-color="#F0F0F2"
