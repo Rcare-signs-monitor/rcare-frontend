@@ -32,11 +32,11 @@
                         <div style="font-size: 40px">欢迎使用 Rcare！</div>
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
-                                <RouterLink to="/paras"
-                                    ><el-button :icon="Setting" size="large" plain
-                                        >参数配置</el-button
-                                    ></RouterLink
-                                >
+                                <RouterLink to="/paras">
+                                    <el-button :icon="Setting" size="large" plain>
+                                        参数配置
+                                    </el-button>
+                                </RouterLink>
                                 <el-button :icon="Setting" size="large" plain>启动雷达</el-button>
                                 <el-button :icon="Setting" size="large" plain>停止运行</el-button>
                                 <el-button :icon="Setting" size="large" plain>开始运行</el-button>
@@ -129,7 +129,7 @@
                                 </el-radio-group>
                             </div>
                         </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" />
+                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000"/>
                     </el-card>
                 </el-col>
                 <el-col :span="12">
@@ -143,7 +143,7 @@
                                 </el-radio-group>
                             </div>
                         </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" />
+                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000" />
                     </el-card>
                 </el-col>
             </el-row>
@@ -155,7 +155,7 @@
                                 <span style="font-weight: bold">雷达点云</span>
                             </div>
                         </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" />
+                        <Echarts :option="option2" :style="{ height: '500px' }" />
                     </el-card>
                 </el-col>
                 <el-col :span="12">
@@ -165,7 +165,7 @@
                                 <span style="font-weight: bold">定位图</span>
                             </div>
                         </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" />
+                        <Echarts :option="option3" :style="{ height: '500px' }" />
                     </el-card>
                 </el-col>
             </el-row>
@@ -176,9 +176,10 @@
 <script setup lang="ts">
 import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { EChartsOption } from 'echarts'
 import Echarts from '@/components/Recharts.vue'
+import { get3dData, get2dData } from '../components/get3dData'
 
 const radio1 = ref('近 1 小时')
 
@@ -192,6 +193,13 @@ const getTestData = () => {
     for (let i = 0; i < 100; i++) _data.push([Math.random() * 100, Math.random() * 100])
     return _data
 }
+
+const option2 = ref({})
+const option3 = ref({})
+onMounted(async ()=>{
+    option2.value = await get3dData()
+    option3.value = await get2dData()
+})
 
 const option = {
     xAxis: {},

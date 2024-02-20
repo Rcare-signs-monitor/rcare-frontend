@@ -19,6 +19,7 @@ app.use(ElementPlus, {
 })
 
 import * as echarts from 'echarts'
+import 'echarts-gl'
 app.config.globalProperties.$echarts = echarts
 
 app.mount('#app')

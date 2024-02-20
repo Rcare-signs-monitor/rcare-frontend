@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import type { ECharts, EChartsOption } from 'echarts'
 import { init } from 'echarts'
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 
 // 定义props
 interface Props {
     width?: string
     height?: string
+    refresh?: number
     option: EChartsOption
 }
 const props = withDefaults(defineProps<Props>(), {
     width: '100%',
     height: '100%',
+    refresh: 0,
     option: () => ({})
 })
 
 const myChartsRef = ref<HTMLDivElement>()
 let myChart: ECharts
-// eslint-disable-next-line no-undef
-let timer: string | number | NodeJS.Timeout | undefined
 
 // 初始化echarts
 const initChart = (): void => {
@@ -26,42 +26,27 @@ const initChart = (): void => {
         myChart.dispose()
     }
     myChart = init(myChartsRef.value as HTMLDivElement)
-    // 拿到option配置项，渲染echarts
-    myChart?.setOption(props.option, true)
 }
 
 // 重新渲染echarts
 const resizeChart = (): void => {
-    timer = setTimeout(() => {
-        if (myChart) {
-            myChart.resize()
-        }
-    }, 500)
+    myChart.resize()
 }
 
 onMounted(() => {
     initChart()
     window.addEventListener('resize', resizeChart)
-    setInterval(() => {
-        myChart?.setOption(props.option, true)
-    }, 1000)
-})
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', resizeChart)
-    clearTimeout(timer)
-    timer = 0
-})
-
-watch(
-    props.option,
-    () => {
-        initChart()
-    },
-    {
-        deep: true
+    if (props.refresh > 500) {
+        setInterval(() => {
+            myChart?.setOption(props.option, true)
+        }, props.refresh)
+    } else {
+        // 延迟加载 勿动
+        setTimeout(() => {
+            myChart?.setOption(props.option, true)
+        }, 500)
     }
-)
+})
 </script>
 
 <template>
