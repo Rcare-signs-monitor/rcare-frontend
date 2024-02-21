@@ -160,6 +160,9 @@ onMounted(async () => {
     persons.value = await getMembers()
     activeName.value = persons.value[0].id
     data.value = await getSigns(activeName.value, count.value)
+    setInterval(async ()=>{
+        data.value = await getSigns(activeName.value, count.value)
+    }, 2000)
 
     const id = route.query.id as string
     if (id) {

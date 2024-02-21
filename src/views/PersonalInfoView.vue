@@ -26,7 +26,7 @@
                                 <el-avatar
                                     style="height: 120px; width: 120px"
                                     shape="square"
-                                    :src="item.image === '' ? '/avatar.png' : item.image"
+                                    :src="item.image ? item.image : '/avatar.png'"
                                 />
                             </span>
                             <span style="margin-left: 30px">
@@ -61,7 +61,7 @@
                         <el-row :gutter="50">
                             <el-col :span="12">
                                 <el-card
-                                    shadow="none"
+                                    shadow="never"
                                     body-style="display: flex; align-items: center; justify-content: space-evenly;"
                                 >
                                     <span style="display: flex; align-items: center">
@@ -92,7 +92,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-card
-                                    shadow="none"
+                                    shadow="never"
                                     body-style="display: flex; align-items: center; justify-content: space-evenly;"
                                 >
                                     <span style="display: flex; align-items: center">
@@ -125,7 +125,7 @@
                         <el-row :gutter="50">
                             <el-col :span="12">
                                 <el-card
-                                    shadow="none"
+                                    shadow="never"
                                     body-style="display: flex; align-items: center; justify-content: space-evenly;"
                                 >
                                     <span style="display: flex; align-items: center">
@@ -156,7 +156,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-card
-                                    shadow="none"
+                                    shadow="never"
                                     body-style="display: flex; align-items: center; justify-content: space-evenly;"
                                 >
                                     <span style="display: flex; align-items: center">
@@ -264,6 +264,23 @@
                 <el-form-item label="地址" :label-width="formLabelWidth">
                     <el-input v-model="form2.address" autocomplete="off" />
                 </el-form-item>
+                <el-form-item label="头像" :label-width="formLabelWidth">
+                    <el-upload
+                        ref="upload"
+                        action="http://localhost:8080/upload"
+                        method="post"
+                        name="image"
+                        list-type="picture-card"
+                        accept=".jpg, .png, .webp"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :on-exceed="handleExceed"
+                        :on-success="handleAvatarSuccess"
+                        :limit="1"
+                    >
+                        <el-icon><Plus /></el-icon>
+                    </el-upload>
+                </el-form-item>
             </el-form>
             <div class="demo-drawer__footer" style="display: flex; justify-content: center">
                 <el-button @click="cancelForm2">取消</el-button>
@@ -288,6 +305,32 @@
             <el-form-item label="地址" :label-width="formLabelWidth2">
                 <el-input v-model="form3.address" autocomplete="off" />
             </el-form-item>
+            <el-form-item label="头像" :label-width="formLabelWidth2">
+                <el-row style="align-items: flex-end">
+                    <el-avatar
+                        style="height: 120px; width: 120px"
+                        shape="square"
+                        :src="dialogImageUrl === '' ? '/avatar.png' : dialogImageUrl"
+                    />
+                    <el-upload
+                        ref="upload"
+                        action="http://localhost:8080/upload"
+                        method="post"
+                        name="image"
+                        accept=".jpg, .png, .webp"
+                        :show-file-list="false"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :on-exceed="handleExceed"
+                        :on-success="handleAvatarSuccess2"
+                        :limit="1"
+                    >
+                        <el-icon :size="20" style="margin-left: 14px">
+                            <Edit />
+                        </el-icon>
+                    </el-upload>
+                </el-row>
+            </el-form-item>
         </el-form>
         <template #footer>
             <div class="dialog-footer">
@@ -298,16 +341,19 @@
             </div>
         </template>
     </el-dialog>
+    <el-dialog v-model="dialogVisible" style="height: 80vh">
+        <img style="max-width: 100%; max-height: 100%" :src="dialogImageUrl" alt="Preview Image" />
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ElDrawer, ElMessageBox } from 'element-plus'
-import { Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
-import { onMounted, reactive, ref } from 'vue'
-import type { Person } from '../components/interface'
+import { ElDrawer, ElNotification as notify, ElMessageBox, ElMessage } from 'element-plus'
+import { Delete, Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
+import { markRaw, onMounted, reactive, ref } from 'vue'
+import type { Person, Result } from '../components/interface'
 // import { getLastSign, getMembers } from '../components/getTestData'
 import { useRouter } from 'vue-router'
-import { getLastSign, getMembers, addMember, delMember } from '@/components/request'
+import { getLastSign, getMembers, addMember, delMember, updateMember } from '@/components/request'
 
 const data = ref<Person[]>([])
 
@@ -317,13 +363,24 @@ const onBack = () => {
     router.push({ path: '/' })
 }
 
-onMounted(async () => {
-    data.value = await getMembers()
-    // setInterval(() => {
+const init = async (param?: {
+    name?: string | null
+    gender?: number | null
+    ageBegin?: number | null
+    ageEnd?: number | null
+    address?: string | null
+}) => {
+    data.value = await getMembers(param)
     data.value.map(async (item) => {
         await getLastSign(item)
     })
-    // }, 1000)
+}
+
+onMounted(async () => {
+    await init()
+    setInterval(async () => {
+        await init(query)
+    }, 2000)
 })
 
 /* 查询表单 */
@@ -341,27 +398,20 @@ const form = reactive({
     address: ''
 })
 
-const handleClose = () => {
-    if (loading.value) {
-        return
-    }
-    ElMessageBox.confirm('确定提交查询？').then(() => {
-        loading.value = true
-        timer = setTimeout(async () => {
-            loading.value = false
-            dialog.value = false
-            setTimeout(() => {
-                loading.value = false
-            }, 400)
-            console.log(form)
-            data.value = await getMembers(
-                form.name,
-                form.gender,
-                form.ageBegin,
-                form.ageEnd,
-                form.address
-            )
-        }, 2000)
+var query = reactive({
+    name: '',
+    gender: null as number | null,
+    ageBegin: null as number | null,
+    ageEnd: null as number | null,
+    address: ''
+})
+
+const handleClose = async () => {
+    query = form
+    await init(query)
+    ElMessage({
+        type: 'success',
+        message: 'Update completed'
     })
 }
 
@@ -378,38 +428,77 @@ const form2 = reactive({
     name: '',
     gender: 0,
     age: 0,
-    address: null as null | string
+    address: null as null | string,
+    image: ''
 })
 
 const handleClose2 = () => {
     if (loading.value) {
         return
     }
-    ElMessageBox.confirm('确定新增信息？').then(() => {
-        loading.value = true
-        timer = setTimeout(async () => {
-            loading.value = false
-            dialog2.value = false
-            setTimeout(() => {
+    ElMessageBox.confirm('确定新增信息？')
+        .then(() => {
+            loading.value = true
+            timer = setTimeout(async () => {
                 loading.value = false
-            }, 400)
-            console.log(form2)
-            await addMember({
-                name: form2.name,
-                gender: form2.gender,
-                age: form2.age,
-                address: form2.address,
-                image: ''
+                dialog2.value = false
+                setTimeout(() => {
+                    loading.value = false
+                }, 400)
+                console.log(form2)
+                await addMember(form2)
+                await init()
+                ElMessage({
+                    type: 'success',
+                    message: 'Update completed'
+                })
+            }, 2000)
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: 'Update canceled'
             })
-            data.value = await getMembers()
-        }, 2000)
-    })
+        })
 }
 
 const cancelForm2 = () => {
     loading.value = false
     dialog2.value = false
     clearTimeout(timer)
+}
+
+// 图片上传
+import { Plus } from '@element-plus/icons-vue'
+
+import type { UploadProps, UploadInstance, UploadRawFile } from 'element-plus'
+import { genFileId } from 'element-plus'
+
+const upload = ref<UploadInstance>()
+
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+    console.log(uploadFile, uploadFiles)
+}
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+    dialogImageUrl.value = uploadFile.url!
+    dialogVisible.value = true
+}
+
+const handleExceed: UploadProps['onExceed'] = (files) => {
+    upload.value!.clearFiles()
+    const file = files[0] as UploadRawFile
+    file.uid = genFileId()
+    upload.value!.handleStart(file)
+}
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response: Result, uploadFile) => {
+    // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+    console.log(response)
+    form2.image = 'http://localhost:8080/images/' + response.data
 }
 
 // 年龄限制
@@ -426,26 +515,42 @@ const dialogFormVisible = ref(false)
 const formLabelWidth2 = '50px'
 
 const form3 = reactive({
+    id: 0,
     name: '',
     gender: 0,
     age: 0,
-    address: null as null | string
+    address: null as null | string,
+    image: null as null | string
 })
 
 const handleClose3 = () => {
     if (loading.value) {
         return
     }
-    ElMessageBox.confirm('确定更新信息？').then(() => {
-        loading.value = true
-        timer = setTimeout(() => {
-            loading.value = false
-            dialogFormVisible.value = false
-            setTimeout(() => {
+    ElMessageBox.confirm('确定更新信息？')
+        .then(() => {
+            loading.value = true
+            timer = setTimeout(() => {
                 loading.value = false
-            }, 400)
-        }, 2000)
-    })
+                dialogFormVisible.value = false
+                setTimeout(async () => {
+                    loading.value = false
+                    await updateMember(form3)
+                    await init()
+                    ElMessage({
+                        type: 'success',
+                        message: 'Update completed'
+                    })
+                }, 400)
+            }, 2000)
+        })
+        .catch(() => {
+            dialogFormVisible.value = false
+            ElMessage({
+                type: 'info',
+                message: 'Update canceled'
+            })
+        })
 }
 
 const cancelForm3 = () => {
@@ -456,16 +561,40 @@ const cancelForm3 = () => {
 
 const setForm = (item: Person) => {
     dialogFormVisible.value = true
+    form3.id = item.id
     form3.name = item.name
     form3.gender = item.gender
     form3.age = item.age
     form3.address = item.address
+    dialogImageUrl.value = item.image ? item.image : '/avatar.png'
+}
+
+const handleAvatarSuccess2: UploadProps['onSuccess'] = (response: Result, uploadFile) => {
+    // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+    console.log(response)
+    dialogImageUrl.value = 'http://localhost:8080/images/' + response.data
+    form3.image = 'http://localhost:8080/images/' + response.data
 }
 
 /* 删除成员 */
 const deleteMember = async (id: number) => {
-    await delMember(id)
-    data.value = await getMembers()
+    ElMessageBox.confirm('确定删除成员信息？', '警告', {
+        type: 'warning'
+    })
+        .then(async () => {
+            await delMember(id)
+            await init()
+            ElMessage({
+                type: 'success',
+                message: 'Delete completed'
+            })
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: 'Delete canceled'
+            })
+        })
 }
 </script>
 

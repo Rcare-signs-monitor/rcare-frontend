@@ -25,8 +25,10 @@
             </el-page-header>
         </el-header>
         <el-main style="background-color: #24292f; margin-top: 30px">
-            <code v-html="makeColorful(log)" 
-                style="white-space: pre-wrap;color: #dfdcdc; font-family: 'Helvetica Neue';">
+            <code
+                v-html="makeColorful(log)"
+                style="white-space: pre-wrap; color: #dfdcdc; font-family: 'Helvetica Neue'"
+            >
             </code>
         </el-main>
     </el-container>
@@ -56,20 +58,19 @@ const log = ref(`2024-02-19 13:26:10 [S] system 开始采集
 2024-02-19 13:34:02 [I] adapter connect to server
 2024-02-19 13:36:00 [I] apply 正在循环 2024/2/19 13:36:00`)
 
-const makeColorful = (log:string)=>{
-    var result = log.replaceAll(/^(\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d)/gm, 
-                            '<span style="color:#5E5D5B">$1</span>')
-                            .replaceAll(/\[S\]\s(\S*)\s/gm,
-                            ' [ S ]  <span style="color:#94F166">$1</span> ')
-                            
-                            .replaceAll(/\[I\]\s(\S*)\s/gm,
-                            ' [ I ]  <span style="color:#BDE901">$1</span>  ')
-                            
-                            .replaceAll(/\[E\]\s(\S*)\s/gm,
-                            ' [ E ]  <span style="color:#ff6d6d">$1</span> ')
-                            
-                            .replaceAll(/\[W\]\s(\S*)\s/gm,
-                            ' [ W ]  <span style="color:#03DAD9">$1</span> ')
+const makeColorful = (log: string) => {
+    var result = log
+        .replaceAll(
+            /^(\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d)/gm,
+            '<span style="color:#5E5D5B">$1</span>'
+        )
+        .replaceAll(/\[S\]\s(\S*)\s/gm, ' [ S ]  <span style="color:#94F166">$1</span> ')
+
+        .replaceAll(/\[I\]\s(\S*)\s/gm, ' [ I ]  <span style="color:#BDE901">$1</span>  ')
+
+        .replaceAll(/\[E\]\s(\S*)\s/gm, ' [ E ]  <span style="color:#ff6d6d">$1</span> ')
+
+        .replaceAll(/\[W\]\s(\S*)\s/gm, ' [ W ]  <span style="color:#03DAD9">$1</span> ')
     return result
 }
 </script>

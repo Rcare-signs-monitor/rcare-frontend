@@ -29,7 +29,10 @@
                 <el-row>
                     <el-text style="font-size: 20px; font-weight: bold">基础设置</el-text>
                     <div style="flex-grow: 1"></div>
-                    <el-button @click="update"><el-icon style="margin-right: 7px;"><MagicStick /></el-icon>保存更新</el-button>
+                    <el-button @click="update"
+                        ><el-icon style="margin-right: 7px"><MagicStick /></el-icon
+                        >保存更新</el-button
+                    >
                 </el-row>
                 <el-divider />
                 <el-row class="row-bg" justify="space-between" style="align-items: center">
@@ -69,7 +72,7 @@
 
 <script setup lang="ts">
 import { getParas, setParas } from '@/components/request'
-import { MagicStick } from '@element-plus/icons-vue';
+import { MagicStick } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 

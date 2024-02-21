@@ -181,6 +181,9 @@
                         <template #header>
                             <div class="card-header">
                                 <span style="font-weight: bold">雷达点云</span>
+                                <el-button :icon="ZoomIn" @click="dialogTableVisible = true">
+                                    全屏
+                                </el-button>
                             </div>
                         </template>
                         <Echarts :option="option2" :style="{ height: '500px' }" />
@@ -191,6 +194,9 @@
                         <template #header>
                             <div class="card-header">
                                 <span style="font-weight: bold">定位图</span>
+                                <el-button :icon="ZoomIn" @click="dialogTableVisible2 = true">
+                                    全屏
+                                </el-button>
                             </div>
                         </template>
                         <Echarts :option="option3" :style="{ height: '500px' }" />
@@ -199,10 +205,16 @@
             </el-row>
         </el-main>
     </el-container>
+    <el-dialog v-model="dialogTableVisible" title="雷达点云" :fullscreen="true">
+        <Echarts :option="option2" :style="{ height: '90vh', width: '90vw' }" />
+    </el-dialog>
+    <el-dialog v-model="dialogTableVisible2" title="定位图" :fullscreen="true">
+        <Echarts :option="option3" :style="{ height: '90vh', width: '90vw' }" />
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
+import { User, Setting, Monitor, Cpu, Cloudy, ZoomIn } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import type { EChartsOption } from 'echarts'
@@ -240,7 +252,7 @@ const option = {
     ]
 } as EChartsOption
 
-// 更新
+// 测试更新
 setInterval(() => {
     option.series = [
         {
@@ -249,6 +261,9 @@ setInterval(() => {
         }
     ]
 }, 5000)
+
+const dialogTableVisible = ref(false)
+const dialogTableVisible2 = ref(false)
 </script>
 
 <style scoped>

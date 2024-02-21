@@ -37,7 +37,7 @@ watch(
                     :collapse="isCollapse"
                     background-color="#F0F0F2"
                     text-color="#96969b"
-                    collapse-transition="true"
+                    :collapse-transition="true"
                 >
                     <div>
                         <div style="height: 8px"></div>
