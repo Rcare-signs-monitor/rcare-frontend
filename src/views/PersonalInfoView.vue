@@ -267,7 +267,7 @@
                 <el-form-item label="头像" :label-width="formLabelWidth">
                     <el-upload
                         ref="upload"
-                        action="http://localhost:8080/upload"
+                        :action="base_url + '/upload'"
                         method="post"
                         name="image"
                         list-type="picture-card"
@@ -314,7 +314,7 @@
                     />
                     <el-upload
                         ref="upload"
-                        action="http://localhost:8080/upload"
+                        :action="base_url + '/upload'"
                         method="post"
                         name="image"
                         accept=".jpg, .png, .webp"
@@ -349,12 +349,13 @@
 <script setup lang="ts">
 import { ElDrawer, ElNotification as notify, ElMessageBox, ElMessage } from 'element-plus'
 import { Delete, Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
-import { markRaw, onMounted, reactive, ref } from 'vue'
+import { markRaw, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
 // import { getLastSign, getMembers } from '../components/getTestData'
 import { useRouter } from 'vue-router'
 import { getLastSign, getMembers, addMember, delMember, updateMember } from '@/components/request'
 
+const base_url = import.meta.env.VITE_API_BASE_URL
 const data = ref<Person[]>([])
 
 const router = useRouter()
@@ -376,11 +377,16 @@ const init = async (param?: {
     })
 }
 
+var refresh: string | number | NodeJS.Timeout | undefined
 onMounted(async () => {
     await init()
-    setInterval(async () => {
+    refresh = setInterval(async () => {
         await init(query)
     }, 2000)
+})
+
+onBeforeUnmount(()=>{
+    clearInterval(refresh)
 })
 
 /* 查询表单 */
@@ -498,7 +504,7 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response: Result, uploadFile) => {
     // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
     console.log(response)
-    form2.image = 'http://localhost:8080/images/' + response.data
+    form2.image = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
 }
 
 // 年龄限制
@@ -572,8 +578,8 @@ const setForm = (item: Person) => {
 const handleAvatarSuccess2: UploadProps['onSuccess'] = (response: Result, uploadFile) => {
     // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
     console.log(response)
-    dialogImageUrl.value = 'http://localhost:8080/images/' + response.data
-    form3.image = 'http://localhost:8080/images/' + response.data
+    dialogImageUrl.value = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
+    form3.image = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
 }
 
 /* 删除成员 */

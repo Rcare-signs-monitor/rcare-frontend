@@ -4,9 +4,9 @@
             <el-page-header @back="onBack">
                 <template #content>
                     <div class="flex items-center">
-                        <span class="text-large font-600 mr-3"> 参数配置 </span>
+                        <span class="text-large font-600 mr-3"> 健康档案 </span>
                         <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Parameter Configure
+                            Health Record
                         </span>
                     </div>
                 </template>
@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import type { Person, Sign } from '@/components/interface'
 // import { getMembers, getSigns, getLineOption, getPressureOption } from '@/components/getTestData'
@@ -156,11 +156,12 @@ const data = ref<Sign[]>([])
 
 const route = useRoute()
 
+var refresh: string | number | NodeJS.Timeout | undefined
 onMounted(async () => {
     persons.value = await getMembers()
     activeName.value = persons.value[0].id
     data.value = await getSigns(activeName.value, count.value)
-    setInterval(async ()=>{
+    refresh = setInterval(async () => {
         data.value = await getSigns(activeName.value, count.value)
     }, 2000)
 
@@ -168,6 +169,10 @@ onMounted(async () => {
     if (id) {
         activeName.value = parseInt(id)
     }
+})
+
+onBeforeUnmount(()=>{
+    clearInterval(refresh)
 })
 
 watch(

@@ -143,20 +143,20 @@ export const nebula = async () => {
             bottom: 70
         },
         toolbox: {
-          right: 20,
-          feature: {
-            dataZoom: {}
-          }
+            right: 20,
+            feature: {
+                dataZoom: {}
+            }
         },
         xAxis: [{}],
         yAxis: [{}],
         animation: false,
         dataZoom: [
-          { type: 'inside' },
-          {
-            type: 'inside',
-            orient: 'vertical'
-          },
+            { type: 'inside' },
+            {
+                type: 'inside',
+                orient: 'vertical'
+            }
         ],
         series: [
             {
