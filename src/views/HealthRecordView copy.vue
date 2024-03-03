@@ -35,6 +35,45 @@
                 <el-tab-pane v-for="item in persons" :label="item.name" :name="item.id">
                     <el-tabs type="border-card" v-model="activeName2">
                         <el-tab-pane label="监测数据" name="data">
+                            <el-row :gutter="24">
+                                <el-col :span="12">
+                                    <el-card shadow="hover">
+                                        <template #header>
+                                            <div class="card-header">
+                                                <span style="font-weight: bold">距离角度图</span>
+                                                <el-radio-group v-model="radio1">
+                                                    <el-radio-button label="近 1 小时" />
+                                                    <el-radio-button label="近 5 分钟" />
+                                                </el-radio-group>
+                                            </div>
+                                        </template>
+                                        <Echarts
+                                            :option="option"
+                                            :style="{ height: '300px', width: '40vw' }"
+                                            :refresh="1000"
+                                        />
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-card shadow="hover">
+                                        <template #header>
+                                            <div class="card-header">
+                                                <span style="font-weight: bold">定位图</span>
+                                                <el-button
+                                                    :icon="ZoomIn"
+                                                    @click="dialogTableVisible2 = true"
+                                                >
+                                                    全屏
+                                                </el-button>
+                                            </div>
+                                        </template>
+                                        <Echarts
+                                            :option="option3"
+                                            :style="{ height: '300px', width: '40vw' }"
+                                        />
+                                    </el-card>
+                                </el-col>
+                            </el-row>
                             <el-table
                                 :data="data"
                                 style="width: 100%; height: 100%"
@@ -83,6 +122,17 @@
                             />
                         </el-tab-pane>
                         <el-tab-pane
+                            label="ECG"
+                            name="ECG"
+                            style="display: flex; justify-content: center"
+                        >
+                            <Echarts
+                                :option="getLineOption(data, 'heartRate', 'ECG')"
+                                :style="{ height: '60vh', width: '80vw' }"
+                                :refresh="1000"
+                            />
+                        </el-tab-pane>
+                        <el-tab-pane
                             label="呼吸率"
                             name="respiratory_rate"
                             style="display: flex; justify-content: center"
@@ -106,22 +156,18 @@
                                 :refresh="1000"
                             />
                         </el-tab-pane>
-                        <el-tab-pane
-                            label="拟合曲线"
-                            name="predict"
-                            style="display: flex; justify-content: center"
-                        >
-                            <Echarts
-                                :option="getLineOption(data, 'heartRate', '拟合曲线')"
-                                :style="{ height: '60vh', width: '80vw' }"
-                                :refresh="1000"
-                            />
-                        </el-tab-pane>
                     </el-tabs>
                 </el-tab-pane>
             </el-tabs>
         </el-main>
     </el-container>
+
+    <el-dialog v-model="dialogTableVisible" title="雷达点云" :fullscreen="true">
+        <Echarts :option="option2" :style="{ height: '90vh', width: '90vw' }" />
+    </el-dialog>
+    <el-dialog v-model="dialogTableVisible2" title="定位图" :fullscreen="true">
+        <Echarts :option="option3" :style="{ height: '90vh', width: '90vw' }" />
+    </el-dialog>
 </template>
 
 <script lang="ts" setup>

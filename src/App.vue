@@ -35,7 +35,7 @@ watch(
                     :default-active="activeIndex"
                     class="el-menu-vertical-demo"
                     :collapse="isCollapse"
-                    background-color="#F0F0F2"
+                    background-color="#141414"
                     text-color="#96969b"
                     :collapse-transition="true"
                 >
@@ -44,19 +44,19 @@ watch(
                         <RouterLink to="/">
                             <el-menu-item index="1">
                                 <el-icon size="30"><icon-menu /></el-icon>
-                                <template #title>首页</template>
+                                <template #title>主页</template>
                             </el-menu-item>
                         </RouterLink>
                         <RouterLink to="/person_info">
                             <el-menu-item index="2">
                                 <el-icon size="30"><LocationFilled /></el-icon>
-                                <template #title>个人信息</template>
+                                <template #title>病人信息</template>
                             </el-menu-item>
                         </RouterLink>
                         <RouterLink to="/health_record">
                             <el-menu-item index="3">
                                 <el-icon size="30"><PieChart /></el-icon>
-                                <template #title>健康档案</template>
+                                <template #title>个人档案</template>
                             </el-menu-item>
                         </RouterLink>
                         <RouterLink to="/paras">
@@ -110,5 +110,11 @@ watch(
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     /* color: #96969b; */
+}
+</style>
+
+<style scoped>
+.el-menu-item.is-active > div > i > svg {
+    filter: drop-shadow(2px 2px 6px #409eff);
 }
 </style>

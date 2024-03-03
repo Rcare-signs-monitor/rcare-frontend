@@ -4,65 +4,123 @@
             <el-page-header @back="onBack">
                 <template #content>
                     <div class="flex items-center">
-                        <span class="text-large font-600 mr-3"> 个人信息 </span>
+                        <span class="text-large font-600 mr-3"> 病人信息 </span>
                         <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
                             Personal Information
                         </span>
                     </div>
                 </template>
+                <el-descriptions :column="3" size="small" class="mt-4">
+                    <el-descriptions-item label="当前区域">
+                        <el-tag size="small">病房一</el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="病床占用">
+                        <el-tag size="small">3/3</el-tag>
+                    </el-descriptions-item>
+                </el-descriptions>
+                <template #extra>
+                    <el-row>
+                        <el-button plain :icon="Search" @click="dialog = true"
+                            >条件查询成员列表</el-button
+                        >
+                        <el-button plain :icon="Edit" @click="dialog2 = true"
+                            >新增成员信息</el-button
+                        >
+                    </el-row>
+                </template>
             </el-page-header>
         </el-header>
 
         <el-main>
-            <el-row style="margin-bottom: 40px">
-                <el-button plain :icon="Search" @click="dialog = true">条件查询成员列表</el-button>
-                <el-button plain :icon="Edit" @click="dialog2 = true">新增成员信息</el-button>
-            </el-row>
-            <el-row v-if="data.length !== 0" :gutter="24" id="main-page">
-                <el-col :span="12" v-for="item in data">
-                    <el-card body-style="padding: 30px;">
-                        <el-row>
+            <el-row
+                v-if="data.length !== 0"
+                :gutter="24"
+                class="main-page"
+                v-for="(item, idx) in data"
+                :id="item.id"
+            >
+                <el-col :span="8">
+                    <!-- <el-card body-style="padding: 30px;"> -->
+                    <dv-border-box12 style="padding: 30px">
+                        <el-row style="margin-bottom: 15px;">
                             <span>
-                                <el-avatar
-                                    style="height: 120px; width: 120px"
-                                    shape="square"
-                                    :src="item.image ? item.image : '/avatar.png'"
-                                />
+                                <dv-border-box8>
+                                    <el-avatar
+                                        style="
+                                            height: 100px;
+                                            width: 100px;
+                                            margin: 5px;
+                                            opacity: 0.7;
+                                        "
+                                        shape="square"
+                                        :src="item.image ? item.image : '/avatar.png'"
+                                    />
+                                </dv-border-box8>
                             </span>
-                            <span style="margin-left: 30px">
-                                <div style="font-size: 20px; font-weight: bold">
+                            <span style="margin-left: 30px; color: white">
+                                <div
+                                    style="
+                                        font-size: 20px;
+                                        font-weight: bold;
+                                        display: flex;
+                                        align-items: center;
+                                    "
+                                >
                                     {{ item.name }}
+                                    <el-tag type="success" style="margin-left: 20px"
+                                        >{{ idx + 1 }} 号床</el-tag
+                                    >
                                 </div>
                                 <div>性别：{{ item.gender == 1 ? '男' : '女' }}</div>
                                 <div>年龄：{{ item.age }}岁</div>
-                                <div>地址：{{ item.address }}</div>
                             </span>
                             <div style="flex-grow: 1"></div>
-                            <span style="margin-right: 0">
+                            <span style="margin-right: 0; width: 100px">
                                 <el-row>
-                                    <RouterLink
-                                        :to="{ path: '/health_record', query: { id: item.id } }"
-                                        style="margin-right: 10px"
-                                        ><el-button type="primary">详情</el-button>
-                                    </RouterLink>
-                                    <el-button @click="setForm(item)">编辑信息</el-button>
-                                    <el-button @click="deleteMember(item.id)">删除成员</el-button>
-                                </el-row>
-                                <el-row justify="end">
-                                    <el-card
-                                        body-style="background-color: #37D376; color: white; display:flex; align-items: center;"
-                                    >
-                                        <el-icon size="30"><Sunny /></el-icon
-                                        ><span>某些状态信息说明</span>
-                                    </el-card>
+                                    <el-col :span="24">
+                                        <RouterLink
+                                            :to="{ path: '/health_record', query: { id: item.id } }"
+                                        >
+                                            <dv-button
+                                                :fontSize="13"
+                                                style="width: 100%; margin-bottom: 5px"
+                                                >个人档案</dv-button
+                                            >
+                                            <!-- <el-button size="small" type="primary" ></el-button> -->
+                                        </RouterLink>
+                                    </el-col>
+                                    <el-col :span="24">
+                                        <dv-button
+                                            :fontSize="13"
+                                            style="width: 100%; margin-bottom: 5px"
+                                            @click="setForm(item)"
+                                            border="Border6"
+                                            color="#615ea8"
+                                            >编辑信息</dv-button
+                                        >
+                                        <!-- <el-button size="small" ></el-button> -->
+                                    </el-col>
+                                    <el-col :span="24">
+                                        <dv-button
+                                            :fontSize="13"
+                                            style="width: 100%; margin-bottom: 3px"
+                                            @click="deleteMember(item.id)"
+                                            border="Border6"
+                                            color="#615ea8"
+                                            >删除成员</dv-button
+                                        >
+                                        <!-- <el-button size="small"  ></el-button> -->
+                                    </el-col>
                                 </el-row>
                             </span>
                         </el-row>
                         <el-row :gutter="50">
-                            <el-col :span="12">
+                            <el-col :span="24">
+                                <dv-border-box7>
                                 <el-card
+                                    style="margin: 5px;"
                                     shadow="never"
-                                    body-style="display: flex; align-items: center; justify-content: space-evenly;"
+                                    body-style="display: flex; align-items: center; justify-content: space-evenly; height:12vh"
                                 >
                                     <span style="display: flex; align-items: center">
                                         <img
@@ -72,7 +130,10 @@
                                         />
                                         <span style="font-size: 18px">
                                             心率
-                                            <el-tooltip content="参考值" placement="top">
+                                            <el-tooltip
+                                                content="参考值: 60-100次/分"
+                                                placement="top"
+                                            >
                                                 <el-icon
                                                     style="top: -10px; left: -5px; opacity: 0.5"
                                                     :size="12"
@@ -83,17 +144,71 @@
                                         </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 30px">{{
-                                            item.sign ? item.sign.heartRate : 0
-                                        }}</span
+                                        ><span
+                                            style="font-size: 25px"
+                                            :class="[
+                                                item.sign && item.sign.heartRate > 90
+                                                    ? 'warning-font'
+                                                    : 'normal-font'
+                                            ]"
+                                            >{{ item.sign ? item.sign.heartRate : 0 }}</span
                                         >bpm</span
                                     >
                                 </el-card>
+                            </dv-border-box7>
                             </el-col>
-                            <el-col :span="12">
-                                <el-card
+                        </el-row>
+                        <el-row :gutter="50">
+                            <el-col :span="24">
+                                <dv-border-box7>
+                                <el-card 
+                                    style="margin: 5px;"
                                     shadow="never"
-                                    body-style="display: flex; align-items: center; justify-content: space-evenly;"
+                                    body-style="display: flex; align-items: center; justify-content: space-evenly; height:12vh"
+                                >
+                                    <span style="display: flex; align-items: center">
+                                        <img
+                                            class="sign-icon"
+                                            src="../assets/huxilv.svg"
+                                            style="margin-right: 20px"
+                                        />
+                                        <span style="font-size: 18px">
+                                            呼吸率
+                                            <el-tooltip
+                                                content="参考值：16-20次/分"
+                                                placement="top"
+                                            >
+                                                <el-icon
+                                                    style="top: -10px; left: -5px; opacity: 0.5"
+                                                    :size="12"
+                                                >
+                                                    <Warning />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </span>
+                                    </span>
+                                    <span
+                                        ><span
+                                            style="font-size: 25px"
+                                            :class="[
+                                                item.sign && item.sign.respiratoryRate > 90
+                                                    ? 'warning-font'
+                                                    : 'normal-font'
+                                            ]"
+                                            >{{ item.sign ? item.sign.respiratoryRate : 0 }}</span
+                                        >bpm</span
+                                    >
+                                </el-card>
+                            </dv-border-box7>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="50">
+                            <el-col :span="24">
+                            <dv-border-box7>
+                                <el-card
+                                style="margin: 5px;"
+                                    shadow="never"
+                                    body-style="display: flex; align-items: center; justify-content: space-evenly; height:12vh"
                                 >
                                     <span style="display: flex; align-items: center">
                                         <img
@@ -114,50 +229,26 @@
                                         </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 30px">{{
-                                            item.sign ? item.sign.systolicPressure : 0
-                                        }}</span
+                                        ><span
+                                            style="font-size: 25px"
+                                            :class="[
+                                                item.sign && item.sign.systolicPressure > 90
+                                                    ? 'warning-font'
+                                                    : 'normal-font'
+                                            ]"
+                                            >{{ item.sign ? item.sign.systolicPressure : 0 }}</span
                                         >mmHg</span
                                     >
-                                </el-card>
+                                </el-card></dv-border-box7>
                             </el-col>
                         </el-row>
                         <el-row :gutter="50">
-                            <el-col :span="12">
+                            <el-col :span="24">
+                                <dv-border-box7>
                                 <el-card
+                                style="margin: 5px;"
                                     shadow="never"
-                                    body-style="display: flex; align-items: center; justify-content: space-evenly;"
-                                >
-                                    <span style="display: flex; align-items: center">
-                                        <img
-                                            class="sign-icon"
-                                            src="../assets/huxilv.svg"
-                                            style="margin-right: 20px"
-                                        />
-                                        <span style="font-size: 18px">
-                                            呼吸率
-                                            <el-tooltip content="参考值" placement="top">
-                                                <el-icon
-                                                    style="top: -10px; left: -5px; opacity: 0.5"
-                                                    :size="12"
-                                                >
-                                                    <Warning />
-                                                </el-icon>
-                                            </el-tooltip>
-                                        </span>
-                                    </span>
-                                    <span
-                                        ><span style="font-size: 30px">{{
-                                            item.sign ? item.sign.respiratoryRate : 0
-                                        }}</span
-                                        >bpm</span
-                                    >
-                                </el-card>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-card
-                                    shadow="never"
-                                    body-style="display: flex; align-items: center; justify-content: space-evenly;"
+                                    body-style="display: flex; align-items: center; justify-content: space-evenly; height:12vh"
                                 >
                                     <span style="display: flex; align-items: center">
                                         <img
@@ -178,15 +269,58 @@
                                         </span>
                                     </span>
                                     <span
-                                        ><span style="font-size: 30px">{{
-                                            item.sign ? item.sign.diastolicPressure : 0
-                                        }}</span
+                                        ><span
+                                            style="font-size: 25px"
+                                            :class="[
+                                                item.sign && item.sign.diastolicPressure > 90
+                                                    ? 'warning-font'
+                                                    : 'normal-font'
+                                            ]"
+                                            >{{ item.sign ? item.sign.diastolicPressure : 0 }}</span
                                         >mmHg</span
                                     >
-                                </el-card>
+                                </el-card></dv-border-box7>
                             </el-col>
                         </el-row>
-                    </el-card>
+                    </dv-border-box12>
+                    <!-- </el-card> -->
+                </el-col>
+                <el-col :span="16">
+                    <el-row>
+                        <Echarts
+                            :option="getLineOption(memberSign[item.id], 'heartRate', '心跳波形')"
+                            :style="{ height: '18vh' }"
+                            :refresh="1000"
+                        />
+                    </el-row>
+                    <el-row>
+                        <Echarts
+                            :option="
+                                getLineOption(
+                                    memberSign[item.id],
+                                    'respiratoryRate',
+                                    '呼吸波形',
+                                    true
+                                )
+                            "
+                            :style="{ height: '18vh' }"
+                            :refresh="1000"
+                        />
+                    </el-row>
+                    <el-row>
+                        <Echarts
+                            :option="getLineOption(memberSign[item.id], 'heartRate', 'ECG曲线')"
+                            :style="{ height: '18vh' }"
+                            :refresh="1000"
+                        />
+                    </el-row>
+                    <el-row>
+                        <Echarts
+                            :option="getLineOption(memberSign[item.id], 'heartRate', 'RDT曲线')"
+                            :style="{ height: '18vh' }"
+                            :refresh="1000"
+                        />
+                    </el-row>
                 </el-col>
             </el-row>
             <el-empty v-else :image-size="200" />
@@ -353,7 +487,12 @@ import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
 import { useRouter } from 'vue-router'
 import { getMembers, addMember, delMember, updateMember } from '@/components/request'
+import { getLineOption, getPressureOption } from '@/components/getTestData'
+import type { Sign } from '@/components/interface'
+import { getSigns } from '@/components/request'
+import { BorderBox12 as DvBorderBox12 } from '@kjgl77/datav-vue3'
 
+import Echarts from '@/components/Recharts.vue'
 const base_url = import.meta.env.VITE_API_BASE_URL
 const data = ref<Person[]>([])
 
@@ -363,6 +502,10 @@ const onBack = () => {
     router.push({ path: '/' })
 }
 
+const memberSign = ref<{
+    [idx: number]: Sign[]
+}>({})
+
 const init = async (param?: {
     name?: string | null
     gender?: number | null
@@ -371,14 +514,18 @@ const init = async (param?: {
     address?: string | null
 }) => {
     data.value = await getMembers(param)
+    data.value.forEach(async (item) => {
+        memberSign.value[item.id] = await getSigns(item.id)
+    })
 }
 
 var refresh: string | number | NodeJS.Timeout | undefined
 onMounted(async () => {
     await init()
-    refresh = setInterval(async () => {
-        await init(query)
-    }, 2000)
+
+    // refresh = setInterval(async () => {
+    //     await init(query)
+    // }, 2000)
 })
 
 onBeforeUnmount(() => {
@@ -601,15 +748,12 @@ const deleteMember = async (id: number) => {
 </script>
 
 <style scoped>
-#main-page > .is-guttered {
-    padding-bottom: 24px;
+.el-main {
+    margin-top: 20px;
 }
 
-.demo-pagination-block + .demo-pagination-block {
-    margin-top: 10px;
-}
-.demo-pagination-block .demonstration {
-    margin-bottom: 16px;
+.main-page > .is-guttered {
+    padding-bottom: 24px;
 }
 
 .el-card.is-always-shadow {
@@ -617,7 +761,7 @@ const deleteMember = async (id: number) => {
 }
 
 .el-row {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .el-row:last-child {
     margin-bottom: 0;
@@ -627,11 +771,19 @@ const deleteMember = async (id: number) => {
 }
 
 .sign-icon {
-    height: 50px;
-    width: 50px;
+    height: 25px;
+    width: 25px;
 }
 
 .el-empty {
     --el-empty-padding: 20% 0;
+}
+
+.warning-font {
+    color: red;
+}
+
+.normal-font {
+    color: white;
 }
 </style>

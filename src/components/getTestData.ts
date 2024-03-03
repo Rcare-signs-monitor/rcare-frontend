@@ -8,10 +8,37 @@ export const getLineOption = (
     title: string,
     smooth = false
 ) => {
-    const dateList = data.map((item) => item['detectTime'])
-    const valueList = data.map((item) => item[label])
+    var dateList: string[] = []
+    var valueList: number[] = []
+    if (data) {
+        dateList = data.map((item) => item['detectTime'])
+        valueList = data.map((item) => item[label])
+    }
+
+    const option1 = {
+        title: {
+          text: '周销售额趋势'
+        },
+        xAxis: [{ data: dateList }],
+        yAxis: {
+          name: '销售额',
+          data: 'value'
+        },
+        series: [
+          {
+            data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
+            type: 'line'
+          }
+        ]
+      }
 
     const option = {
+        grid: {
+            left: 40,
+            right: 0,
+            bottom: 20,
+            top:40 
+        },
         title: { text: title },
         visualMap: [
             {
@@ -38,9 +65,14 @@ export const getLineOption = (
 }
 
 export const getPressureOption = (data: Sign[]) => {
-    const dateList = data.map((item) => item['detectTime'])
-    const pressure1 = data.map((item) => item['systolicPressure'])
-    const pressure2 = data.map((item) => item['diastolicPressure'] - item['systolicPressure'])
+    var dateList: string[] = []
+    var pressure1: number[] = []
+    var pressure2: number[] = []
+    if (data) {
+        dateList = data.map((item) => item['detectTime'])
+        pressure1 = data.map((item) => item['systolicPressure'])
+        pressure2 = data.map((item) => item['diastolicPressure'] - item['systolicPressure'])
+    }
 
     const option = {
         // color: ['#80FFA5', '#00DDFF'],

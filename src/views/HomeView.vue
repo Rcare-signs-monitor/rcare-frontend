@@ -1,306 +1,84 @@
 <template>
     <el-container>
         <el-header>
-            <el-page-header @back="onBack">
-                <template #content>
-                    <div class="flex items-center">
-                        <span class="text-large font-600 mr-3"> 欢迎 </span>
-                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Homepage
-                        </span>
+            <div>
+                <div style="display: flex; width: 100%">
+                    <dv-decoration-10 style="width: 26%; height: 5px" />
+                    <dv-decoration8
+                        style="width: 12%; height: 50px"
+                        :color="['#757FB1', 'rgba(0,0,0,0)']"
+                    />
+                    <div style="display: flex; flex-grow: 1"></div>
+                    <dv-decoration8
+                        :reverse="true"
+                        style="width: 12%; height: 50px"
+                        :color="['#757FB1', 'rgba(0,0,0,0)']"
+                    />
+                    <dv-decoration-10 style="width: 26%; height: 5px; transform: rotateY(180deg)" />
+                </div>
+                <div style="display: flex; width: 100%">
+                    <div class="box"><span style=""></span></div>
+                    <div class="box2" style="transform: skew(45deg)"></div>
+                    <div class="title">
+                        <div style="font-size: 20px; margin-bottom: 5px">
+                            非接触式生命体征监测系统
+                        </div>
+                        <dv-decoration6 style="width: 270px; height: 7px" />
                     </div>
-                </template>
-
-                <el-descriptions :column="3" size="small" class="mt-4">
-                    <el-descriptions-item label="工号">
-                        <el-tag size="small">1234567890</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="用户名">
-                        <el-tag size="small">admin</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="当前区域">
-                        <el-tag size="small">Area1</el-tag>
-                    </el-descriptions-item>
-                </el-descriptions>
-            </el-page-header>
+                    <div class="box2" style="transform: skew(-45deg)"></div>
+                    <div class="box" style="transform: rotateY(180deg)"></div>
+                </div>
+            </div>
         </el-header>
 
         <el-main>
-            <el-row style="margin-top: 30px">
-                <el-col :span="24">
-                    <el-card>
-                        <div style="font-size: 40px">欢迎使用 Rcare！</div>
-                        <div style="width: 80%; margin: 40px auto 20px">
-                            <el-row :gutter="80" justify="space-evenly">
-                                <RouterLink to="/paras">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        参数配置
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        启动雷达
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        停止运行
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        开始运行
-                                    </el-button>
-                                </RouterLink>
-                            </el-row>
-                            <el-row :gutter="80" justify="space-evenly">
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        采集数据
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        特征提取
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        训练模型
-                                    </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        模型测试
-                                    </el-button>
-                                </RouterLink>
-                            </el-row>
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-row>
-            <el-row :gutter="24">
-                <el-col :span="6">
-                    <el-card>
-                        <el-row>
-                            <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"
-                                    ><Monitor
-                                /></el-icon>
-                            </el-col>
-                            <el-col :span="8" style="text-align: right">监测区域数量<br />4</el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="16">当前区域</el-col>
-                            <el-col :span="8" style="text-align: right">Area1</el-col>
-                        </el-row>
-                    </el-card>
-                </el-col>
-                <el-col :span="6">
-                    <el-card>
-                        <el-row>
-                            <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><User /></el-icon>
-                            </el-col>
-                            <el-col :span="8" style="text-align: right">成员数量<br />20</el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="16">当前区域成员</el-col>
-                            <el-col :span="8" style="text-align: right">4</el-col>
-                        </el-row>
-                    </el-card>
-                </el-col>
-                <el-col :span="6">
-                    <el-card>
-                        <el-row>
-                            <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"
-                                    ><Cloudy
-                                /></el-icon>
-                            </el-col>
-                            <el-col :span="8" style="text-align: right"
-                                >数据记录收集<br />200.4k</el-col
-                            >
-                        </el-row>
-                        <el-row>
-                            <el-col :span="16">昨日新增</el-col>
-                            <el-col :span="8" style="text-align: right">213</el-col>
-                        </el-row>
-                    </el-card>
-                </el-col>
-                <el-col :span="6">
-                    <el-card>
-                        <el-row>
-                            <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Cpu /></el-icon>
-                            </el-col>
-                            <el-col :span="8" style="text-align: right"
-                                >雷达运行状态<br />ON</el-col
-                            >
-                        </el-row>
-                        <el-row>
-                            <el-col :span="16">雷达运行时间</el-col>
-                            <el-col :span="8" style="text-align: right">1D 10:12:00</el-col>
-                        </el-row>
-                    </el-card>
-                </el-col>
-            </el-row>
-            <el-row :gutter="24">
-                <el-col :span="12">
-                    <el-card shadow="hover">
-                        <template #header>
-                            <div class="card-header">
-                                <span style="font-weight: bold">距离角度图</span>
-                                <el-radio-group v-model="radio1">
-                                    <el-radio-button label="近 1 小时" />
-                                    <el-radio-button label="近 5 分钟" />
-                                </el-radio-group>
-                            </div>
-                        </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000" />
-                    </el-card>
-                </el-col>
-                <el-col :span="12">
-                    <el-card shadow="hover">
-                        <template #header>
-                            <div class="card-header">
-                                <span style="font-weight: bold">距离慢时间图</span>
-                                <el-radio-group v-model="radio1">
-                                    <el-radio-button label="近 1 小时" />
-                                    <el-radio-button label="近 5 分钟" />
-                                </el-radio-group>
-                            </div>
-                        </template>
-                        <Echarts :option="option" :style="{ height: '300px' }" :refresh="1000" />
-                    </el-card>
-                </el-col>
-            </el-row>
-            <el-row :gutter="24">
-                <el-col :span="12">
-                    <el-card shadow="hover">
-                        <template #header>
-                            <div class="card-header">
-                                <span style="font-weight: bold">雷达点云</span>
-                                <el-button :icon="ZoomIn" @click="dialogTableVisible = true">
-                                    全屏
-                                </el-button>
-                            </div>
-                        </template>
-                        <Echarts :option="option2" :style="{ height: '500px' }" />
-                    </el-card>
-                </el-col>
-                <el-col :span="12">
-                    <el-card shadow="hover">
-                        <template #header>
-                            <div class="card-header">
-                                <span style="font-weight: bold">定位图</span>
-                                <el-button :icon="ZoomIn" @click="dialogTableVisible2 = true">
-                                    全屏
-                                </el-button>
-                            </div>
-                        </template>
-                        <Echarts :option="option3" :style="{ height: '500px' }" />
-                    </el-card>
-                </el-col>
-            </el-row>
+            <dv-border-box13 style=" margin-top: 30px;" backgroundColor="#060C1E">
+                <!-- <div style=";">123</div>  -->
+                <div style="padding: 20px;">
+                    <BedOccupancyChart></BedOccupancyChart>
+                </div>
+            </dv-border-box13>
         </el-main>
     </el-container>
-    <el-dialog v-model="dialogTableVisible" title="雷达点云" :fullscreen="true">
-        <Echarts :option="option2" :style="{ height: '90vh', width: '90vw' }" />
-    </el-dialog>
-    <el-dialog v-model="dialogTableVisible2" title="定位图" :fullscreen="true">
-        <Echarts :option="option3" :style="{ height: '90vh', width: '90vw' }" />
-    </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { User, Setting, Monitor, Cpu, Cloudy, ZoomIn } from '@element-plus/icons-vue'
-import { ElNotification as notify } from 'element-plus'
-import { onMounted, ref } from 'vue'
-import type { EChartsOption } from 'echarts'
-import Echarts from '@/components/Recharts.vue'
-import { expectancy, nebula } from '../components/getTestData'
+import BedOccupancyChart from '@/components/BedOccupancyChart.vue'
 
-const radio1 = ref('近 1 小时')
-
-const onBack = () => {
-    notify('Back')
-}
-
-// 测试数据
-const getTestData = () => {
-    var _data = []
-    for (let i = 0; i < 100; i++) _data.push([Math.random() * 100, Math.random() * 100])
-    return _data
-}
-
-const option2 = ref({})
-const option3 = ref({})
-onMounted(async () => {
-    option2.value = await expectancy()
-    option3.value = await nebula()
-})
-
-const option = {
-    xAxis: {},
-    yAxis: {},
-    series: [
-        {
-            type: 'scatter',
-            data: getTestData()
-        }
-    ]
-} as EChartsOption
-
-// 测试更新
-setInterval(() => {
-    option.series = [
-        {
-            type: 'scatter',
-            data: getTestData()
-        }
-    ]
-}, 5000)
-
-const dialogTableVisible = ref(false)
-const dialogTableVisible2 = ref(false)
+import { BorderBox13 as DvBorderBox13 } from '@kjgl77/datav-vue3'
 </script>
 
 <style scoped>
-.el-card.is-always-shadow {
-    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.05);
-}
-
-.el-row {
-    margin-bottom: 20px;
-}
-.el-row:last-child {
-    margin-bottom: 0;
-}
-.el-col {
-    border-radius: 4px;
-}
-
-.el-button--large {
-    height: 60px;
-    font-size: large;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.text {
-    font-size: 14px;
-}
-
 .item {
     margin-bottom: 18px;
 }
 
-.box-card {
-    width: 480px;
+.box {
+    width: 25%;
+    height: 0;
+    border-right: 40px solid transparent;
+    border-bottom: 40px solid #0d1328;
+}
+
+.box span {
+    font-size: 15px;
+    position: relative;
+    top: 3px;
+    left: 10px;
+    color: rgb(219 219 219 / 84%);
+}
+
+.box2 {
+    width: 10%;
+    height: 40px;
+    background-color: #0d1328;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    margin: -30px 50px;
 }
 </style>
