@@ -9,18 +9,27 @@ export const getMembers = async (param?: {
     address?: string | null
 }): Promise<Person[]> => {
     var url = import.meta.env.VITE_API_BASE_URL + '/members'
-    
+
     const response = (await axios.get(url, { params: param })).data as Result
     if (response.code === 1) {
         var data: Person[] = response.data
-        data.map((item) => {
-            item.sign = {
-                detectTime: new Date().toISOString(),
-                heartRate: 0,
-                respiratoryRate: 0,
-                systolicPressure: 0,
-                diastolicPressure: 0
-            } as Sign
+        
+        data.map(item => {
+            item.sign = item.sign ?
+                {
+                    detectTime: item.sign.detectTime,
+                    heartRate: Math.floor(item.sign.heartRate * 100) / 100,
+                    respiratoryRate: Math.floor(item.sign.respiratoryRate * 100) / 100,
+                    systolicPressure: Math.floor(item.sign.systolicPressure * 100) / 100,
+                    diastolicPressure: Math.floor(item.sign.diastolicPressure * 100) / 100,
+                } as Sign :
+                {
+                    detectTime: new Date().toISOString(),
+                    heartRate: 0.0,
+                    respiratoryRate: 0,
+                    systolicPressure: 0,
+                    diastolicPressure: 0,
+                } as Sign
         })
         return data
     } else {
@@ -77,20 +86,6 @@ export const getSigns = async (id: number, num?: number) => {
     } else {
         throw Error('getSigns code: 0')
     }
-}
-
-export const getLastSign = async (person: Person) => {
-    const signs = await getSigns(person.id, 1)
-    if (signs.length > 0) person.sign = signs[0]
-    else
-        person.sign = {
-            detectTime: new Date().toISOString(),
-            heartRate: 0,
-            respiratoryRate: 0,
-            systolicPressure: 0,
-            diastolicPressure: 0
-        }
-    return person
 }
 
 export const getParas = async () => {

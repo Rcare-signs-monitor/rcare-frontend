@@ -84,7 +84,7 @@
                                     </span>
                                     <span
                                         ><span style="font-size: 30px">{{
-                                            item.sign.heartRate
+                                            item.sign ? item.sign.heartRate : 0
                                         }}</span
                                         >bpm</span
                                     >
@@ -115,7 +115,7 @@
                                     </span>
                                     <span
                                         ><span style="font-size: 30px">{{
-                                            item.sign.systolicPressure
+                                            item.sign ? item.sign.systolicPressure : 0
                                         }}</span
                                         >mmHg</span
                                     >
@@ -148,7 +148,7 @@
                                     </span>
                                     <span
                                         ><span style="font-size: 30px">{{
-                                            item.sign.respiratoryRate
+                                            item.sign ? item.sign.respiratoryRate : 0
                                         }}</span
                                         >bpm</span
                                     >
@@ -179,7 +179,7 @@
                                     </span>
                                     <span
                                         ><span style="font-size: 30px">{{
-                                            item.sign.diastolicPressure
+                                            item.sign ? item.sign.diastolicPressure : 0
                                         }}</span
                                         >mmHg</span
                                     >
@@ -348,12 +348,11 @@
 
 <script setup lang="ts">
 import { ElDrawer, ElNotification as notify, ElMessageBox, ElMessage } from 'element-plus'
-import { Delete, Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
-import { markRaw, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { Edit, Search, Sunny, Warning } from '@element-plus/icons-vue'
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
-// import { getLastSign, getMembers } from '../components/getTestData'
 import { useRouter } from 'vue-router'
-import { getLastSign, getMembers, addMember, delMember, updateMember } from '@/components/request'
+import { getMembers, addMember, delMember, updateMember } from '@/components/request'
 
 const base_url = import.meta.env.VITE_API_BASE_URL
 const data = ref<Person[]>([])
@@ -372,9 +371,6 @@ const init = async (param?: {
     address?: string | null
 }) => {
     data.value = await getMembers(param)
-    data.value.map(async (item) => {
-        await getLastSign(item)
-    })
 }
 
 var refresh: string | number | NodeJS.Timeout | undefined
@@ -385,7 +381,7 @@ onMounted(async () => {
     }, 2000)
 })
 
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
     clearInterval(refresh)
 })
 

@@ -13,6 +13,7 @@ interface BasePerson {
     age: number
     address: string
     image: string
+    openid: string
 }
 
 interface Person extends BasePerson {
