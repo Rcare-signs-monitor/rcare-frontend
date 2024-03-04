@@ -5,31 +5,16 @@
                 <template #content>
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 日志 </span>
-                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Logs
-                        </span>
+                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)"> Logs </span>
                     </div>
                 </template>
-
-                <el-descriptions :column="3" size="small" class="mt-4">
-                    <el-descriptions-item label="工号">
-                        <el-tag size="small">1234567890</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="用户名">
-                        <el-tag size="small">admin</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="当前区域">
-                        <el-tag size="small">Area1</el-tag>
-                    </el-descriptions-item>
-                </el-descriptions>
             </el-page-header>
         </el-header>
-        <el-main style="background-color: #24292f; margin-top: 30px">
-            <code
-                v-html="makeColorful(log)"
-                style="white-space: pre-wrap; color: #dfdcdc; font-family: 'Helvetica Neue'"
-            >
-            </code>
+        <el-main style="background-color: #24292f; overflow: hidden">
+            <div style="position: relative">
+                <MatrixBackground style="border-radius: 10px; opacity: 0.6; position: absolute; z-index: 1; width: 100%"></MatrixBackground>
+                <code v-html="makeColorful(log)" style="margin: 30px; position: absolute; z-index: 2; white-space: pre-wrap; color: #dfdcdc; font-family: 'Helvetica Neue'"> </code>
+            </div>
         </el-main>
     </el-container>
 </template>
@@ -37,6 +22,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import MatrixBackground from '../components/MatrixBackground.vue'
 
 const router = useRouter()
 
@@ -60,10 +46,7 @@ const log = ref(`2024-02-19 13:26:10 [S] system 开始采集
 
 const makeColorful = (log: string) => {
     var result = log
-        .replaceAll(
-            /^(\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d)/gm,
-            '<span style="color:#5E5D5B">$1</span>'
-        )
+        .replaceAll(/^(\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d)/gm, '<span style="color:#5E5D5B">$1</span>')
         .replaceAll(/\[S\]\s(\S*)\s/gm, ' [ S ]  <span style="color:#94F166">$1</span> ')
 
         .replaceAll(/\[I\]\s(\S*)\s/gm, ' [ I ]  <span style="color:#BDE901">$1</span>  ')

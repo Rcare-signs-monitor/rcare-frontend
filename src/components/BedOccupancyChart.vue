@@ -1,124 +1,106 @@
 <template>
-    <el-row style="align-items: center;">
-        <span class="dot grey"></span> 空闲:9
-        <span class="dot blue"></span> 占用:14
-        <span class="dot red"></span> 风险:1
-        <div style="display: flex; flex-grow: 1;"></div>
-        <dv-decoration7 style="width:200px;height:30px;">
-            <div font-300 style="margin: 0 10px;">
-                病床占用一览
-            </div>
+    <el-row style="align-items: center; margin-bottom: -20px">
+        <span class="dot grey"></span> 空闲:9 <span class="dot blue"></span> 占用:14 <span class="dot red"></span> 风险:1
+        <div style="display: flex; flex-grow: 1"></div>
+        <dv-decoration7 style="width: 200px; height: 30px">
+            <div font-300 style="margin: 0 10px">病床占用一览</div>
         </dv-decoration7>
-        <div style="display: flex; flex-grow: 1;"></div>
-        <dv-decoration1 style="width:200px;height:30px;margin-right: 10px;" />
+        <div style="display: flex; flex-grow: 1"></div>
+        <dv-decoration1 style="width: 200px; height: 30px; margin-right: 10px" />
     </el-row>
-    <el-row
-        :gutter="5"
-        v-for="(items, idx1) in tableData"
-        style="width: 100%; margin-bottom: 5px"
-    >
-        <el-col :span="4" v-for="(item, idx2) in items">
-            <dv-border-box12 style="overflow: hidden" v-if="item">
-                <el-card style="margin: 10px">
-                    <template #footer>
-                        <div
-                            v-if="risky(item)"
-                            style="
-                                background-color: #E21018;
-                                padding: 7px;
-                                text-align: center;
-                                font-weight: bolder;
-                            "
-                        >
-                            {{ 101 + parseInt((idx1 * 6 + idx2) / 3) }} - {{ idx1 * 6 + idx2 + 1 }}
-                        </div>
-                        <div
-                            v-else
-                            style="
-                                background-color: rgb(50 176 227);
-                                padding: 7px;
-                                text-align: center;
-                                font-weight: bolder;
-                            "
-                        >
-                            {{ 101 + parseInt((idx1 * 6 + idx2) / 3) }} - {{ idx1 * 6 + idx2 + 1 }}
-                        </div>
-                    </template>
-                    <div style="display: flex; align-items: center">
-                        <div v-if="risky(item)" 
-                            class="bed-icon" style="background-color: #E21017">
-                            <img height="60px" width="60px" src="../assets/床位 患者.svg" />
-                        </div>
-                        <div v-else class="bed-icon"  style="background-color: #2186f0">
-                            <img height="60px" width="60px" src="../assets/床位 患者.svg" />
-                        </div>
-                        <el-row style="height: 80px; width: 50%">
-                            <el-col>姓名：{{ item.name }}</el-col>
-                            <el-col>心率：{{ item.heart }} </el-col>
-                            <el-col>呼吸：{{ item.breath }} </el-col>
-                        </el-row>
-                    </div>
-                </el-card>
-            </dv-border-box12>
-            <dv-border-box12 style="overflow: hidden" v-else>
-                <el-card style="margin: 10px">
-                    <template #footer>
-                        <div
-                            style="
-                                background-color: #a0a0a0;
-                                padding: 7px;
-                                text-align: center;
-                                font-weight: bolder;
-                            "
-                        >
-                            {{ 101 + parseInt((idx1 * 6 + idx2) / 3) }} - {{ idx1 * 6 + idx2 + 1 }}
-                        </div>
-                    </template>
-                    <div style="display: flex; align-items: center">
-                        <div class="bed-icon" style="background-color: #a0a0a0">
-                            <img height="60px" width="60px" src="../assets/床位 空床.svg" />
-                        </div>
-                        <el-row style="height: 80px; width: 50%">
-                            <el-col>姓名：-</el-col>
-                            <el-col>心率：-</el-col>
-                            <el-col>呼吸：-</el-col>
-                        </el-row>
-                    </div>
-                </el-card>
-            </dv-border-box12>
+    <el-row :gutter="5" style="width: 100%">
+        <el-col :span="12" v-for="(items, idx1) in tableData" :key="idx1">
+            <dv-border-box11 :title="`${101 + idx1} 号`">
+                <el-row style="padding: 20px; padding-top: 60px">
+                    <el-col :span="8" v-for="(item, idx2) in items" :key="idx2">
+                        <dv-border-box12 style="overflow: hidden" v-if="item">
+                            <el-card style="margin: 10px" @click="jump(item.id)">
+                                <template #footer>
+                                    <div :class="risky(item) ? 'risk' : 'normal'">{{ 101 + idx1 }} - {{ idx1 * 6 + idx2 + 1 }}</div>
+                                </template>
+                                <div style="display: flex; align-items: center" :class="risky(item) ? 'risk3' : ''">
+                                    <div :style="risky(item) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
+                                        <img height="40px" width="40px" src="../assets/床位 患者.svg" />
+                                    </div>
+                                    <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
+                                        <el-col style="height: 12px">姓名：{{ item.name }}</el-col>
+                                        <el-col style="height: 12px">心率：{{ item.heart }} </el-col>
+                                        <el-col style="height: 12px">呼吸：{{ item.breath }} </el-col>
+                                        <el-col style="height: 12px">血压：{{ item.heart }} / {{ item.heart }} </el-col>
+                                    </el-row>
+                                </div>
+                            </el-card>
+                        </dv-border-box12>
+                        <dv-border-box12 style="overflow: hidden" v-else>
+                            <el-card style="margin: 10px">
+                                <template #footer>
+                                    <div style="background-color: #a0a0a0; padding: 5px; text-align: center; font-weight: bolder">{{ 101 + idx1 }} - {{ idx1 * 6 + idx2 + 1 }}</div>
+                                </template>
+                                <div style="display: flex; align-items: center">
+                                    <div class="bed-icon" style="background-color: #a0a0a0">
+                                        <img height="42px" width="42px" src="../assets/床位 空床.svg" />
+                                    </div>
+                                    <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
+                                        <el-col style="height: 12px">姓名：-</el-col>
+                                        <el-col style="height: 12px">心率：- </el-col>
+                                        <el-col style="height: 12px">呼吸：- </el-col>
+                                        <el-col style="height: 12px">血压：- / - </el-col>
+                                    </el-row>
+                                </div>
+                            </el-card>
+                        </dv-border-box12>
+                    </el-col>
+                </el-row>
+            </dv-border-box11>
         </el-col>
     </el-row>
 </template>
 
 <script lang="ts" setup>
-import { ElTable, ElTableColumn } from 'element-plus'
-
-const risky = (item)=>{
+// 红 or 蓝？
+const risky = (item: { heart: number; breath: number }) => {
     return item.heart > 100 || item.heart < 60 || item.breath < 16 || item.breath > 20
 }
 
+// 修正组件间锚点跳转
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const jump = (id: any) => {
+    router.push({
+        path: `/person_info`,
+        query: {
+            id: `${id}`
+        }
+    })
+}
+
+// 测试用 床位占用数据
 const tableData = [
     [
         {
             name: 'AAA',
             heart: 70,
-            breath: 17
+            breath: 17,
+            id: 3
         },
         {
             name: 'BBB',
             heart: 80,
-            breath: 17
+            breath: 17,
+            id: 4
         },
         {
             name: 'CCC',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 5
         },
         null,
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         null
     ],
@@ -128,45 +110,53 @@ const tableData = [
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 110,
-            breath: 17
+            breath: 17,
+            id: 6
         }
     ],
     [
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         null,
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         null
     ],
@@ -175,18 +165,21 @@ const tableData = [
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         null,
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         {
             name: 'Tom',
             heart: 77,
-            breath: 17
+            breath: 17,
+            id: 6
         },
         null
     ]
@@ -205,9 +198,9 @@ const tableData = [
     justify-content: center;
     border-radius: 50%;
     overflow: hidden;
-    margin: 20px;
-    height: 78px;
-    width: 78px;
+    margin: 13px 17px;
+    height: 70px;
+    width: 70px;
 }
 
 .dot {
@@ -219,12 +212,34 @@ const tableData = [
 }
 
 .grey {
-    background-color: #A0A0A0;
+    background-color: #a0a0a0;
 }
 .blue {
-    background-color: #32B0E3;
+    background-color: #32b0e3;
 }
 .red {
-    background-color: #E21018;
+    background-color: #e21018;
+}
+
+.risk {
+    background-color: #e21018;
+    padding: 7px;
+    text-align: center;
+    font-weight: bolder;
+}
+.normal {
+    background-color: rgb(50 176 227);
+    padding: 7px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.risk3 {
+    animation: blink 0.8s infinite;
+}
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
 }
 </style>

@@ -5,119 +5,57 @@
                 <template #content>
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 个人档案 </span>
-                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Health Record
-                        </span>
+                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)"> Health Record </span>
                     </div>
                 </template>
                 <template #extra>
                     <div class="flex gap-2 mt-4">
                         <el-tag effect="dark" round>展示记录条数</el-tag>
-                        <el-select
-                            v-model="count"
-                            clearable
-                            placeholder="Select"
-                            style="width: 100px; margin-left: 10px"
-                        >
-                            <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            />
+                        <el-select v-model="count" clearable placeholder="Select" style="width: 100px; margin-left: 10px">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
                     </div>
                 </template>
             </el-page-header>
         </el-header>
-        <el-main>
-            <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-                <el-tab-pane v-for="item in persons" :label="item.name" :name="item.id">
-                    <el-tabs type="border-card" v-model="activeName2">
-                        <el-tab-pane label="监测数据" name="data">
-                            <el-table
-                                :data="data"
-                                style="width: 100%; height: 100%"
-                                table-layout="fixed"
-                            >
-                                <el-table-column
-                                    sortable
-                                    prop="detectTime"
-                                    label="测量时间"
-                                    width="340"
-                                />
-                                <el-table-column
-                                    sortable
-                                    prop="heartRate"
-                                    label="心率(bpm)"
-                                    width="220"
-                                />
-                                <el-table-column
-                                    sortable
-                                    prop="respiratoryRate"
-                                    label="呼吸率(bpm)"
-                                    width="220"
-                                />
-                                <el-table-column
-                                    sortable
-                                    prop="systolicPressure"
-                                    label="收缩压(mmHg)"
-                                    width="220"
-                                />
-                                <el-table-column
-                                    sortable
-                                    prop="diastolicPressure"
-                                    label="舒张压(mmHg)"
-                                />
-                            </el-table>
-                        </el-tab-pane>
-                        <el-tab-pane
-                            label="心率"
-                            name="heart_rate"
-                            style="display: flex; justify-content: center"
-                        >
-                            <Echarts
-                                :option="getLineOption(data, 'heartRate', '心率 (bmp)')"
-                                :style="{ height: '60vh', width: '80vw' }"
-                                :refresh="1000"
-                            />
-                        </el-tab-pane>
-                        <el-tab-pane
-                            label="呼吸率"
-                            name="respiratory_rate"
-                            style="display: flex; justify-content: center"
-                        >
-                            <Echarts
-                                :option="
-                                    getLineOption(data, 'respiratoryRate', '呼吸率 (bmp)', true)
-                                "
-                                :style="{ height: '60vh', width: '80vw' }"
-                                :refresh="1000"
-                            />
-                        </el-tab-pane>
-                        <el-tab-pane
-                            label="血压"
-                            name="pressure"
-                            style="display: flex; justify-content: center"
-                        >
-                            <Echarts
-                                :option="getPressureOption(data)"
-                                :style="{ height: '60vh', width: '80vw' }"
-                                :refresh="1000"
-                            />
-                        </el-tab-pane>
-                        <el-tab-pane
-                            label="拟合曲线"
-                            name="predict"
-                            style="display: flex; justify-content: center"
-                        >
-                            <Echarts
-                                :option="getLineOption(data, 'heartRate', '拟合曲线')"
-                                :style="{ height: '60vh', width: '80vw' }"
-                                :refresh="1000"
-                            />
-                        </el-tab-pane>
-                    </el-tabs>
+        <el-main style="margin-top: -40px">
+            <el-tabs v-model="activeName" class="demo-tabs">
+                <el-tab-pane v-for="(item, idx) in persons" :label="item.name" :name="item.id" :key="idx">
+                    <div class="dv-border-box-13" style="">
+                        <svg class="dv-border-svg-container" style="margin: -11px 0 0 -5px">
+                            <path fill="transparent" stroke-width="3" stroke-linecap="round" stroke-dasharray="10, 5" stroke="#6586ec" d="M 16 9 L 61 9"></path>
+                            <path fill="transparent" stroke="#2cf7fe" d="M 5 20 L 5 10 L 12 3  L 60 3 L 68 10"></path>
+                        </svg>
+                        <el-tabs type="border-card" v-model="activeName2">
+                            <el-tab-pane label="监测数据" name="data">
+                                <!-- <dv-scroll-board :config="config" style="height:520px"></dv-scroll-board> -->
+                                <el-table :data="data" style="width: 100%; height: 100%" table-layout="fixed" stripe>
+                                    <el-table-column sortable prop="detectTime" label="测量时间" width="340" />
+                                    <el-table-column sortable prop="heartRate" label="心率(bpm)" width="220" />
+                                    <el-table-column sortable prop="respiratoryRate" label="呼吸率(bpm)" width="220" />
+                                    <el-table-column label="收缩压/舒张压(mmHg)">
+                                        <template #default="scope">
+                                            <div style="display: flex; align-items: center">
+                                                <span style="margin-left: 10px"> {{ scope.row.systolicPressure }} / {{ scope.row.diastolicPressure }} </span>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-tab-pane>
+                            <el-tab-pane label="心率" name="heart_rate" style="display: flex; justify-content: center">
+                                <Echarts :option="getLineOption(data, 'heartRate')" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
+                            </el-tab-pane>
+                            <el-tab-pane label="呼吸率" name="respiratory_rate" style="display: flex; justify-content: center">
+                                <Echarts :option="getLineOption(data, 'respiratoryRate', true, 'green')" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
+                            </el-tab-pane>
+                            <el-tab-pane label="血压" name="pressure" style="display: flex; justify-content: center">
+                                <Echarts :option="getPressureOption(data)" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
+                            </el-tab-pane>
+                            <el-tab-pane label="拟合曲线" name="predict" style="display: flex; justify-content: center">
+                                <Echarts :option="getLineOption(data, 'heartRate', true, 'yellow')" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
                 </el-tab-pane>
             </el-tabs>
         </el-main>
@@ -126,56 +64,12 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { TabsPaneContext } from 'element-plus'
 import type { Person, Sign } from '@/components/interface'
-// import { getMembers, getSigns, getLineOption, getPressureOption } from '@/components/getTestData'
 import { useRoute, useRouter } from 'vue-router'
 import { getLineOption, getPressureOption } from '@/components/getTestData'
 import { getSigns, getMembers } from '@/components/request'
-import { expectancy, nebula } from '../components/getTestData'
-import type { EChartsOption } from 'echarts'
-import { User, Setting, Monitor, Cpu, Cloudy, ZoomIn } from '@element-plus/icons-vue'
 
 import Echarts from '@/components/Recharts.vue'
-const radio1 = ref('近 1 小时')
-
-// 测试数据
-const getTestData = () => {
-    var _data = []
-    for (let i = 0; i < 100; i++) _data.push([Math.random() * 100, Math.random() * 100])
-    return _data
-}
-
-const option2 = ref({})
-const option3 = ref({})
-onMounted(async () => {
-    option2.value = await expectancy()
-    option3.value = await nebula()
-})
-
-const option = {
-    xAxis: {},
-    yAxis: {},
-    series: [
-        {
-            type: 'scatter',
-            data: getTestData()
-        }
-    ]
-} as EChartsOption
-
-// // 测试更新
-// setInterval(() => {
-//     option.series = [
-//         {
-//             type: 'scatter',
-//             data: getTestData()
-//         }
-//     ]
-// }, 5000)
-
-const dialogTableVisible = ref(false)
-const dialogTableVisible2 = ref(false)
 
 // 展示条数
 const count = ref(50)
@@ -207,16 +101,14 @@ const activeName = ref<number>(0)
 const activeName2 = ref('data')
 const data = ref<Sign[]>([])
 
-const route = useRoute()
-
 var refresh: string | number | NodeJS.Timeout | undefined
 onMounted(async () => {
     persons.value = await getMembers()
     activeName.value = persons.value[0].id
     data.value = await getSigns(activeName.value, count.value)
-    refresh = setInterval(async () => {
-        data.value = await getSigns(activeName.value, count.value)
-    }, 2000)
+    // refresh = setInterval(async () => {
+    //     data.value = await getSigns(activeName.value, count.value)
+    // }, 2000)
 
     const id = route.query.id as string
     if (id) {
@@ -235,12 +127,8 @@ watch(
     }
 )
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-    console.log(tab, event)
-}
-
+const route = useRoute()
 const router = useRouter()
-
 const onBack = () => {
     router.push({ path: '/person_info' })
 }
@@ -273,10 +161,26 @@ const onBack = () => {
     font-size: large;
 }
 
+td.el-table__cell {
+    border: 1px solid #ffffff1e;
+}
+
+#pane-3 > div > div > div.el-tabs__content {
+    background-image: linear-gradient(rgba(29, 30, 31, 0.95), rgba(29, 30, 31, 0.95)), url('../assets/background.jpg');
+}
+
+#app > section > section > main > section > main > div > div.el-tabs__content {
+    background-color: #091222;
+    border: 1px solid #235fa7;
+}
+
+div.el-tabs__content,
+#pane-3 > div > div > div.el-tabs__header.is-top > div > div {
+    border: 1px solid #546db9;
+}
 </style>
 
 <style scoped>
-
 .card-header {
     display: flex;
     justify-content: space-between;

@@ -5,9 +5,7 @@
                 <template #content>
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 参数配置 </span>
-                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Parameter Configure
-                        </span>
+                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)"> Parameter Configure </span>
                     </div>
                 </template>
 
@@ -30,8 +28,7 @@
                     <el-text style="font-size: 20px; font-weight: bold">基础设置</el-text>
                     <div style="flex-grow: 1"></div>
                     <el-button @click="update"
-                        ><el-icon style="margin-right: 7px"><MagicStick /></el-icon
-                        >保存更新</el-button
+                        ><el-icon style="margin-right: 7px"><MagicStick /></el-icon>保存更新</el-button
                     >
                 </el-row>
                 <el-divider />

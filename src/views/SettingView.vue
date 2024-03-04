@@ -5,9 +5,7 @@
                 <template #content>
                     <div class="flex items-center">
                         <span class="text-large font-600 mr-3"> 欢迎 </span>
-                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)">
-                            Homepage
-                        </span>
+                        <span class="text-sm mr-2" style="color: var(--el-text-color-regular)"> Homepage </span>
                     </div>
                 </template>
 
@@ -33,46 +31,30 @@
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
                                 <RouterLink to="/paras">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        参数配置
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 参数配置 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        启动雷达
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 启动雷达 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        停止运行
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 停止运行 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        开始运行
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 开始运行 </el-button>
                                 </RouterLink>
                             </el-row>
                             <el-row :gutter="80" justify="space-evenly">
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        采集数据
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 采集数据 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        特征提取
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 特征提取 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        训练模型
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 训练模型 </el-button>
                                 </RouterLink>
                                 <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain>
-                                        模型测试
-                                    </el-button>
+                                    <el-button :icon="Setting" size="large" plain> 模型测试 </el-button>
                                 </RouterLink>
                             </el-row>
                         </div>
@@ -84,9 +66,7 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"
-                                    ><Monitor
-                                /></el-icon>
+                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Monitor /></el-icon>
                             </el-col>
                             <el-col :span="8" style="text-align: right">监测区域数量<br />4</el-col>
                         </el-row>
@@ -114,13 +94,9 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"
-                                    ><Cloudy
-                                /></el-icon>
+                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Cloudy /></el-icon>
                             </el-col>
-                            <el-col :span="8" style="text-align: right"
-                                >数据记录收集<br />200.4k</el-col
-                            >
+                            <el-col :span="8" style="text-align: right">数据记录收集<br />200.4k</el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="16">昨日新增</el-col>
@@ -134,9 +110,7 @@
                             <el-col :span="16">
                                 <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Cpu /></el-icon>
                             </el-col>
-                            <el-col :span="8" style="text-align: right"
-                                >雷达运行状态<br />ON</el-col
-                            >
+                            <el-col :span="8" style="text-align: right">雷达运行状态<br />ON</el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="16">雷达运行时间</el-col>
@@ -150,9 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { User, Setting, Monitor, Cpu, Cloudy, ZoomIn } from '@element-plus/icons-vue'
+import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
-import { onMounted, ref } from 'vue'
 
 const onBack = () => {
     notify('Back')

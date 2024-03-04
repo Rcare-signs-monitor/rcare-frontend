@@ -1,15 +1,6 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-import {
-    Menu as IconMenu,
-    PieChart,
-    Setting,
-    ArrowRightBold,
-    ArrowLeftBold,
-    List,
-    Operation,
-    LocationFilled
-} from '@element-plus/icons-vue'
+import { ref, watch } from 'vue'
+import { Menu as IconMenu, PieChart, Setting, ArrowRightBold, ArrowLeftBold, List, Operation, LocationFilled } from '@element-plus/icons-vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 
 const isCollapse = ref(true)
@@ -18,7 +9,7 @@ const activeIndex = ref('1')
 const route = useRoute()
 watch(
     () => route.path,
-    (newValue, preValue) => {
+    (newValue) => {
         // 修复侧边 active 与路径不同步
         // console.log(newValue);
         const pathList = ['', '/', '/person_info', '/health_record', '/paras', '/logs', '/settings']
@@ -31,50 +22,54 @@ watch(
     <el-container class="layout-container-demo">
         <el-aside width="collapse">
             <el-scrollbar>
-                <el-menu
-                    :default-active="activeIndex"
-                    class="el-menu-vertical-demo"
-                    :collapse="isCollapse"
-                    background-color="#141414"
-                    text-color="#96969b"
-                    :collapse-transition="true"
-                >
+                <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#141414" text-color="#96969b" :collapse-transition="true">
                     <div>
                         <div style="height: 8px"></div>
                         <RouterLink to="/">
                             <el-menu-item index="1">
-                                <el-icon size="30"><icon-menu /></el-icon>
-                                <template #title>主页</template>
+                                <el-icon size="30" style="margin-right: 20px"><icon-menu /></el-icon>
+                                <template #title><span>主页</span></template>
                             </el-menu-item>
                         </RouterLink>
-                        <RouterLink to="/person_info">
-                            <el-menu-item index="2">
-                                <el-icon size="30"><LocationFilled /></el-icon>
-                                <template #title>病人信息</template>
-                            </el-menu-item>
-                        </RouterLink>
+
+                        <el-sub-menu index="2">
+                            <template #title>
+                                <el-icon size="30" style="margin-right: 20px"><LocationFilled /></el-icon>
+                                <span>病房信息</span>
+                            </template>
+                            <el-menu-item-group style="margin-top: -10px">
+                                <dv-border-box10>
+                                    <RouterLink to="/person_info">
+                                        <el-menu-item index="1-1" style="color: rgb(255 255 255 / 82%)">101 号病房</el-menu-item>
+                                    </RouterLink>
+                                    <el-menu-item index="1-2" style="color: rgb(255 255 255 / 82%)">102 号病房</el-menu-item>
+                                    <el-menu-item index="1-3" style="color: rgb(255 255 255 / 82%)">103 号病房</el-menu-item>
+                                    <el-menu-item index="1-4" style="color: rgb(255 255 255 / 82%)">104 号病房</el-menu-item>
+                                </dv-border-box10>
+                            </el-menu-item-group>
+                        </el-sub-menu>
                         <RouterLink to="/health_record">
                             <el-menu-item index="3">
-                                <el-icon size="30"><PieChart /></el-icon>
+                                <el-icon size="30" style="margin-right: 20px"><PieChart /></el-icon>
                                 <template #title>个人档案</template>
                             </el-menu-item>
                         </RouterLink>
                         <RouterLink to="/paras">
                             <el-menu-item index="4">
-                                <el-icon size="30"><Setting /></el-icon>
+                                <el-icon size="30" style="margin-right: 20px"><Setting /></el-icon>
                                 <template #title>参数配置</template>
                             </el-menu-item>
                         </RouterLink>
                         <RouterLink to="/logs">
                             <el-menu-item index="5">
-                                <el-icon size="30"><List /></el-icon>
+                                <el-icon size="30" style="margin-right: 20px"><List /></el-icon>
                                 <template #title>监测日志</template>
                             </el-menu-item>
                         </RouterLink>
                     </div>
                     <div>
                         <el-menu-item @click="isCollapse = !isCollapse">
-                            <el-icon size="30">
+                            <el-icon size="30" style="margin-right: 20px">
                                 <ArrowRightBold v-if="isCollapse" />
                                 <ArrowLeftBold v-else />
                             </el-icon>
@@ -82,7 +77,7 @@ watch(
                         </el-menu-item>
                         <RouterLink to="/settings">
                             <el-menu-item index="6">
-                                <el-icon size="30"><Operation /></el-icon>
+                                <el-icon size="30" style="margin-right: 20px"><Operation /></el-icon>
                                 <template #title>设置</template>
                             </el-menu-item>
                         </RouterLink>
@@ -116,5 +111,8 @@ watch(
 <style scoped>
 .el-menu-item.is-active > div > i > svg {
     filter: drop-shadow(2px 2px 6px #409eff);
+}
+.el-menu-item-group .el-menu-item:hover {
+    background-color: rgb(25 48 113 / 52%);
 }
 </style>
