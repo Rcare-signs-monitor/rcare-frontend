@@ -10,23 +10,23 @@
     </el-row>
     <el-row :gutter="5" style="width: 100%">
         <el-col :span="12" v-for="(items, idx1) in tableData" :key="idx1">
-            <dv-border-box11 :title="`${101 + idx1} 号`">
+            <dv-border-box11 :title="`${idx1} 号`">
                 <el-row style="padding: 20px; padding-top: 60px">
                     <el-col :span="8" v-for="(item, idx2) in items" :key="idx2">
-                        <dv-border-box12 style="overflow: hidden" v-if="item">
-                            <el-card style="margin: 10px" @click="jump(item.id)">
+                        <dv-border-box12 style="overflow: hidden" v-if="item.id">
+                            <el-card style="margin: 10px" @click="jump(item.room ,item.id)">
                                 <template #footer>
-                                    <div :class="risky(item) ? 'risk' : 'normal'">{{ 101 + idx1 }} - {{ idx1 * 6 + idx2 + 1 }}</div>
+                                    <div :class="risky(item.signs) ? 'risk' : 'normal'">{{ idx1 }} - {{ item.bed }}</div>
                                 </template>
-                                <div style="display: flex; align-items: center" :class="risky(item) ? 'risk3' : ''">
-                                    <div :style="risky(item) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
+                                <div style="display: flex; align-items: center" :class="risky(item.signs) ? 'risk3' : ''">
+                                    <div :style="risky(item.signs) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
                                         <img height="40px" width="40px" src="../assets/床位 患者.svg" />
                                     </div>
                                     <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
                                         <el-col style="height: 12px">姓名：{{ item.name }}</el-col>
-                                        <el-col style="height: 12px">心率：{{ item.heart }} </el-col>
-                                        <el-col style="height: 12px">呼吸：{{ item.breath }} </el-col>
-                                        <el-col style="height: 12px">血压：{{ item.heart }} / {{ item.heart }} </el-col>
+                                        <el-col style="height: 12px">心率：{{ item.signs.heart?.data }} </el-col>
+                                        <el-col style="height: 12px">呼吸：{{ item.signs.respire?.data }} </el-col>
+                                        <el-col style="height: 12px">血压：{{ item.signs.sbp?.data.toFixed(0) }} / {{ item.signs.dbp?.data.toFixed(0) }} </el-col>
                                     </el-row>
                                 </div>
                             </el-card>
@@ -34,7 +34,7 @@
                         <dv-border-box12 style="overflow: hidden" v-else>
                             <el-card style="margin: 10px">
                                 <template #footer>
-                                    <div style="background-color: #a0a0a0; padding: 5px; text-align: center; font-weight: bolder">{{ 101 + idx1 }} - {{ idx1 * 6 + idx2 + 1 }}</div>
+                                    <div style="background-color: #a0a0a0; padding: 5px; text-align: center; font-weight: bolder">{{ idx1 }} - {{ item.bed }}</div>
                                 </template>
                                 <div style="display: flex; align-items: center">
                                     <div class="bed-icon" style="background-color: #a0a0a0">
@@ -58,132 +58,51 @@
 
 <script lang="ts" setup>
 // 红 or 蓝？
-const risky = (item: { heart: number; breath: number }) => {
-    return item.heart > 100 || item.heart < 60 || item.breath < 16 || item.breath > 20
+const risky = (item:any) => {
+    return (item.heart && (item.heart.data > 120 || item.heart.data < 60 ))
+        || (item.respire && (item.respire.data < 12 || item.respire.data > 27))
+        || (item.sbp && (item.sbp.data < 80 || item.sbp.data > 120))
+        || (item.dbp && (item.dbp.data < 120 || item.dbp.data > 160))
+        || (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60 ))
 }
 
+import { onMounted, ref } from 'vue';
 // 修正组件间锚点跳转
 import { useRouter } from 'vue-router'
+import { getBeds } from './request';
 const router = useRouter()
-const jump = (id: any) => {
+const jump = (room:string, id: number) => {
     router.push({
         path: `/person_info`,
         query: {
+            room: `${room}`,
             id: `${id}`
         }
     })
 }
 
-// 测试用 床位占用数据
-const tableData = [
-    [
+const tableData = ref<{
+    [roomid: string]: [
         {
-            name: 'AAA',
-            heart: 70,
-            breath: 17,
-            id: 3
-        },
-        {
-            name: 'BBB',
-            heart: 80,
-            breath: 17,
-            id: 4
-        },
-        {
-            name: 'CCC',
-            heart: 77,
-            breath: 17,
-            id: 5
-        },
-        null,
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        null
-    ],
-    [
-        null,
-        null,
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 110,
-            breath: 17,
-            id: 6
+            room: string,
+            bed: string,
+            id: number | null,
+            name: string | null,
+            signs: {
+                heart: { time: string, data: number },
+                respire: { time: string, data: number },
+                sbp: { time: string, data: number },
+                dbp: { time: string, data: number },
+                ecg: { time: string, data: number },
+            }
         }
-    ],
-    [
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        null,
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        null
-    ],
-    [
-        null,
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        null,
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        {
-            name: 'Tom',
-            heart: 77,
-            breath: 17,
-            id: 6
-        },
-        null
     ]
-]
+}>({});
+// 测试用 床位占用数据
+onMounted(async ()=>{
+    tableData.value = await getBeds() 
+})
+
 </script>
 
 <style scoped>

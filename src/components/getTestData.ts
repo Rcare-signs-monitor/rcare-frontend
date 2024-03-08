@@ -2,12 +2,20 @@ import type { Sign } from './interface'
 import type { EChartsOption } from 'echarts'
 import * as echarts from 'echarts'
 
-export const getLineOption = (data: Sign[], label: 'heartRate' | 'respiratoryRate', smooth = false, color: string = 'blue', warning?: number[]) => {
+export const getLineOption = (data: Sign[], type: string, smooth: boolean = false, color: string = 'blue') => {
     let dateList: string[] = []
     let valueList: number[] = []
     if (data) {
-        dateList = data.map((item) => item['detectTime'])
-        valueList = data.map((item) => item[label])
+        dateList = data.map((item) => item.time)
+        valueList = data.map((item) => item.data)
+    }
+
+    const thresh: { [type: string]: number[] } = {
+        heart: [60, 120],
+        respire: [12, 27],
+        sbp: [80, 120],
+        dbp: [120, 160],
+        ecg: [60, 120]
     }
 
     const color_table: { [color: string]: string[] } = {
@@ -19,7 +27,7 @@ export const getLineOption = (data: Sign[], label: 'heartRate' | 'respiratoryRat
     const option = {
         grid: {
             left: 40,
-            right: 0,
+            right: 25,
             bottom: 20,
             top: 20
         },
@@ -46,69 +54,79 @@ export const getLineOption = (data: Sign[], label: 'heartRate' | 'respiratoryRat
                             color: color_table[color][2]
                         }
                     ])
+                },
+                endLabel: {
+                    show: true,
+                    formatter: function (params: any) {
+                        return params.value[0]
+                    }
                 }
             }
         ]
     } as EChartsOption
 
-    if (warning) {
-        if (warning.length == 1) {
-            option['visualMap'] = {
-                show: false,
-                dimension: 0,
-                pieces: [
-                    {
-                        lt: warning[0],
-                        color: color_table[color][0]
-                    },
-                    {
-                        gte: warning[0],
-                        lte: dateList.length - 1,
-                        color: 'red'
-                    }
-                ]
-            }
-        } else {
-            option['visualMap'] = {
-                show: false,
-                dimension: 0,
-                pieces: [
-                    {
-                        lt: warning[0],
-                        color: color_table[color][0]
-                    },
-                    {
-                        gte: warning[0],
-                        lte: warning[1],
-                        color: 'red'
-                    },
-                    {
-                        gt: warning[1],
-                        color: color_table[color][0]
-                    }
-                ]
-            }
+    const end = valueList.findLastIndex((item) => item < thresh[type][0] || item > thresh[type][1])
+    const start = valueList.findLastIndex((item, index) => item >= thresh[type][0] && item <= thresh[type][1] && index < end)
+
+    if (start === -1 && end !== -1) {
+        option['visualMap'] = {
+            show: false,
+            dimension: 0,
+            pieces: [
+                {
+                    lt: end,
+                    color: color_table[color][0]
+                },
+                {
+                    gte: start,
+                    lte: dateList.length - 1,
+                    color: 'red'
+                }
+            ]
+        }
+    } else if (start !== -1 && end !== -1) {
+        option['visualMap'] = {
+            show: false,
+            dimension: 0,
+            pieces: [
+                {
+                    lt: start + 1,
+                    color: color_table[color][0]
+                },
+                {
+                    gte: start,
+                    lte: end,
+                    color: 'red'
+                },
+                {
+                    gt: end,
+                    color: color_table[color][0]
+                }
+            ]
         }
     }
 
     return option
 }
 
-export const getPressureOption = (data: Sign[]) => {
-    let dateList: string[] = []
-    let pressure1: number[] = []
-    let pressure2: number[] = []
-    if (data) {
-        dateList = data.map((item) => item['detectTime'])
-        pressure1 = data.map((item) => item['systolicPressure'])
-        pressure2 = data.map((item) => item['diastolicPressure'] - item['systolicPressure'])
+export const getDoubleLineOption = (data1: Sign[], data2: Sign[]) => {
+    let dateList1: string[] = [] // 假设收缩压和舒张压是同时测量的
+    let valueList1: number[] = []
+    // let dateList2: string[] = []
+    let valueList2: number[] = []
+
+    if (data1 && data2) {
+        dateList1 = data1.map((item) => item.time)
+        // dateList2 = data2.map(item => item.time)
+        valueList1 = data1.map((item) => item.data)
+        valueList2 = data2.map((item) => item.data)
     }
 
     const option = {
         color: ['#9A6599', '#9A6599'],
         grid: {
             left: 40,
-            right: 0,
+            right: 50,
             bottom: 20,
             top: 20
         },
@@ -123,13 +141,12 @@ export const getPressureOption = (data: Sign[]) => {
             {
                 type: 'category',
                 boundaryGap: false,
-                data: dateList
+                data: dateList1
             }
         ],
         yAxis: [{ type: 'value' }],
         series: [
             {
-                name: '收缩压',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
@@ -149,14 +166,19 @@ export const getPressureOption = (data: Sign[]) => {
                     ])
                 },
                 emphasis: { focus: 'series' },
-                data: pressure1
+                data: valueList1,
+                endLabel: {
+                    show: true,
+                    formatter: function (params: any) {
+                        return params.value[0]
+                    }
+                }
             },
             {
-                name: '舒张压',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
-                lineStyle: { width: 1 },
+                lineStyle: { width: 1, color: '#DFBFFF' },
                 showSymbol: false,
                 areaStyle: {
                     opacity: 0.8,
@@ -172,7 +194,13 @@ export const getPressureOption = (data: Sign[]) => {
                     ])
                 },
                 emphasis: { focus: 'series' },
-                data: pressure2
+                data: valueList2,
+                endLabel: {
+                    show: true,
+                    formatter: function (params: any) {
+                        return params.value[0]
+                    }
+                }
             }
         ]
     } as EChartsOption

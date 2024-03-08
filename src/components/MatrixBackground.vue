@@ -9,10 +9,8 @@ export default {
     },
     methods: {},
     mounted() {
-        console.log(123)
         var canvas = document.getElementById('canvas')
         // getContext() 方法返回一个用于在画布上绘图的环境。
-        console.log(canvas)
         var context = canvas.getContext('2d')
         var W = window.innerWidth
         var H = window.innerHeight

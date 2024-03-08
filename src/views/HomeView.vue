@@ -24,7 +24,7 @@
 
         <el-main>
             <dv-border-box13 style="margin-top: 10px" backgroundColor="#060C1E">
-                <div style="padding: 20px">
+                <div style="padding: 20px; height: 86vh;">
                     <BedOccupancyChart></BedOccupancyChart>
                 </div>
             </dv-border-box13>

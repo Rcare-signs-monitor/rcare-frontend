@@ -8,12 +8,12 @@
                         <span class="text-sm mr-2" style="color: var(--el-text-color-regular)"> Personal Information </span>
                     </div>
                 </template>
-                <el-descriptions :column="3" size="small" class="mt-4">
+                <el-descriptions size="large">
                     <el-descriptions-item label="当前病房">
-                        <el-tag size="small">101号</el-tag>
+                        <el-tag size="small">{{ query.room }} 号</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="病床占用">
-                        <el-tag size="small">4/6</el-tag>
+                        <el-tag size="small">{{ data.length }} / 6</el-tag>
                     </el-descriptions-item>
                 </el-descriptions>
                 <template #extra>
@@ -26,7 +26,7 @@
         </el-header>
 
         <el-main>
-            <el-tabs v-model="activeName[item.id]" v-for="(item, idx) in data" :id="`${item.id}`" :key="idx">
+            <el-tabs v-model="activeName[item.info.id]" v-for="(item, idx) in data" :id="item.info.id" :key="idx">
                 <el-tab-pane label="生命体征信息" name="first">
                     <el-row v-if="data.length !== 0" :gutter="24" class="main-page">
                         <el-col :span="8">
@@ -35,16 +35,41 @@
                                 <el-row style="margin-bottom: 15px">
                                     <span>
                                         <dv-border-box8>
-                                            <el-avatar style="height: 100px; width: 100px; margin: 5px; opacity: 0.7" shape="square" :src="item.image ? item.image : '/avatar.png'" />
+                                            <el-avatar
+                                                style="height: 100px; width: 100px; margin: 5px; opacity: 0.7"
+                                                shape="square"
+                                                :src="item.info.image ? item.info.image : '/avatar.png'"
+                                            />
                                         </dv-border-box8>
                                     </span>
                                     <span style="margin-left: 30px; color: white">
                                         <div style="font-size: 20px; font-weight: bold; display: flex; align-items: center">
-                                            {{ item.name }}
-                                            <el-tag type="success" style="margin-left: 20px">{{ idx + 1 }} 号床</el-tag>
+                                            {{ item.info.name }}
+                                            <el-tag type="success" style="margin-left: 20px">{{ item.info.bed }} 号床</el-tag>
                                         </div>
-                                        <div>性别：{{ item.gender == 1 ? '男' : '女' }}</div>
-                                        <div>年龄：{{ item.age }}岁</div>
+                                        <div>性别：{{ item.info.gender == 1 ? '男' : '女' }}</div>
+                                        <div>年龄：{{ item.info.age }}岁</div>
+                                        <div>主治医生：{{ item.info.doctor }}</div>
+                                    </span>
+                                    <span style="display: flex; flex-grow: 1"></span>
+                                    <span style="width: 100px">
+                                        <el-row>
+                                            <el-col style="margin-bottom: 10px">
+                                                <RouterLink :to="{ path: '/health_record', query: { id: item.info.id } }">
+                                                    <dv-button :fontSize="13" style="width: 100%; margin-bottom: 5px">个人档案</dv-button>
+                                                </RouterLink>
+                                            </el-col>
+                                            <el-col>
+                                                <dv-button
+                                                    :fontSize="13"
+                                                    style="width: 100%; margin-bottom: 5px"
+                                                    @click="setForm(item.info)"
+                                                    border="Border6"
+                                                    color="#615ea8"
+                                                    >编辑信息</dv-button
+                                                >
+                                            </el-col>
+                                        </el-row>
                                     </span>
                                 </el-row>
                                 <el-row :gutter="50">
@@ -55,7 +80,7 @@
                                                     <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
                                                     <span style="font-size: 18px">
                                                         心率
-                                                        <el-tooltip content="参考值: 60-100次/分" placement="top">
+                                                        <el-tooltip content="参考值: 60-120次/分" placement="top">
                                                             <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
                                                                 <Warning />
                                                             </el-icon>
@@ -63,8 +88,17 @@
                                                     </span>
                                                 </span>
                                                 <span>
-                                                    <span style="font-size: 25px" :class="[item.sign && item.sign.heartRate > 90 ? 'warning-font' : 'normal-font']">
-                                                        {{ item.sign ? item.sign.heartRate : 0 }} </span
+                                                    <span
+                                                        style="font-size: 25px"
+                                                        :class="[
+                                                            item.signs.heart &&
+                                                            (item.signs.heart[item.signs.heart.length - 1].data > 120 ||
+                                                                item.signs.heart[item.signs.heart.length - 1].data < 60)
+                                                                ? 'warning-font'
+                                                                : 'normal-font'
+                                                        ]"
+                                                    >
+                                                        {{ item.signs.heart ? item.signs.heart[item.signs.heart.length - 1].data : 0 }} </span
                                                     >bpm
                                                 </span>
                                             </div>
@@ -79,39 +113,7 @@
                                                     <img class="sign-icon" src="../assets/呼吸.svg" style="margin-right: 20px" />
                                                     <span style="font-size: 18px">
                                                         呼吸率
-                                                        <el-tooltip content="参考值：16-20次/分" placement="top">
-                                                            <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
-                                                                <Warning />
-                                                            </el-icon>
-                                                        </el-tooltip>
-                                                    </span>
-                                                </span>
-                                                <span
-                                                    ><span style="font-size: 25px" :class="[item.sign && item.sign.respiratoryRate > 90 ? 'warning-font' : 'normal-font']">{{
-                                                        item.sign ? item.sign.respiratoryRate : 0
-                                                    }}</span
-                                                    >bpm</span
-                                                >
-                                            </div>
-                                        </dv-border-box9>
-                                    </el-col>
-                                </el-row>
-                                <el-row :gutter="50">
-                                    <el-col :span="24">
-                                        <dv-border-box9 style="background-color: #13161b">
-                                            <div style="display: flex; align-items: center; justify-content: space-evenly; height: 14vh"></div>
-                                        </dv-border-box9>
-                                    </el-col>
-                                </el-row>
-                                <el-row :gutter="50">
-                                    <el-col :span="24">
-                                        <dv-border-box9 style="background-color: #13161b">
-                                            <div style="display: flex; align-items: center; justify-content: space-evenly; height: 14vh">
-                                                <span style="display: flex; align-items: center">
-                                                    <img class="sign-icon" src="../assets/血压.svg" style="margin-right: 20px" />
-                                                    <span style="font-size: 18px">
-                                                        SBP / DBP
-                                                        <el-tooltip content="参考值: 90-139 / 60-89" placement="top">
+                                                        <el-tooltip content="参考值：12-27次/分" placement="top">
                                                             <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
                                                                 <Warning />
                                                             </el-icon>
@@ -121,8 +123,86 @@
                                                 <span
                                                     ><span
                                                         style="font-size: 25px"
-                                                        :class="[item.sign && (item.sign.systolicPressure > 139 || item.sign.diastolicPressure > 89) ? 'warning-font' : 'normal-font']"
-                                                        >{{ item.sign ? `${item.sign.systolicPressure} / ${item.sign.diastolicPressure}` : '0 / 0' }}</span
+                                                        :class="[
+                                                            item.signs.respire &&
+                                                            (item.signs.respire[item.signs.respire.length - 1].data > 27 ||
+                                                                item.signs.respire[item.signs.respire.length - 1].data < 12)
+                                                                ? 'warning-font'
+                                                                : 'normal-font'
+                                                        ]"
+                                                        >{{ item.signs.respire ? item.signs.respire[item.signs.respire.length - 1].data : 0 }}</span
+                                                    >bpm</span
+                                                >
+                                            </div>
+                                        </dv-border-box9>
+                                    </el-col>
+                                </el-row>
+                                <el-row :gutter="50">
+                                    <el-col :span="24">
+                                        <dv-border-box9 style="background-color: #13161b">
+                                            <div style="display: flex; align-items: center; justify-content: space-evenly; height: 14vh">
+                                                <span style="display: flex; align-items: center">
+                                                    <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
+                                                    <span style="font-size: 18px">
+                                                        ECG
+                                                        <el-tooltip content="参考值: 60-120次/分" placement="top">
+                                                            <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
+                                                                <Warning />
+                                                            </el-icon>
+                                                        </el-tooltip>
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    <span
+                                                        style="font-size: 25px"
+                                                        :class="[
+                                                            item.signs.ecg &&
+                                                            (item.signs.ecg[item.signs.ecg.length - 1].data > 120 ||
+                                                                item.signs.ecg[item.signs.ecg.length - 1].data < 60)
+                                                                ? 'warning-font'
+                                                                : 'normal-font'
+                                                        ]"
+                                                    >
+                                                        {{ item.signs.ecg ? item.signs.ecg[item.signs.ecg.length - 1].data : 0 }} </span
+                                                    >bpm
+                                                </span>
+                                            </div>
+                                        </dv-border-box9>
+                                    </el-col>
+                                </el-row>
+                                <el-row :gutter="50">
+                                    <el-col :span="24">
+                                        <dv-border-box9 style="background-color: #13161b">
+                                            <div style="display: flex; align-items: center; justify-content: space-evenly; height: 14vh">
+                                                <span style="display: flex; align-items: center">
+                                                    <img class="sign-icon" src="../assets/血压.svg" style="margin-right: 13px" />
+                                                    <span style="font-size: 18px">
+                                                        DBP / SBP
+                                                        <el-tooltip content="参考值: 80-120 / 120-160" placement="top">
+                                                            <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
+                                                                <Warning />
+                                                            </el-icon>
+                                                        </el-tooltip>
+                                                    </span>
+                                                </span>
+                                                <span
+                                                    ><span
+                                                        style="font-size: 25px"
+                                                        :class="[
+                                                            item.signs.sbp &&
+                                                            item.signs.dbp &&
+                                                            (item.signs.sbp[item.signs.sbp.length - 1].data > 120 ||
+                                                                item.signs.sbp[item.signs.sbp.length - 1].data < 80 ||
+                                                                item.signs.dbp[item.signs.dbp.length - 1].data > 160 ||
+                                                                item.signs.dbp[item.signs.dbp.length - 1].data < 120)
+                                                                ? 'warning-font'
+                                                                : 'normal-font'
+                                                        ]"
+                                                        >{{
+                                                            item.signs && item.signs.dbp
+                                                                ? `${item.signs.sbp[item.signs.sbp.length - 1].data} / ${item.signs.dbp[item.signs.dbp.length - 1].data}`
+                                                                : '0 / 0'
+                                                        }}</span
                                                     >mmHg</span
                                                 >
                                             </div></dv-border-box9
@@ -135,49 +215,66 @@
                         <el-col :span="16">
                             <dv-border-box6 style="background-color: #091222; border-radius: 10px; padding: 10px">
                                 <el-row style="height: 110px; color: rgb(199 202 212)">
-                                    <el-col :span="13"
-                                        ><dv-border-box5>
-                                            <!-- <div style="display: flex; padding: 25px">
-                                                <div>123</div>
-                                                <div style="display: flex; flex-grow: 1"></div>
-                                                <div style="padding-right: 30px">病历</div>
-                                            </div> -->
-                                        </dv-border-box5></el-col
-                                    >
                                     <el-col :span="11"
-                                        ><dv-border-box5 :reverse="true">
-                                            <!-- <div style="display: flex; padding: 25px">
-                                                <div style="padding: 40px 0 0 30px">医嘱</div>
+                                        ><dv-border-box5>
+                                            <div style="display: flex; padding: 25px">
+                                                <div style="width: fit-content">
+                                                    <div><span style="color: #2ddce4">住院天数：</span>{{ item.info.day }}</div>
+                                                    <div><span style="color: #52c5e9">诊断结果：</span>{{ item.info.result }}</div>
+                                                    <div><span style="color: #7aacef">过敏信息：</span>{{ item.info.allergy }}</div>
+                                                </div>
                                                 <div style="display: flex; flex-grow: 1"></div>
-                                                <div>123</div>
-                                            </div> -->
-                                            <el-row style="padding: 34px 25px 0 0">
-                                                <el-col :span="6" :offset="8">
-                                                    <RouterLink :to="{ path: '/health_record', query: { id: item.id } }">
-                                                        <dv-button :fontSize="13" style="width: 100%; margin-bottom: 5px">个人档案</dv-button>
-                                                    </RouterLink>
-                                                </el-col>
-                                                <el-col :span="6" :offset="3">
-                                                    <dv-button :fontSize="13" style="width: 100%; margin-bottom: 5px" @click="setForm(item)" border="Border6" color="#615ea8">编辑信息</dv-button>
-                                                </el-col>
-                                                <!-- <el-col :span="24">
-                                                    <dv-button :fontSize="13" style="width: 100%; margin-bottom: 3px" @click="deleteMember(item.id)" border="Border6" color="#615ea8">删除成员</dv-button>
-                                                </el-col> -->
-                                            </el-row>
+                                                <!-- <div style="padding-right: 30px"></div> -->
+                                                <div style="padding: 0 20px 40px 0; display: flex; align-items: center; font-size: 20px">
+                                                    <span style="color: #a790f5">病历</span>
+                                                    <el-icon :size="22" style="margin-left: 7px; color: #148ac8"><Postcard /></el-icon>
+                                                </div>
+                                            </div> </dv-border-box5
+                                    ></el-col>
+                                    <el-col :span="13"
+                                        ><dv-border-box5 :reverse="true">
+                                            <div style="display: flex; padding: 25px">
+                                                <div style="padding: 40px 0 0 30px; display: flex; align-items: center; font-size: 20px">
+                                                    <el-icon :size="20" style="margin-right: 7px; color: #148ac8"><Grid /></el-icon>
+                                                    <span style="color: #fc7cad">医嘱</span>
+                                                </div>
+                                                <div style="display: flex; flex-grow: 1"></div>
+                                                <div>
+                                                    <div><span style="color: #feb768">治疗方案：</span>{{ item.info.healing }}</div>
+                                                    <div><span style="color: #fea77b">联系方式：</span>{{ item.info.contact }}</div>
+                                                    <div><span style="color: #fd9095">注意事项：</span>{{ item.info.attention }}</div>
+                                                </div>
+                                            </div>
                                         </dv-border-box5></el-col
                                     >
                                 </el-row>
                                 <el-row>
-                                    <Echarts :option="getLineOption(memberSign[item.id], 'heartRate', false, 'blue', [14])" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+                                    <Echarts
+                                        :option="getLineOption(item.signs.heart, 'heart', false, 'blue')"
+                                        :style="{ height: '15vh', width: '58vw' }"
+                                        :refresh="1000"
+                                    />
                                 </el-row>
                                 <el-row>
-                                    <Echarts :option="getLineOption(memberSign[item.id], 'respiratoryRate', true, 'green')" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+                                    <Echarts
+                                        :option="getLineOption(item.signs.respire, 'respire', true, 'green')"
+                                        :style="{ height: '15vh', width: '58vw' }"
+                                        :refresh="1000"
+                                    />
                                 </el-row>
                                 <el-row>
-                                    <Echarts :option="getLineOption(memberSign[item.id], 'heartRate', true, 'yellow')" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+                                    <Echarts
+                                        :option="getLineOption(item.signs.ecg, 'ecg', true, 'yellow')"
+                                        :style="{ height: '15vh', width: '58vw' }"
+                                        :refresh="1000"
+                                    />
                                 </el-row>
                                 <el-row>
-                                    <Echarts :option="getPressureOption(memberSign[item.id])" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+                                    <Echarts
+                                        :option="getDoubleLineOption(item.signs.sbp, item.signs.dbp)"
+                                        :style="{ height: '15vh', width: '58vw' }"
+                                        :refresh="1000"
+                                    />
                                 </el-row>
                             </dv-border-box6>
                         </el-col>
@@ -189,7 +286,14 @@
                         <el-col :span="12">
                             <div class="dv-border-box-13" style="">
                                 <svg class="dv-border-svg-container" style="margin: -11px 0 0 -5px">
-                                    <path fill="transparent" stroke-width="3" stroke-linecap="round" stroke-dasharray="10, 5" stroke="#6586ec" d="M 16 9 L 61 9"></path>
+                                    <path
+                                        fill="transparent"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-dasharray="10, 5"
+                                        stroke="#6586ec"
+                                        d="M 16 9 L 61 9"
+                                    ></path>
                                     <path fill="transparent" stroke="#2cf7fe" d="M 5 20 L 5 10 L 12 3  L 60 3 L 68 10"></path>
                                 </svg>
                                 <el-card shadow="hover" style="margin-top: 10px">
@@ -199,39 +303,91 @@
                                                 <el-icon style="margin-right: 10px" color="#63D2C3" :size="20"><Stopwatch /></el-icon>
                                                 距离角度图
                                             </span>
-                                            <svg width="250px" height="35px" style="transform: scale(0.833333, 0.857143); opacity: 0.8; filter: hue-rotate(37deg)">
+                                            <svg
+                                                width="250px"
+                                                height="35px"
+                                                style="transform: scale(0.833333, 0.857143); opacity: 0.8; filter: hue-rotate(37deg)"
+                                            >
                                                 <rect fill="#7acaec" x="8.038461538461538" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="19.576923076923077" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="31.115384615384613" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="10.5051921084767919s" begin="0.3404219594310478" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="10.5051921084767919s"
+                                                        begin="0.3404219594310478"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="42.65384615384615" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="54.19230769230769" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.3812326756107645s" begin="1.6955934216220923" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.3812326756107645s"
+                                                        begin="1.6955934216220923"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="65.73076923076923" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.715153140014483s" begin="0.3594127908320366" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.715153140014483s"
+                                                        begin="0.3594127908320366"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="77.26923076923077" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="88.8076923076923" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.1781091417544567s" begin="1.3440929348444768" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.1781091417544567s"
+                                                        begin="1.3440929348444768"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="100.34615384615384" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="111.88461538461539" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.6872871824275972s" begin="1.686974870004015" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.6872871824275972s"
+                                                        begin="1.686974870004015"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="123.42307692307692" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.4993158713075814s" begin="1.6154923252036943" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.4993158713075814s"
+                                                        begin="1.6154923252036943"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="134.96153846153845" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.6967905679659898s" begin="1.9796202886310514" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.6967905679659898s"
+                                                        begin="1.9796202886310514"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="146.5" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="158.03846153846155" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="169.57692307692307" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="181.1153846153846" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="192.65384615384616" y="8.166666666666666" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.223277204830762s" begin="0.5762921556259273" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.223277204830762s"
+                                                        begin="0.5762921556259273"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="204.19230769230768" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="215.73076923076923" y="8.166666666666666" width="7" height="7"><!----></rect>
@@ -243,7 +399,13 @@
                                                 <rect fill="#7acaec" x="284.96153846153845" y="8.166666666666666" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="8.038461538461538" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="19.576923076923077" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.0535460960200869s" begin="1.211430481116238" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.0535460960200869s"
+                                                        begin="1.211430481116238"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="31.115384615384613" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="42.65384615384615" y="19.833333333333332" width="7" height="7"><!----></rect>
@@ -258,19 +420,43 @@
                                                     ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="77.26923076923077" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.6322282293649133s" begin="0.3567719074303768" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.6322282293649133s"
+                                                        begin="0.3567719074303768"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="88.8076923076923" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="100.34615384615384" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.691046811347737s" begin="1.199319131031968" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.691046811347737s"
+                                                        begin="1.199319131031968"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="111.88461538461539" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="123.42307692307692" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.6528321412925486s" begin="0.11111253073463989" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.6528321412925486s"
+                                                        begin="0.11111253073463989"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="134.96153846153845" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="146.5" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.6836706217836162s" begin="0.7722532434805796" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.6836706217836162s"
+                                                        begin="0.7722532434805796"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="158.03846153846155" y="19.833333333333332" width="7" height="7">
                                                     <animate
@@ -282,27 +468,63 @@
                                                     ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="169.57692307692307" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.5167331913025386s" begin="1.1057654859643318" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.5167331913025386s"
+                                                        begin="1.1057654859643318"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="181.1153846153846" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.9389528677833914s" begin="0.23080764875533433" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.9389528677833914s"
+                                                        begin="0.23080764875533433"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="192.65384615384616" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.0304667490707065s" begin="0.8941722295945524" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.0304667490707065s"
+                                                        begin="0.8941722295945524"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="204.19230769230768" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="215.73076923076923" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="227.26923076923077" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="238.8076923076923" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.7891971061151235s" begin="0.7488513904680578" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.7891971061151235s"
+                                                        begin="0.7488513904680578"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="250.34615384615384" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="261.88461538461536" y="19.833333333333332" width="7" height="7"><!----></rect>
                                                 <rect fill="#7acaec" x="273.4230769230769" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.9153807313386566s" begin="1.568932728429866" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.9153807313386566s"
+                                                        begin="1.568932728429866"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                                 <rect fill="#7acaec" x="284.96153846153845" y="19.833333333333332" width="7" height="7">
-                                                    <animate attributeName="fill" values="#7acaec;transparent" dur="1.3957865821820916s" begin="0.5963067884912354" repeatCount="indefinite"></animate>
+                                                    <animate
+                                                        attributeName="fill"
+                                                        values="#7acaec;transparent"
+                                                        dur="1.3957865821820916s"
+                                                        begin="0.5963067884912354"
+                                                        repeatCount="indefinite"
+                                                    ></animate>
                                                 </rect>
                                             </svg>
                                         </div>
@@ -315,7 +537,13 @@
                             <div style="height: 0; width: calc(100% + 10px); margin: 2px 0 0 -5px; display: flex; justify-content: space-between">
                                 <svg class="dv-border-svg-container" width="30" height="30">
                                     <defs>
-                                        <filter id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7" height="150%" width="150%" x="-25%" y="-25%">
+                                        <filter
+                                            id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7"
+                                            height="150%"
+                                            width="150%"
+                                            x="-25%"
+                                            y="-25%"
+                                        >
                                             <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken"></feMorphology>
                                             <feGaussianBlur in="thicken" stdDeviation="2" result="blurred"></feGaussianBlur>
                                             <feFlood flood-color="rgba(124,231,253,0.7)" result="glowColor">
@@ -345,7 +573,13 @@
                                 </svg>
                                 <svg class="dv-border-svg-container" width="30" height="30" style="transform: rotateY(180deg)">
                                     <defs>
-                                        <filter id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7" height="150%" width="150%" x="-25%" y="-25%">
+                                        <filter
+                                            id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7"
+                                            height="150%"
+                                            width="150%"
+                                            x="-25%"
+                                            y="-25%"
+                                        >
                                             <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken"></feMorphology>
                                             <feGaussianBlur in="thicken" stdDeviation="2" result="blurred"></feGaussianBlur>
                                             <feFlood flood-color="rgba(124,231,253,0.7)" result="glowColor">
@@ -393,10 +627,24 @@
                                 </template>
                                 <Echarts :option="option3" :style="{ height: '59vh', width: '40vw' }" />
                             </el-card>
-                            <div style="width: calc(100% + 10px); margin: -24px 0 0 -5px; display: flex; justify-content: space-between; background-color: transparent">
+                            <div
+                                style="
+                                    width: calc(100% + 10px);
+                                    margin: -24px 0 0 -5px;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    background-color: transparent;
+                                "
+                            >
                                 <svg class="dv-border-svg-container" width="30" height="30" style="transform: rotateX(180deg)">
                                     <defs>
-                                        <filter id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7" height="150%" width="150%" x="-25%" y="-25%">
+                                        <filter
+                                            id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7"
+                                            height="150%"
+                                            width="150%"
+                                            x="-25%"
+                                            y="-25%"
+                                        >
                                             <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken"></feMorphology>
                                             <feGaussianBlur in="thicken" stdDeviation="2" result="blurred"></feGaussianBlur>
                                             <feFlood flood-color="rgba(124,231,253,0.7)" result="glowColor">
@@ -426,7 +674,13 @@
                                 </svg>
                                 <svg class="dv-border-svg-container" width="30" height="30" style="transform: rotate(180deg)">
                                     <defs>
-                                        <filter id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7" height="150%" width="150%" x="-25%" y="-25%">
+                                        <filter
+                                            id="borderr-box-12-filterId-70b5911d2308484b9e86c41845d582c7"
+                                            height="150%"
+                                            width="150%"
+                                            x="-25%"
+                                            y="-25%"
+                                        >
                                             <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken"></feMorphology>
                                             <feGaussianBlur in="thicken" stdDeviation="2" result="blurred"></feGaussianBlur>
                                             <feFlood flood-color="rgba(124,231,253,0.7)" result="glowColor">
@@ -480,9 +734,6 @@
                     <el-input-number v-model="form.ageBegin" :min="0" :max="100" @change="handleChange1" controls-position="right" />
                     <el-text class="mx-1"> - </el-text>
                     <el-input-number v-model="form.ageEnd" :min="0" :max="100" @change="handleChange2" controls-position="right" />
-                </el-form-item>
-                <el-form-item label="地址" :label-width="formLabelWidth">
-                    <el-input v-model="form.address" autocomplete="off" />
                 </el-form-item>
             </el-form>
             <div class="demo-drawer__footer" style="display: flex; justify-content: center">
@@ -589,12 +840,12 @@
 </template>
 
 <script setup lang="ts">
-import { ZoomIn, Sunrise, Stopwatch, Edit, Search, Warning } from '@element-plus/icons-vue'
+import { ZoomIn, Sunrise, Stopwatch, Edit, Search, Warning, Grid, Postcard } from '@element-plus/icons-vue'
 import { ElDrawer, ElMessageBox, ElMessage } from 'element-plus'
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import type { Person, Result, Sign } from '../components/interface'
-import { getMembers, addMember, delMember, updateMember, getSigns } from '@/components/request'
-import { angle_time, getLineOption, getPressureOption, nebula } from '@/components/getTestData'
+import type { BasePerson, Person, Result } from '../components/interface'
+import { getMembers, addMember, delMember, updateMember } from '@/components/request'
+import { angle_time, getLineOption, getDoubleLineOption, nebula } from '@/components/getTestData'
 import { BorderBox12 as DvBorderBox12 } from '@kjgl77/datav-vue3'
 
 import Echarts from '@/components/Recharts.vue'
@@ -614,37 +865,42 @@ const onBack = () => {
 }
 
 const activeName = ref<{ [idx: number]: string }>([])
-const memberSign = ref<{
-    [idx: number]: Sign[]
-}>({})
 
 onMounted(async () => {
     option.value = await angle_time()
     option3.value = await nebula()
 })
 
-const init = async (param?: { name?: string | null; gender?: number | null; ageBegin?: number | null; ageEnd?: number | null; address?: string | null }) => {
+const init = async (param?: {
+    name?: string | null
+    gender?: number | null
+    ageBegin?: number | null
+    ageEnd?: number | null
+    room?: string | null
+}) => {
     data.value = await getMembers(param)
+
     data.value.forEach(async (item) => {
-        activeName.value[item.id] = 'first'
-        memberSign.value[item.id] = await getSigns(item.id)
+        activeName.value[item.info.id] = 'first'
+        // memberSign.value[item.info.id] = await getSigns(item.info.id)
     })
 }
 
 var refresh: string | number | NodeJS.Timeout | undefined
 onMounted(async () => {
-    await init()
+    query.room = route.query.room as string
+    form.room = route.query.room as string
+
+    await init(query)
     const comment = route.query.id as string
     if (comment) {
-        console.log(comment)
-
         let target = document.getElementById(comment)
 
         if (target) {
             target.scrollIntoView(true)
         }
         data.value.forEach((item) => {
-            if (item.id.toString() !== comment) activeName.value[item.id] = ''
+            if (item.info.id.toString() !== comment) activeName.value[item.info.id] = ''
         })
     }
 
@@ -669,7 +925,8 @@ const form = reactive({
     gender: null as number | null,
     ageBegin: null as number | null,
     ageEnd: null as number | null,
-    address: ''
+    room: '',
+    num: 20
 })
 
 var query = reactive({
@@ -677,7 +934,8 @@ var query = reactive({
     gender: null as number | null,
     ageBegin: null as number | null,
     ageEnd: null as number | null,
-    address: ''
+    room: '',
+    num: 20
 })
 
 const handleClose = async () => {
@@ -719,7 +977,6 @@ const handleClose2 = () => {
                 setTimeout(() => {
                     loading.value = false
                 }, 400)
-                console.log(form2)
                 await addMember(form2)
                 await init()
                 ElMessage({
@@ -770,7 +1027,6 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 }
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response: Result) => {
-    console.log(response)
     form2.image = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
 }
 
@@ -832,19 +1088,17 @@ const cancelForm3 = () => {
     clearTimeout(timer)
 }
 
-const setForm = (item: Person) => {
+const setForm = (item: BasePerson) => {
     dialogFormVisible.value = true
     form3.id = item.id
     form3.name = item.name
     form3.gender = item.gender
     form3.age = item.age
-    form3.address = item.address
     dialogImageUrl.value = item.image ? item.image : '/avatar.png'
 }
 
 const handleAvatarSuccess2: UploadProps['onSuccess'] = (response: Result) => {
     // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-    console.log(response)
     dialogImageUrl.value = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
     form3.image = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
 }

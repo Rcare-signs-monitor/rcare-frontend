@@ -1,72 +1,71 @@
 import axios from 'axios'
-import type { Person, Result, Sign } from './interface'
+import type { Person, Result, Signs } from './interface'
 
-export const getMembers = async (param?: { name?: string | null; gender?: number | null; ageBegin?: number | null; ageEnd?: number | null; address?: string | null }): Promise<Person[]> => {
+export const getBeds = async () => {
+    const url = import.meta.env.VITE_API_BASE_URL + '/rooms'
+    const response = (await axios.get(url)).data as Result
+    return response.data
+}
+
+export const getMembers = async (param?: {
+    name?: string | null
+    gender?: number | null
+    ageBegin?: number | null
+    ageEnd?: number | null
+    room?: string | null
+    num?: number | null
+}): Promise<Person[]> => {
     const url = import.meta.env.VITE_API_BASE_URL + '/members'
 
     const response = (await axios.get(url, { params: param })).data as Result
     if (response.code === 1) {
-        const data: Person[] = response.data
+        const data = response.data
 
-        data.map((item) => {
-            item.sign = item.sign
-                ? ({
-                      detectTime: item.sign.detectTime,
-                      heartRate: Math.floor(item.sign.heartRate * 100) / 100,
-                      respiratoryRate: Math.floor(item.sign.respiratoryRate * 100) / 100,
-                      systolicPressure: Math.floor(item.sign.systolicPressure * 100) / 100,
-                      diastolicPressure: Math.floor(item.sign.diastolicPressure * 100) / 100
-                  } as Sign)
-                : ({
-                      detectTime: new Date().toISOString(),
-                      heartRate: 0.0,
-                      respiratoryRate: 0,
-                      systolicPressure: 0,
-                      diastolicPressure: 0
-                  } as Sign)
-        })
         return data
     } else {
         throw Error('getMembers code: 0')
     }
 }
 
-export const addMember = async (data: { name: string; gender: number; age: number; address: string | null; image: string | null }) => {
+export const addMember = async (data: { name: string; gender: number; age: number; image: string | null }) => {
     const response = (await axios.post(import.meta.env.VITE_API_BASE_URL + '/members', data)).data as Result
-    // console.log(response);
     return response
 }
 
-export const updateMember = async (data: { id: number; name: string; gender: number; age: number; address: string | null; image: string | null }) => {
-    console.log(data)
-
+export const updateMember = async (data: { id: number; name: string; gender: number; age: number; image: string | null }) => {
     const response = (await axios.put(import.meta.env.VITE_API_BASE_URL + '/members', data)).data as Result
-    // console.log(response);
     return response
 }
 
 export const delMember = async (id: number) => {
     const response = (await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/members/${id}`)).data as Result
-    // console.log(response);
     return response
 }
 
 export const getSigns = async (id: number, num?: number) => {
     let url = `${import.meta.env.VITE_API_BASE_URL}/signs/${id}`
-    if (num) url += `?num=${num}`
+    if (num) url += `?num=${num}&table=true`
     const response = (await axios.get(url)).data as Result
+
     if (response.code === 1) {
-        const data: Sign[] = response.data
-        if (data.length == 0) return []
-        data.map((item) => {
-            item.heartRate = Number(item.heartRate.toFixed(2))
-            item.respiratoryRate = Number(item.respiratoryRate.toFixed(2))
-            item.systolicPressure = Number(item.systolicPressure.toFixed(2))
-            item.diastolicPressure = Number(item.diastolicPressure.toFixed(2))
-        })
-        return data.sort((a, b) => {
-            return new Date(a.detectTime).getTime() - new Date(b.detectTime).getTime()
-        })
+        const data = response.data
+        return data
+        // if (data.length == 0) return []
+
+        // const output = []
+        // if (data.heart && data.respire && data.sbp) {
+        //     // 假设数据中的每个数组长度是相同的
+        //     const len = Math.min(data.heart.length, data.respire.length, data.sbp.length, data.dbp.length)
+        //     for (let i = 0; i < len; i++) {
+        //         // 收集时间戳并找出最大的
+        //         const times = [data.heart[i].time, data.respire[i].time, data.sbp[i].time, data.dbp[i].time]
+        //         const maxTime = times.sort((a, b) => new Date(b) - new Date(a))[0]
+
+        //         output.push({ time: maxTime, heart: data.heart[i].data, respire: data.respire[i].data, sbp: data.sbp[i].data, dbp: data.dbp[i].data })
+        //     }
+        // }
+
+        // return output
     } else {
         throw Error('getSigns code: 0')
     }

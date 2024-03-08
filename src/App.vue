@@ -22,7 +22,14 @@ watch(
     <el-container class="layout-container-demo">
         <el-aside width="collapse">
             <el-scrollbar>
-                <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#141414" text-color="#96969b" :collapse-transition="true">
+                <el-menu
+                    :default-active="activeIndex"
+                    class="el-menu-vertical-demo"
+                    :collapse="isCollapse"
+                    background-color="#141414"
+                    text-color="#96969b"
+                    :collapse-transition="true"
+                >
                     <div>
                         <div style="height: 8px"></div>
                         <RouterLink to="/">
@@ -39,12 +46,18 @@ watch(
                             </template>
                             <el-menu-item-group style="margin-top: -10px">
                                 <dv-border-box10>
-                                    <RouterLink to="/person_info">
+                                    <RouterLink :to="{ path: '/person_info', query: { room: 101 } }">
                                         <el-menu-item index="1-1" style="color: rgb(255 255 255 / 82%)">101 号病房</el-menu-item>
                                     </RouterLink>
-                                    <el-menu-item index="1-2" style="color: rgb(255 255 255 / 82%)">102 号病房</el-menu-item>
-                                    <el-menu-item index="1-3" style="color: rgb(255 255 255 / 82%)">103 号病房</el-menu-item>
-                                    <el-menu-item index="1-4" style="color: rgb(255 255 255 / 82%)">104 号病房</el-menu-item>
+                                    <RouterLink :to="{ path: '/person_info', query: { room: 102 } }">
+                                        <el-menu-item index="1-2" style="color: rgb(255 255 255 / 82%)">102 号病房</el-menu-item>
+                                    </RouterLink>
+                                    <RouterLink :to="{ path: '/person_info', query: { room: 103 } }">
+                                        <el-menu-item index="1-3" style="color: rgb(255 255 255 / 82%)">103 号病房</el-menu-item>
+                                    </RouterLink>
+                                    <RouterLink :to="{ path: '/person_info', query: { room: 104 } }">
+                                        <el-menu-item index="1-4" style="color: rgb(255 255 255 / 82%)">104 号病房</el-menu-item>
+                                    </RouterLink>
                                 </dv-border-box10>
                             </el-menu-item-group>
                         </el-sub-menu>
@@ -88,7 +101,7 @@ watch(
 
         <el-container>
             <el-main>
-                <RouterView />
+                <RouterView :key="$route.fullPath"/>
             </el-main>
         </el-container>
     </el-container>
