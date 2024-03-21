@@ -886,7 +886,7 @@ const init = async (param?: {
     })
 }
 
-var refresh: string | number | NodeJS.Timeout | undefined
+var refresh: any
 onMounted(async () => {
     query.room = route.query.room as string
     form.room = route.query.room as string
@@ -903,14 +903,14 @@ onMounted(async () => {
             if (item.info.id.toString() !== comment) activeName.value[item.info.id] = ''
         })
     }
-
-    // refresh = setInterval(async () => {
-    //     await init(query)
-    // }, 2000)
+    refresh = async () => {
+        await init(query)
+        setTimeout(refresh, 2000)
+    }
 })
 
 onBeforeUnmount(() => {
-    clearInterval(refresh)
+    clearTimeout(refresh)
 })
 
 /* 查询表单 */

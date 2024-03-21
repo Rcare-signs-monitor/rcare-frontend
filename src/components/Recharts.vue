@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ECharts, EChartsOption } from 'echarts'
 import { init } from 'echarts'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 // 定义props
 interface Props {
@@ -34,11 +34,12 @@ const resizeChart = (): void => {
     myChart.resize()
 }
 
+var timer: any
 onMounted(() => {
     initChart()
     window.addEventListener('resize', resizeChart)
     if (props.refresh > 500) {
-        setInterval(() => {
+        timer = setInterval(() => {
             myChart?.setOption(props.option, true)
         }, props.refresh)
     } else {
@@ -47,6 +48,11 @@ onMounted(() => {
             myChart?.setOption(props.option, true)
         }, 500)
     }
+})
+
+onBeforeUnmount(() => {
+    clearInterval(timer)
+    myChart.dispose()
 })
 </script>
 

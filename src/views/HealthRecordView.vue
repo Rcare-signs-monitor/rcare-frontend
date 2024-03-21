@@ -82,7 +82,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Person } from '@/components/interface'
 import { useRoute, useRouter } from 'vue-router'
 import { getLineOption, getDoubleLineOption } from '@/components/getTestData'
-import { getSigns, getMembers } from '@/components/request'
+import { getSigns, getMembers, getSignsTable } from '@/components/request'
 
 import Echarts from '@/components/Recharts.vue'
 
@@ -117,15 +117,20 @@ const activeName2 = ref('data')
 const table = ref<{}>([])
 const backroom = ref<string>('')
 
-var refresh: string | number | NodeJS.Timeout | undefined
+var refresh: any
 onMounted(async () => {
     persons.value = await getMembers()
     activeName.value = persons.value[0].info.id
     backroom.value = persons.value[0].info.room
-    table.value = await getSigns(activeName.value, count.value)
-    // refresh = setInterval(async () => {
-    //     data.value = await getSigns(activeName.value, count.value)
-    // }, 2000)
+    table.value = await getSignsTable(activeName.value, count.value)
+    
+    refresh = async () => {
+        if (activeName2.value == 'data')
+            table.value = await getSignsTable(activeName.value, count.value)
+        else
+            persons.value = await getSigns(activeName.value, count.value)
+        setTimeout(refresh, 2000)
+    }
 
     const id = route.query.id as string
     if (id) {
@@ -134,13 +139,13 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-    clearInterval(refresh)
+    clearTimeout(refresh)
 })
 
 watch(
     () => activeName.value,
     async (newValue) => {
-        table.value = await getSigns(newValue, count.value)
+        table.value = await getSignsTable(newValue, count.value)
     }
 )
 

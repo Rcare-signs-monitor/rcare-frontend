@@ -66,7 +66,7 @@ const risky = (item:any) => {
         || (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60 ))
 }
 
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 // 修正组件间锚点跳转
 import { useRouter } from 'vue-router'
 import { getBeds } from './request';
@@ -99,8 +99,16 @@ const tableData = ref<{
     ]
 }>({});
 // 测试用 床位占用数据
+var refresh: any
 onMounted(async ()=>{
     tableData.value = await getBeds() 
+    refresh = async () => {
+        tableData.value = await getBeds() 
+        setTimeout(refresh, 2000)
+    }
+})
+onBeforeUnmount(() => {
+    clearTimeout(refresh)
 })
 
 </script>
