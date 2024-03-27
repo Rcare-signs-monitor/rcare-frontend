@@ -127,8 +127,10 @@ onMounted(async () => {
     refresh = async () => {
         if (activeName2.value == 'data')
             table.value = await getSignsTable(activeName.value, count.value)
-        else
-            persons.value = await getSigns(activeName.value, count.value)
+        else {
+            var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!
+            persons.value![person_idx].signs = await getSigns(activeName.value, count.value)
+        }
         setTimeout(refresh, 2000)
     }
 
@@ -146,6 +148,9 @@ watch(
     () => activeName.value,
     async (newValue) => {
         table.value = await getSignsTable(newValue, count.value)
+        
+        var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!
+        persons.value![person_idx].signs = await getSigns(activeName.value, count.value)
     }
 )
 

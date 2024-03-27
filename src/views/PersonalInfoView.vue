@@ -871,27 +871,17 @@ onMounted(async () => {
     option3.value = await nebula()
 })
 
-const init = async (param?: {
-    name?: string | null
-    gender?: number | null
-    ageBegin?: number | null
-    ageEnd?: number | null
-    room?: string | null
-}) => {
-    data.value = await getMembers(param)
-
-    data.value.forEach(async (item) => {
-        activeName.value[item.info.id] = 'first'
-        // memberSign.value[item.info.id] = await getSigns(item.info.id)
-    })
-}
 
 var refresh: any
 onMounted(async () => {
     query.room = route.query.room as string
     form.room = route.query.room as string
 
-    await init(query)
+    data.value = await getMembers(query)
+
+    data.value.forEach(async (item) => {
+        activeName.value[item.info.id] = 'first'
+    })
     const comment = route.query.id as string
     if (comment) {
         let target = document.getElementById(comment)
@@ -904,7 +894,7 @@ onMounted(async () => {
         })
     }
     refresh = async () => {
-        await init(query)
+        data.value = await getMembers(query)
         setTimeout(refresh, 2000)
     }
 })
@@ -940,7 +930,7 @@ var query = reactive({
 
 const handleClose = async () => {
     query = form
-    await init(query)
+    data.value = await getMembers(query)
     ElMessage({
         type: 'success',
         message: 'Update completed'
@@ -978,7 +968,7 @@ const handleClose2 = () => {
                     loading.value = false
                 }, 400)
                 await addMember(form2)
-                await init()
+                data.value = await getMembers()
                 ElMessage({
                     type: 'success',
                     message: 'Update completed'
@@ -1065,7 +1055,7 @@ const handleClose3 = () => {
                 setTimeout(async () => {
                     loading.value = false
                     await updateMember(form3)
-                    await init()
+                    data.value = await getMembers()
                     ElMessage({
                         type: 'success',
                         message: 'Update completed'
@@ -1110,7 +1100,7 @@ const deleteMember = async (id: number) => {
     })
         .then(async () => {
             await delMember(id)
-            await init()
+            data.value = await getMembers()
             ElMessage({
                 type: 'success',
                 message: 'Delete completed'
