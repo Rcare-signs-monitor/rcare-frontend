@@ -1,5 +1,15 @@
 import axios from 'axios'
-import type { Person, Result } from './interface'
+import type { Person, Result, Signs } from './interface'
+
+const sign_sort = (signs:Signs)=>{
+    if(!signs.heart || !signs.respire || !signs.dbp || !signs.sbp || !signs.ecg) return signs
+    signs.heart = signs.heart.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+    signs.respire = signs.respire.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+    signs.dbp = signs.dbp.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+    signs.sbp = signs.sbp.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+    signs.ecg = signs.ecg.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+    return signs
+}
 
 export const getBeds = async () => {
     const url = import.meta.env.VITE_API_BASE_URL + '/rooms'
@@ -20,7 +30,9 @@ export const getMembers = async (param?: {
     const response = (await axios.get(url, { params: param })).data as Result
     if (response.code === 1) {
         const data = response.data
-
+        data.forEach((item: Person)  => {
+            item.signs = sign_sort(item.signs)
+        })
         return data
     } else {
         throw Error('getMembers code: 0')
@@ -68,7 +80,8 @@ export const getSigns = async (id: number, num?: number) => {
     const response = (await axios.get(url)).data as Result
 
     if (response.code === 1) {
-        const data = response.data
+        let data = response.data as Signs
+        data = sign_sort(data)
         console.log(data)
         return data
     } else {
