@@ -30,32 +30,27 @@
                         <div style="font-size: 40px">欢迎使用 Rcare！</div>
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
-                                <RouterLink to="/paras">
-                                    <el-button :icon="Setting" size="large" plain> 参数配置 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain> 启动雷达 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain> 停止运行 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain> 开始运行 </el-button>
-                                </RouterLink>
+                                <!-- <RouterLink to="/paras"> -->
+                                    <el-button :icon="Setting" size="large" plain @click="initRadar"> 参数配置 </el-button>
+                                <!-- </RouterLink> -->
+                                <!-- <RouterLink to="/"> -->
+                                    <el-button :icon="Setting" size="large" plain @click="runRadar"> 采集数据 </el-button>
+                                    
+                                <!-- </RouterLink> -->
+                                <!-- <RouterLink to="/"> -->
+                                    <el-button :icon="Setting" size="large" plain @click="stopRadar"> 停止运行 </el-button>
+                                <!-- </RouterLink> -->
                             </el-row>
                             <el-row :gutter="80" justify="space-evenly">
-                                <RouterLink to="/">
-                                    <el-button :icon="Setting" size="large" plain> 采集数据 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
+                                <!-- <RouterLink to="/"> -->
                                     <el-button :icon="Setting" size="large" plain> 特征提取 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
+                                <!-- </RouterLink> -->
+                                <!-- <RouterLink to="/"> -->
                                     <el-button :icon="Setting" size="large" plain> 训练模型 </el-button>
-                                </RouterLink>
-                                <RouterLink to="/">
+                                <!-- </RouterLink> -->
+                                <!-- <RouterLink to="/"> -->
                                     <el-button :icon="Setting" size="large" plain> 模型测试 </el-button>
-                                </RouterLink>
+                                <!-- </RouterLink> -->
                             </el-row>
                         </div>
                     </el-card>
@@ -66,7 +61,7 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Monitor /></el-icon>
+                                <el-icon size="4em" color="rgba(255, 255, 255, .7)"><Monitor /></el-icon>
                             </el-col>
                             <el-col :span="8" style="text-align: right">监测区域数量<br />4</el-col>
                         </el-row>
@@ -80,7 +75,7 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><User /></el-icon>
+                                <el-icon size="4em" color="rgba(255, 255, 255, .7)"><User /></el-icon>
                             </el-col>
                             <el-col :span="8" style="text-align: right">成员数量<br />20</el-col>
                         </el-row>
@@ -94,7 +89,7 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Cloudy /></el-icon>
+                                <el-icon size="4em" color="rgba(255, 255, 255, .7)"><Cloudy /></el-icon>
                             </el-col>
                             <el-col :span="8" style="text-align: right">数据记录收集<br />200.4k</el-col>
                         </el-row>
@@ -108,7 +103,7 @@
                     <el-card>
                         <el-row>
                             <el-col :span="16">
-                                <el-icon size="4em" color="rgba(40, 40, 44, .7)"><Cpu /></el-icon>
+                                <el-icon size="4em" color="rgba(255, 255, 255, .7)"><Cpu /></el-icon>
                             </el-col>
                             <el-col :span="8" style="text-align: right">雷达运行状态<br />ON</el-col>
                         </el-row>
@@ -126,6 +121,7 @@
 <script setup lang="ts">
 import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
+import { initRadar, runRadar, stopRadar } from '@/components/request';
 
 const onBack = () => {
     notify('Back')

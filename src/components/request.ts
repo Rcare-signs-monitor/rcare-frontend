@@ -100,3 +100,39 @@ export const setParas = async (data: { para1: string; para2: string }) => {
     // console.log(response);
     return response
 }
+
+export const initRadar = async ()=>{
+    const url = `${import.meta.env.VITE_API_BASE_URL}/init`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('init radar succussfully');
+        
+    } else {
+        throw Error('failed to init radar(init.bat)')
+    }
+}
+
+export const runRadar = async ()=>{
+    const url = `${import.meta.env.VITE_API_BASE_URL}/collect`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('init radar succussfully');
+        
+    } else {
+        throw Error('failed to run radar(collect.bat)')
+    }
+}
+
+export const stopRadar = async ()=>{
+    const url = `${import.meta.env.VITE_API_BASE_URL}/stop`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('stop radar succussfully');
+        
+    } else {
+        throw Error('failed to stop radar(signal.bat)')
+    }
+}

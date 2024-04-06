@@ -215,7 +215,7 @@
                         <el-col :span="16">
                             <dv-border-box6 style="background-color: #091222; border-radius: 10px; padding: 10px">
                                 <el-row style="height: 110px; color: rgb(199 202 212)">
-                                    <el-col :span="11"
+                                    <el-col :span="13"
                                         ><dv-border-box5>
                                             <div style="display: flex; padding: 25px">
                                                 <div style="width: fit-content">
@@ -226,23 +226,23 @@
                                                 <div style="display: flex; flex-grow: 1"></div>
                                                 <!-- <div style="padding-right: 30px"></div> -->
                                                 <div style="padding: 0 20px 40px 0; display: flex; align-items: center; font-size: 20px">
-                                                    <span style="color: #a790f5">病历</span>
+                                                    <span style="color: #a790f5">患者病历</span>
                                                     <el-icon :size="22" style="margin-left: 7px; color: #148ac8"><Postcard /></el-icon>
                                                 </div>
                                             </div> </dv-border-box5
                                     ></el-col>
-                                    <el-col :span="13"
+                                    <el-col :span="11"
                                         ><dv-border-box5 :reverse="true">
                                             <div style="display: flex; padding: 25px">
                                                 <div style="padding: 40px 0 0 30px; display: flex; align-items: center; font-size: 20px">
                                                     <el-icon :size="20" style="margin-right: 7px; color: #148ac8"><Grid /></el-icon>
-                                                    <span style="color: #fc7cad">医嘱</span>
+                                                    <span style="color: #fc7cad">病情预测</span>
                                                 </div>
                                                 <div style="display: flex; flex-grow: 1"></div>
                                                 <div>
-                                                    <div><span style="color: #feb768">治疗方案：</span>{{ item.info.healing }}</div>
-                                                    <div><span style="color: #fea77b">联系方式：</span>{{ item.info.contact }}</div>
-                                                    <div><span style="color: #fd9095">注意事项：</span>{{ item.info.attention }}</div>
+                                                    <div><span style="color: #feb768">胸&#12288;痛：</span>{{ mapStatus(item.signs.status)[0] }}</div>
+                                                    <div><span style="color: #fea77b">心绞痛：</span>{{ mapStatus(item.signs.status)[1] }}</div>
+                                                    <div><span style="color: #fd9095">心脏病：</span>{{ mapStatus(item.signs.status)[2] }}</div>
                                                 </div>
                                             </div>
                                         </dv-border-box5></el-col
@@ -843,7 +843,7 @@
 import { ZoomIn, Sunrise, Stopwatch, Edit, Search, Warning, Grid, Postcard } from '@element-plus/icons-vue'
 import { ElDrawer, ElMessageBox, ElMessage } from 'element-plus'
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import type { BasePerson, Person, Result } from '../components/interface'
+import type { BasePerson, Person, Result, Status } from '../components/interface'
 import { getMembers, addMember, delMember, updateMember } from '@/components/request'
 import { angle_time, getLineOption, getDoubleLineOption, nebula } from '@/components/getTestData'
 import { BorderBox12 as DvBorderBox12 } from '@kjgl77/datav-vue3'
@@ -870,6 +870,28 @@ onMounted(async () => {
     option.value = await angle_time()
     option3.value = await nebula()
 })
+
+
+const table: { [key: string]: string[] } = {
+    "chestPain": [
+        '无显著不适或症状',     // asymptomatic 无症状
+        '非心绞痛型胸痛',       // non-anginal 非心绞痛型胸痛
+        '非典型心绞痛型胸痛',   // atypical angina 非典型心绞痛型胸痛
+        '典型心绞痛型胸痛',     // typical angina 典型心绞痛型胸痛
+    ],
+    "exerciseAngina": [
+        '无显著不适或症状',  // 无症状
+        '运动引起的心绞痛'   // 运动引起的心绞痛
+    ],
+    "heartDisease": [
+        '无显著不适或症状',   // 无症状
+        '冠状动脉心脏病'      // 心脏病
+    ]
+};
+const mapStatus = (status: Status)=>{
+    if (!status) return ['无症状', '无症状', '无症状']
+    return Object.entries(status).map(([key, value])=>table[key][value])
+}
 
 
 var refresh: any

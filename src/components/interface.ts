@@ -3,12 +3,19 @@ export interface Sign {
     data: number
 }
 
+export interface Status {
+    chestPain: number      // 胸痛
+    exerciseAngina: number // 心绞痛
+    heartDisease: number   // 心脏病
+}
+
 export interface Signs {
     heart: Sign[]
     respire: Sign[]
     sbp: Sign[]
     dbp: Sign[]
     ecg: Sign[]
+    status: Status
 }
 
 export interface BasePerson {
