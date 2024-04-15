@@ -31,25 +31,25 @@
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
                                 <!-- <RouterLink to="/paras"> -->
-                                    <el-button :icon="Setting" size="large" plain @click="initRadar"> 参数配置 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command1"> 参数配置 </el-button>
                                 <!-- </RouterLink> -->
                                 <!-- <RouterLink to="/"> -->
-                                    <el-button :icon="Setting" size="large" plain @click="runRadar"> 采集数据 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command2"> 采集数据 </el-button>
                                     
                                 <!-- </RouterLink> -->
                                 <!-- <RouterLink to="/"> -->
-                                    <el-button :icon="Setting" size="large" plain @click="stopRadar"> 停止运行 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command3"> 停止运行 </el-button>
                                 <!-- </RouterLink> -->
                             </el-row>
                             <el-row :gutter="80" justify="space-evenly">
                                 <!-- <RouterLink to="/"> -->
-                                    <el-button :icon="Setting" size="large" plain> 特征提取 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command4"> 特征提取 </el-button>
                                 <!-- </RouterLink> -->
                                 <!-- <RouterLink to="/"> -->
-                                    <el-button :icon="Setting" size="large" plain> 训练模型 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command5"> 训练模型 </el-button>
                                 <!-- </RouterLink> -->
                                 <!-- <RouterLink to="/"> -->
-                                    <el-button :icon="Setting" size="large" plain> 模型测试 </el-button>
+                                    <el-button :icon="Setting" size="large" plain @click="command6"> 模型测试 </el-button>
                                 <!-- </RouterLink> -->
                             </el-row>
                         </div>
@@ -121,7 +121,7 @@
 <script setup lang="ts">
 import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
-import { initRadar, runRadar, stopRadar } from '@/components/request';
+import { command1, command2, command3, command4, command5, command6 } from '@/components/request';
 
 const onBack = () => {
     notify('Back')

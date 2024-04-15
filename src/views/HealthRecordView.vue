@@ -62,7 +62,7 @@
                                     :refresh="1000"
                                 />
                             </el-tab-pane>
-                            <el-tab-pane label="拟合曲线" name="predict" style="display: flex; justify-content: center">
+                            <el-tab-pane label="拟合ECG" name="predict" style="display: flex; justify-content: center">
                                 <Echarts
                                     :option="getLineOption(item.signs.ecg, 'ecg',true, 'yellow')"
                                     :style="{ height: '60vh', width: '80vw' }"
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { Person } from '@/components/interface'
 import { useRoute, useRouter } from 'vue-router'
 import { getLineOption, getDoubleLineOption } from '@/components/getTestData'
@@ -131,17 +131,14 @@ onMounted(async () => {
             var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!
             persons.value![person_idx].signs = await getSigns(activeName.value, count.value)
         }
-        setTimeout(refresh, 2000)
+        if(route.path === '/health_record') setTimeout(refresh, 2000)
     }
+    refresh()
 
     const id = route.query.id as string
     if (id) {
         activeName.value = parseInt(id)
     }
-})
-
-onBeforeUnmount(() => {
-    clearTimeout(refresh)
 })
 
 watch(

@@ -26,9 +26,10 @@
         </el-header>
 
         <el-main>
-            <el-tabs v-model="activeName[item.info.id]" v-for="(item, idx) in data" :id="item.info.id" :key="idx">
+            <el-tabs v-model="activeName[item.info.id]" v-for="(item, idx) in data" :id="item.info.id" :key="idx" :class="{'margin-bottom': activeName[item.info.id]}">
                 <el-tab-pane label="生命体征信息" name="first">
-                    <el-row v-if="data.length !== 0" :gutter="24" class="main-page">
+                    <div v-if="data.length !== 0" >
+                    <el-row :gutter="24" class="main-page">
                         <el-col :span="8">
                             <!-- <el-card body-style="padding: 30px;"> -->
                             <dv-border-box12 style="padding: 30px">
@@ -145,26 +146,14 @@
                                                     <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
                                                     <span style="font-size: 18px">
                                                         ECG
-                                                        <el-tooltip content="参考值: 60-120次/分" placement="top">
-                                                            <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
-                                                                <Warning />
-                                                            </el-icon>
-                                                        </el-tooltip>
                                                     </span>
                                                 </span>
                                                 <span>
                                                     <span
                                                         style="font-size: 25px"
-                                                        :class="[
-                                                            item.signs.ecg &&
-                                                            (item.signs.ecg[item.signs.ecg.length - 1].data > 120 ||
-                                                                item.signs.ecg[item.signs.ecg.length - 1].data < 60)
-                                                                ? 'warning-font'
-                                                                : 'normal-font'
-                                                        ]"
                                                     >
                                                         {{ item.signs.ecg ? item.signs.ecg[item.signs.ecg.length - 1].data : 0 }} </span
-                                                    >bpm
+                                                    >
                                                 </span>
                                             </div>
                                         </dv-border-box9>
@@ -215,7 +204,7 @@
                         <el-col :span="16">
                             <dv-border-box6 style="background-color: #091222; border-radius: 10px; padding: 10px">
                                 <el-row style="height: 110px; color: rgb(199 202 212)">
-                                    <el-col :span="13"
+                                    <el-col :span="11"
                                         ><dv-border-box5>
                                             <div style="display: flex; padding: 25px">
                                                 <div style="width: fit-content">
@@ -231,7 +220,7 @@
                                                 </div>
                                             </div> </dv-border-box5
                                     ></el-col>
-                                    <el-col :span="11"
+                                    <el-col :span="13"
                                         ><dv-border-box5 :reverse="true">
                                             <div style="display: flex; padding: 25px">
                                                 <div style="padding: 40px 0 0 30px; display: flex; align-items: center; font-size: 20px">
@@ -240,9 +229,9 @@
                                                 </div>
                                                 <div style="display: flex; flex-grow: 1"></div>
                                                 <div>
-                                                    <div><span style="color: #feb768">胸&#12288;痛：</span>{{ mapStatus(item.signs.status)[0] }}</div>
-                                                    <div><span style="color: #fea77b">心绞痛：</span>{{ mapStatus(item.signs.status)[1] }}</div>
-                                                    <div><span style="color: #fd9095">心脏病：</span>{{ mapStatus(item.signs.status)[2] }}</div>
+                                                    <div><span style="color: #feb768">治疗手段：</span>{{ item.info.healing }}</div>
+                                                    <div><span style="color: #fea77b">联系方式：</span>{{ item.info.contact  }}</div>
+                                                    <div><span style="color: #fd9095">注意事项：</span>{{ item.info.attention }}</div>
                                                 </div>
                                             </div>
                                         </dv-border-box5></el-col
@@ -279,6 +268,39 @@
                             </dv-border-box6>
                         </el-col>
                     </el-row>
+                    <el-row :gutter="24" style="margin-top: -20px; font-size: 24px">
+                        <el-col :span="8">
+                            <dv-border-box10 :color="['#2E6099', '#fff']">
+                                <div class="card" style="display: flex; padding: 40px; height: 110px">
+                                    <div class="card-head" style="width: 30%;margin-right: 20px;">
+                                        胸&#12288;痛
+                                    </div>
+                                    <div class="card-body" :class="{ 'risk': item.signs.status && item.signs.status['chestPain']!=0 }">{{ mapStatus(item.signs.status)[0] }}</div>
+                                </div>
+                            </dv-border-box10>
+                        </el-col>
+                        <el-col :span="8">
+                            <dv-border-box10 :color="['#2E6099', '#fff']">
+                                <div class="card" style="display: flex;padding: 40px; height: 110px">
+                                    <div class="card-head" style="width: 30%;margin-right: 20px;">
+                                        心绞痛
+                                    </div>
+                                    <div class="card-body" :class="{ 'risk': item.signs.status && item.signs.status['exerciseAngina']!=0 }">{{ mapStatus(item.signs.status)[1] }}</div>
+                                </div>
+                            </dv-border-box10>
+                            </el-col>
+                        <el-col :span="8">
+                            <dv-border-box10 :color="['#2E6099', '#fff']">
+                                <div class="card" style="display: flex;padding: 40px; height: 110px">
+                                    <div class="card-head" style="width: 30%;margin-right: 20px;">
+                                        心脏病
+                                    </div>
+                                    <div class="card-body" :class="{ 'risk': item.signs.status && item.signs.status['heartDisease']!=0 }">{{ mapStatus(item.signs.status)[2] }}</div>
+                                </div>
+                            </dv-border-box10>  
+                        </el-col>
+                    </el-row>
+                    </div>
                     <el-empty v-else :image-size="200" />
                 </el-tab-pane>
                 <el-tab-pane label="中间过程" name="second">
@@ -842,7 +864,7 @@
 <script setup lang="ts">
 import { ZoomIn, Sunrise, Stopwatch, Edit, Search, Warning, Grid, Postcard } from '@element-plus/icons-vue'
 import { ElDrawer, ElMessageBox, ElMessage } from 'element-plus'
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { BasePerson, Person, Result, Status } from '../components/interface'
 import { getMembers, addMember, delMember, updateMember } from '@/components/request'
 import { angle_time, getLineOption, getDoubleLineOption, nebula } from '@/components/getTestData'
@@ -917,12 +939,10 @@ onMounted(async () => {
     }
     refresh = async () => {
         data.value = await getMembers(query)
-        setTimeout(refresh, 2000)
+        if(route.path === '/person_info') setTimeout(refresh, 2000)
     }
-})
-
-onBeforeUnmount(() => {
-    clearTimeout(refresh)
+    refresh()
+    
 })
 
 /* 查询表单 */
@@ -1190,5 +1210,24 @@ const deleteMember = async (id: number) => {
 #pane-second > div > div > div,
 #pane-second > div > div > div > div {
     background-color: #091222;
+}
+
+.risk {
+    font-size: 35px;
+    color: red;
+    animation: blink 0.8s infinite;
+}
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.card-head, .card-body, .card{
+    display: flex; justify-content: center; align-items: center; 
+}
+
+.margin-bottom{
+    margin-bottom: 80px;
 }
 </style>

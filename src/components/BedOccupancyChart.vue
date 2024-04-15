@@ -1,6 +1,6 @@
 <template>
     <el-row style="align-items: center; margin-bottom: -20px">
-        <span class="dot grey"></span> 空闲:9 <span class="dot blue"></span> 占用:14 <span class="dot red"></span> 风险:1
+        <span class="dot grey"></span> 空闲:{{ empty_num }} <span class="dot blue"></span> 占用:{{ occupied_num }} <span class="dot red"></span> 风险: {{ risk_num }}
         <div style="display: flex; flex-grow: 1"></div>
         <dv-decoration7 style="width: 200px; height: 30px">
             <div font-300 style="margin: 0 10px">病床占用一览</div>
@@ -59,6 +59,7 @@
 <script lang="ts" setup>
 // 红 or 蓝？
 const risky = (item:any) => {
+    if (!item) return false
     return (item.heart && (item.heart.data > 120 || item.heart.data < 60 ))
         || (item.respire && (item.respire.data < 12 || item.respire.data > 27))
         || (item.sbp && (item.sbp.data < 80 || item.sbp.data > 120))
@@ -66,9 +67,34 @@ const risky = (item:any) => {
         || (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60 ))
 }
 
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+const risk_num = computed(()=>{
+    var count = 0;
+    Object.keys(tableData.value).forEach(room => {
+        tableData.value[room].forEach(bed => {
+            count += risky(bed.signs)
+        })
+    })
+    return count;
+})
+
+const occupied_num = computed(()=>{
+    var count = 0;
+    Object.keys(tableData.value).forEach(room => {
+        tableData.value[room].forEach(bed => {
+            count += bed.id ? 1: 0
+        })
+    })
+    console.log(tableData.value)
+    return count - risk_num.value
+})
+
+const empty_num = computed(()=>{
+    return 24 - occupied_num.value - risk_num.value
+})
+
+import { computed, onMounted, ref } from 'vue';
 // 修正组件间锚点跳转
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getBeds } from './request';
 const router = useRouter()
 const jump = (room:string, id: number) => {
@@ -98,17 +124,17 @@ const tableData = ref<{
         }
     ]
 }>({});
+
 // 测试用 床位占用数据
 var refresh: any
+const route = useRoute()
 onMounted(async ()=>{
     tableData.value = await getBeds() 
     refresh = async () => {
         tableData.value = await getBeds() 
-        setTimeout(refresh, 2000)
+        if(route.path === '/') setTimeout(refresh, 2000)
     }
-})
-onBeforeUnmount(() => {
-    clearTimeout(refresh)
+    refresh()
 })
 
 </script>

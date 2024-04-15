@@ -1,20 +1,43 @@
 import axios from 'axios'
-import type { Person, Result, Signs } from './interface'
+import type { Person, Result, Sign, Signs } from './interface'
 
-const sign_sort = (signs:Signs)=>{
-    if(!signs.heart || !signs.respire || !signs.dbp || !signs.sbp || !signs.ecg) return signs
-    signs.heart = signs.heart.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
-    signs.respire = signs.respire.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
-    signs.dbp = signs.dbp.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
-    signs.sbp = signs.sbp.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
-    signs.ecg = signs.ecg.sort((a,b)=>new Date(a.time)>new Date(b.time)?1:-1)
+const sign_sort = (signs: Signs) => {
+    if (!signs.heart || !signs.respire || !signs.dbp || !signs.sbp || !signs.ecg) return signs
+    signs.heart = signs.heart.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+    signs.respire = signs.respire.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+    signs.dbp = signs.dbp.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+    signs.sbp = signs.sbp.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+    signs.ecg = signs.ecg.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+
+    signs.respire.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
+    signs.heart.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
+    signs.dbp.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
+    signs.sbp.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
+    signs.ecg.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
     return signs
 }
 
 export const getBeds = async () => {
     const url = import.meta.env.VITE_API_BASE_URL + '/rooms'
     const response = (await axios.get(url)).data as Result
-    return response.data
+
+    if (response.code === 1) {
+        console.log(response.data)
+        const data = response.data
+        Object.keys(data).forEach(room => {
+            data[room].forEach((bed: any)=>{
+                if (!bed.signs || !bed.signs.heart || !bed.signs.respire || !bed.signs.dbp || !bed.signs.sbp || !bed.signs.ecg) return bed.signs
+                bed.signs.heart.data = parseFloat(bed.signs.heart.data.toFixed(2))
+                bed.signs.respire.data = parseFloat(bed.signs.respire.data.toFixed(2))
+                bed.signs.ecg.data = parseFloat(bed.signs.ecg.data.toFixed(2))
+                bed.signs.dbp.data = parseFloat(bed.signs.dbp.data.toFixed(2))
+                bed.signs.sbp.data = parseFloat(bed.signs.sbp.data.toFixed(2))
+            })
+        })
+        return data
+    } else {
+        throw Error('getSigns code: 0')
+    }
 }
 
 export const getMembers = async (param?: {
@@ -30,7 +53,7 @@ export const getMembers = async (param?: {
     const response = (await axios.get(url, { params: param })).data as Result
     if (response.code === 1) {
         const data = response.data
-        data.forEach((item: Person)  => {
+        data.forEach((item: Person) => {
             item.signs = sign_sort(item.signs)
         })
         return data
@@ -61,13 +84,12 @@ export const getSignsTable = async (id: number, num?: number) => {
 
     if (response.code === 1) {
         const data = response.data
-        data.forEach((element: { dbp: number; ecg: number; heart: number; respire: number; sbp: number }) => {
+        data.forEach((element: { dbp: number; heart: number; respire: number; sbp: number }) => {
             element.dbp = parseFloat(element.dbp.toFixed(2))
-            element.ecg = parseFloat(element.ecg.toFixed(2))
             element.heart = parseFloat(element.heart.toFixed(2))
             element.respire = parseFloat(element.respire.toFixed(2))
             element.sbp = parseFloat(element.sbp.toFixed(2))
-        });
+        })
         return data
     } else {
         throw Error('getSigns code: 0')
@@ -82,7 +104,6 @@ export const getSigns = async (id: number, num?: number) => {
     if (response.code === 1) {
         let data = response.data as Signs
         data = sign_sort(data)
-        console.log(data)
         return data
     } else {
         throw Error('getSigns code: 0')
@@ -101,38 +122,139 @@ export const setParas = async (data: { para1: string; para2: string }) => {
     return response
 }
 
-export const initRadar = async ()=>{
+
+/*
+硬件控制 ver1
+*/
+export const initRadar = async () => {
     const url = `${import.meta.env.VITE_API_BASE_URL}/init`
     const response = (await axios.get(url)).data as Result
 
     if (response.code === 1) {
-        console.log('init radar succussfully');
-        
+        console.log('init radar succussfully')
     } else {
         throw Error('failed to init radar(init.bat)')
     }
 }
 
-export const runRadar = async ()=>{
+export const runRadar = async () => {
     const url = `${import.meta.env.VITE_API_BASE_URL}/collect`
     const response = (await axios.get(url)).data as Result
 
     if (response.code === 1) {
-        console.log('init radar succussfully');
-        
+        console.log('init radar succussfully')
     } else {
         throw Error('failed to run radar(collect.bat)')
     }
 }
 
-export const stopRadar = async ()=>{
+export const stopRadar = async () => {
     const url = `${import.meta.env.VITE_API_BASE_URL}/stop`
     const response = (await axios.get(url)).data as Result
 
     if (response.code === 1) {
-        console.log('stop radar succussfully');
-        
+        console.log('stop radar succussfully')
     } else {
         throw Error('failed to stop radar(signal.bat)')
+    }
+}
+
+/*
+呼叫警报
+*/
+export const getCalling = async () => {
+    // TODO：现在只检测 id = 3 的病患是否呼救
+    const url = `${import.meta.env.VITE_API_BASE_URL}/calling/3`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        return response.data == 1
+    } else {
+        throw Error('get isCalling code: 0')
+    }
+}
+
+export const cancelCalling = async () => {
+    // TODO: 现在只实现 id = 3 的病患
+    const url = `${import.meta.env.VITE_API_BASE_URL}/calling`
+    const response = (await axios.post(url, {
+        "id": 3,
+        "data": 0
+    })).data as Result
+
+    if (response.code === 1) {
+        return response.data
+    } else {
+        throw Error('post isCalling code: 0')
+    }
+}
+
+
+/*
+硬件控制ver2
+*/
+export const command1 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command1`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command1 succussfully')
+    } else {
+        throw Error('failed to run command1')
+    }
+}
+
+export const command2 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command2`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command2 succussfully')
+    } else {
+        throw Error('failed to run command2')
+    }
+}
+
+export const command3 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command3`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command3 succussfully')
+    } else {
+        throw Error('failed to run command3')
+    }
+}
+
+export const command4 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command4`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command4 succussfully')
+    } else {
+        throw Error('failed to run command4')
+    }
+}
+
+export const command5 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command5`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command5 succussfully')
+    } else {
+        throw Error('failed to run command5')
+    }
+}
+
+export const command6 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command6`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command6 succussfully')
+    } else {
+        throw Error('failed to run command6')
     }
 }
