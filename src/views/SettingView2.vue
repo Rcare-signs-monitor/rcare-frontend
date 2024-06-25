@@ -30,10 +30,10 @@
                         <div style="font-size: 40px">欢迎使用 VitalWave！</div>
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
-                                <el-button :icon="Setting" size="large" plain @click="command1"> 数据采集 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command2"> 数据分析 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command3"> 停止采集 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command4"> 停止分析 </el-button>
+                                <el-button :icon="Setting" size="large" plain @click="command5"> 数据采集 </el-button>
+                                <el-button :icon="Setting" size="large" plain @click="command6"> 数据分析 </el-button>
+                                <el-button :icon="Setting" size="large" plain @click="command7"> 停止采集 </el-button>
+                                <el-button :icon="Setting" size="large" plain @click="command8"> 停止分析 </el-button>
                             </el-row>
                             <el-row :gutter="80" justify="space-evenly">
                             </el-row>
@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
-import { command1, command2, command3, command4 } from '@/components/request'
+import { command5, command6, command7, command8 } from '@/components/request'
 
 const onBack = () => {
     notify('Back')

@@ -9,11 +9,21 @@ const sign_sort = (signs: Signs) => {
     signs.sbp = signs.sbp.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
     signs.ecg = signs.ecg.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
 
-    signs.respire.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
-    signs.heart.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
-    signs.dbp.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
-    signs.sbp.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
-    signs.ecg.forEach((e: Sign) => {e.data = parseFloat(e.data.toFixed(2))})
+    signs.respire.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
+    signs.heart.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
+    signs.dbp.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
+    signs.sbp.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
+    signs.ecg.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
     return signs
 }
 
@@ -24,8 +34,8 @@ export const getBeds = async () => {
     if (response.code === 1) {
         console.log(response.data)
         const data = response.data
-        Object.keys(data).forEach(room => {
-            data[room].forEach((bed: any)=>{
+        Object.keys(data).forEach((room) => {
+            data[room].forEach((bed: any) => {
                 if (!bed.signs || !bed.signs.heart || !bed.signs.respire || !bed.signs.dbp || !bed.signs.sbp || !bed.signs.ecg) return bed.signs
                 bed.signs.heart.data = parseFloat(bed.signs.heart.data.toFixed(2))
                 bed.signs.respire.data = parseFloat(bed.signs.respire.data.toFixed(2))
@@ -122,7 +132,6 @@ export const setParas = async (data: { para1: string; para2: string }) => {
     return response
 }
 
-
 /*
 硬件控制 ver1
 */
@@ -177,10 +186,12 @@ export const getCalling = async () => {
 export const cancelCalling = async () => {
     // TODO: 现在只实现 id = 3 的病患
     const url = `${import.meta.env.VITE_API_BASE_URL}/calling`
-    const response = (await axios.post(url, {
-        "id": 3,
-        "data": 0
-    })).data as Result
+    const response = (
+        await axios.post(url, {
+            id: 3,
+            data: 0
+        })
+    ).data as Result
 
     if (response.code === 1) {
         return response.data
@@ -188,7 +199,6 @@ export const cancelCalling = async () => {
         throw Error('post isCalling code: 0')
     }
 }
-
 
 /*
 硬件控制ver2
@@ -256,5 +266,27 @@ export const command6 = async () => {
         console.log('command6 succussfully')
     } else {
         throw Error('failed to run command6')
+    }
+}
+
+export const command7 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command7`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command7 succussfully')
+    } else {
+        throw Error('failed to run command7')
+    }
+}
+
+export const command8 = async () => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/command8`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        console.log('command8 succussfully')
+    } else {
+        throw Error('failed to run command8')
     }
 }

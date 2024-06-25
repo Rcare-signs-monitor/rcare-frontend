@@ -1,12 +1,12 @@
 export interface Sign {
-    time: string,
+    time: string
     data: number
 }
 
 export interface Status {
-    chestPain: number      // 胸痛
+    chestPain: number // 胸痛
     exerciseAngina: number // 心绞痛
-    heartDisease: number   // 心脏病
+    heartDisease: number // 心脏病
 }
 
 export interface Signs {
@@ -37,7 +37,7 @@ export interface BasePerson {
 }
 
 export interface Person {
-    info: BasePerson,
+    info: BasePerson
     signs: Signs
 }
 

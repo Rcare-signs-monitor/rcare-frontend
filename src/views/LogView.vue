@@ -13,7 +13,11 @@
         <el-main style="background-color: #24292f; overflow: hidden">
             <div style="position: relative">
                 <MatrixBackground style="border-radius: 10px; opacity: 0.6; position: absolute; z-index: 1; width: 100%"></MatrixBackground>
-                <code v-html="makeColorful(log)" style="margin: 30px; position: absolute; z-index: 2; white-space: pre-wrap; color: #dfdcdc; font-family: 'Helvetica Neue'"> </code>
+                <code
+                    v-html="makeColorful(log)"
+                    style="margin: 30px; position: absolute; z-index: 2; white-space: pre-wrap; color: #dfdcdc; font-family: 'Helvetica Neue'"
+                >
+                </code>
             </div>
         </el-main>
     </el-container>

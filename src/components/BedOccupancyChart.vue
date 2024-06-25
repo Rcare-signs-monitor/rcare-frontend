@@ -1,6 +1,7 @@
 <template>
     <el-row style="align-items: center; margin-bottom: -20px">
-        <span class="dot grey"></span> 空闲:{{ empty_num }} <span class="dot blue"></span> 占用:{{ occupied_num }} <span class="dot red"></span> 风险: {{ risk_num }}
+        <span class="dot grey"></span> 空闲:{{ empty_num }} <span class="dot blue"></span> 占用:{{ occupied_num }} <span class="dot red"></span> 风险:
+        {{ risk_num }}
         <div style="display: flex; flex-grow: 1"></div>
         <dv-decoration7 style="width: 200px; height: 30px">
             <div font-300 style="margin: 0 10px">病床占用一览</div>
@@ -14,7 +15,7 @@
                 <el-row style="padding: 20px; padding-top: 60px">
                     <el-col :span="8" v-for="(item, idx2) in items" :key="idx2">
                         <dv-border-box12 style="overflow: hidden" v-if="item.id">
-                            <el-card style="margin: 10px" @click="jump(item.room ,item.id)">
+                            <el-card style="margin: 10px" @click="jump(item.room, item.id)">
                                 <template #footer>
                                     <div :class="risky(item.signs) ? 'risk' : 'normal'">{{ idx1 }} - {{ item.bed }}</div>
                                 </template>
@@ -26,7 +27,9 @@
                                         <el-col style="height: 12px">姓名：{{ item.name }}</el-col>
                                         <el-col style="height: 12px">心率：{{ item.signs.heart?.data }} </el-col>
                                         <el-col style="height: 12px">呼吸：{{ item.signs.respire?.data }} </el-col>
-                                        <el-col style="height: 12px">血压：{{ item.signs.sbp?.data.toFixed(0) }} / {{ item.signs.dbp?.data.toFixed(0) }} </el-col>
+                                        <el-col style="height: 12px"
+                                            >血压：{{ item.signs.sbp?.data.toFixed(0) }} / {{ item.signs.dbp?.data.toFixed(0) }}
+                                        </el-col>
                                     </el-row>
                                 </div>
                             </el-card>
@@ -34,7 +37,9 @@
                         <dv-border-box12 style="overflow: hidden" v-else>
                             <el-card style="margin: 10px">
                                 <template #footer>
-                                    <div style="background-color: #a0a0a0; padding: 5px; text-align: center; font-weight: bolder">{{ idx1 }} - {{ item.bed }}</div>
+                                    <div style="background-color: #a0a0a0; padding: 5px; text-align: center; font-weight: bolder">
+                                        {{ idx1 }} - {{ item.bed }}
+                                    </div>
                                 </template>
                                 <div style="display: flex; align-items: center">
                                     <div class="bed-icon" style="background-color: #a0a0a0">
@@ -58,46 +63,48 @@
 
 <script lang="ts" setup>
 // 红 or 蓝？
-const risky = (item:any) => {
+const risky = (item: any) => {
     if (!item) return false
-    return (item.heart && (item.heart.data > 120 || item.heart.data < 60 ))
-        || (item.respire && (item.respire.data < 12 || item.respire.data > 27))
-        || (item.sbp && (item.sbp.data < 80 || item.sbp.data > 120))
-        || (item.dbp && (item.dbp.data < 120 || item.dbp.data > 160))
-        || (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60 ))
+    return (
+        (item.heart && (item.heart.data > 120 || item.heart.data < 60)) ||
+        (item.respire && (item.respire.data < 12 || item.respire.data > 27)) ||
+        (item.sbp && (item.sbp.data < 80 || item.sbp.data > 120)) ||
+        (item.dbp && (item.dbp.data < 120 || item.dbp.data > 160)) ||
+        (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60))
+    )
 }
 
-const risk_num = computed(()=>{
-    var count = 0;
-    Object.keys(tableData.value).forEach(room => {
-        tableData.value[room].forEach(bed => {
+const risk_num = computed(() => {
+    var count = 0
+    Object.keys(tableData.value).forEach((room) => {
+        tableData.value[room].forEach((bed) => {
             count += risky(bed.signs)
         })
     })
-    return count;
+    return count
 })
 
-const occupied_num = computed(()=>{
-    var count = 0;
-    Object.keys(tableData.value).forEach(room => {
-        tableData.value[room].forEach(bed => {
-            count += bed.id ? 1: 0
+const occupied_num = computed(() => {
+    var count = 0
+    Object.keys(tableData.value).forEach((room) => {
+        tableData.value[room].forEach((bed) => {
+            count += bed.id ? 1 : 0
         })
     })
     console.log(tableData.value)
     return count - risk_num.value
 })
 
-const empty_num = computed(()=>{
+const empty_num = computed(() => {
     return 24 - occupied_num.value - risk_num.value
 })
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue'
 // 修正组件间锚点跳转
 import { useRoute, useRouter } from 'vue-router'
-import { getBeds } from './request';
+import { getBeds } from './request'
 const router = useRouter()
-const jump = (room:string, id: number) => {
+const jump = (room: string, id: number) => {
     router.push({
         path: `/person_info`,
         query: {
@@ -110,33 +117,32 @@ const jump = (room:string, id: number) => {
 const tableData = ref<{
     [roomid: string]: [
         {
-            room: string,
-            bed: string,
-            id: number | null,
-            name: string | null,
+            room: string
+            bed: string
+            id: number | null
+            name: string | null
             signs: {
-                heart: { time: string, data: number },
-                respire: { time: string, data: number },
-                sbp: { time: string, data: number },
-                dbp: { time: string, data: number },
-                ecg: { time: string, data: number },
+                heart: { time: string; data: number }
+                respire: { time: string; data: number }
+                sbp: { time: string; data: number }
+                dbp: { time: string; data: number }
+                ecg: { time: string; data: number }
             }
         }
     ]
-}>({});
+}>({})
 
 // 测试用 床位占用数据
 var refresh: any
 const route = useRoute()
-onMounted(async ()=>{
-    tableData.value = await getBeds() 
+onMounted(async () => {
+    tableData.value = await getBeds()
     refresh = async () => {
-        tableData.value = await getBeds() 
-        if(route.path === '/') setTimeout(refresh, 2000)
+        tableData.value = await getBeds()
+        if (route.path === '/') setTimeout(refresh, 2000)
     }
     refresh()
 })
-
 </script>
 
 <style scoped>

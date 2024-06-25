@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Menu as IconMenu, PieChart, Setting, ArrowRightBold, ArrowLeftBold, List, Operation, LocationFilled } from '@element-plus/icons-vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { cancelCalling, getCalling } from './components/request';
+import { cancelCalling, getCalling } from './components/request'
 
 const isCollapse = ref(true)
 const activeIndex = ref('1')
@@ -18,9 +18,9 @@ watch(
     }
 )
 
-const isCalling = ref(false); // 只检测 id = 3 的病患
+const isCalling = ref(false) // 只检测 id = 3 的病患
 var refresh_global: any
-onMounted(async ()=>{
+onMounted(async () => {
     isCalling.value = await getCalling()
     refresh_global = async () => {
         isCalling.value = await getCalling()
@@ -32,28 +32,57 @@ onBeforeUnmount(() => {
     clearTimeout(refresh_global)
 })
 
-const confirm = async ()=>{
-    isCalling.value = (await cancelCalling())
+const confirm = async () => {
+    isCalling.value = await cancelCalling()
 }
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const handleLeftClick = () => {
+    router.push('/settings')
+}
+const handleRightClick = () => {
+    router.push('/settings2')
+}
+
+const name = ref<string>(import.meta.env.WARNING_PATIENT_NAME)
 </script>
 
 <template>
     <el-dialog v-model="isCalling" width="700" height="500" align-center center :show-close="false">
         <template #header>
             <div class="my-header">
-                <img src="./assets/warning.png" style="width: 100%"/>
+                <img src="./assets/warning.png" style="width: 100%" />
             </div>
         </template>
-        <dv-border-box9 :color="['#B00302','#E18A3B']">
-            <div style="height: 220px; margin-top: -10px; font-size: 50px; display: flex; align-items: center; justify-content: center; text-align: center; color: rgb(255 72 74)">
-                101病房 1号病床 <br/> 患者 Alice 发起呼叫
+        <dv-border-box9 :color="['#B00302', '#E18A3B']">
+            <div
+                style="
+                    height: 220px;
+                    margin-top: -10px;
+                    font-size: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    color: rgb(255 72 74);
+                "
+            >
+                101病房 1号病床 <br />
+                患者 {{ name }} 发起呼叫
             </div>
         </dv-border-box9>
-        
+
         <template #footer>
             <div class="dialog-footer">
-                <dv-button @click="confirm" border="Border3" color="#c8161d" font-color="#e18a3b" style="height: 60px; display: flex; align-items: center; justify-content: center; ">
-                    <span style="font-size: 40px;">确认</span>
+                <dv-button
+                    @click="confirm"
+                    border="Border3"
+                    color="#c8161d"
+                    font-color="#e18a3b"
+                    style="height: 60px; display: flex; align-items: center; justify-content: center"
+                >
+                    <span style="font-size: 40px">确认</span>
                 </dv-button>
             </div>
         </template>
@@ -127,7 +156,7 @@ const confirm = async ()=>{
                             </el-icon>
                             <template #title>{{ isCollapse ? '展开' : '收起' }}</template>
                         </el-menu-item>
-                        <RouterLink to="/settings">
+                        <RouterLink to="/settings" @click="handleLeftClick" @contextmenu.prevent="handleRightClick">
                             <el-menu-item index="6">
                                 <el-icon size="30" style="margin-right: 20px"><Operation /></el-icon>
                                 <template #title>设置</template>
@@ -140,7 +169,7 @@ const confirm = async ()=>{
 
         <el-container>
             <el-main>
-                <RouterView :key="$route.fullPath"/>
+                <RouterView :key="$route.fullPath" />
             </el-main>
         </el-container>
     </el-container>

@@ -4,6 +4,7 @@ import HealthRecordView from '../views/HealthRecordView.vue'
 import PersonalInfoView from '../views/PersonalInfoView.vue'
 import ParaConfigView from '../views/ParaConfigView.vue'
 import SettingView from '../views/SettingView.vue'
+import SettingView2 from '../views/SettingView2.vue'
 import LogView from '../views/LogView.vue'
 
 const router = createRouter({
@@ -38,6 +39,11 @@ const router = createRouter({
             path: '/settings',
             name: 'settings',
             component: SettingView
+        },
+        {
+            path: '/settings2', // 第二套接口，右键进入
+            name: 'settings2',
+            component: SettingView2
         }
     ]
 })

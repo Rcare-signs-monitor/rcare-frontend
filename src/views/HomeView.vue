@@ -13,7 +13,7 @@
                     <div class="box"><span style=""></span></div>
                     <div class="box2" style="transform: skew(45deg)"></div>
                     <div class="title">
-                        <div style="font-size: 20px; margin-bottom: 5px">非接触式生命体征监测系统</div>
+                        <div style="font-size: 20px; margin-bottom: 5px">智慧医疗系统</div>
                         <dv-decoration6 style="width: 270px; height: 7px" />
                     </div>
                     <div class="box2" style="transform: skew(-45deg)"></div>
@@ -24,7 +24,7 @@
 
         <el-main>
             <dv-border-box13 style="margin-top: 10px" backgroundColor="#060C1E">
-                <div style="padding: 20px; height: 86vh;">
+                <div style="padding: 20px; height: 86vh">
                     <BedOccupancyChart></BedOccupancyChart>
                 </div>
             </dv-border-box13>

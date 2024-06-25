@@ -69,6 +69,9 @@
                                     :refresh="1000"
                                 />
                             </el-tab-pane>
+                            <el-tab-pane label="健康档案" name="archive" style="font-size: 20px; color: #b5bbc0; margin: 0 50px;" :lazy="true">
+                                <LlmReport :item="item"></LlmReport>
+                            </el-tab-pane>
                         </el-tabs>
                     </div>
                 </el-tab-pane>
@@ -85,6 +88,7 @@ import { getLineOption, getDoubleLineOption } from '@/components/getTestData'
 import { getSigns, getMembers, getSignsTable } from '@/components/request'
 
 import Echarts from '@/components/Recharts.vue'
+import LlmReport from '@/components/LlmReport.vue'
 
 // 展示条数
 const count = ref(50)
@@ -170,6 +174,9 @@ const onBack = () => {
     box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.05);
 }
 
+.el-row.compact{
+    margin-bottom: 0;
+}
 .el-row {
     margin-bottom: 20px;
 }
