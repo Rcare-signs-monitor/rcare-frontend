@@ -1,0 +1,67 @@
+.demo-tabs > .el-tabs__content {
+    padding: 32px;
+    color: #6b778c;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.el-card.is-always-shadow {
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.05);
+}
+
+.el-row {
+    margin-bottom: 20px;
+}
+.el-row:last-child {
+    margin-bottom: 0;
+}
+.el-col {
+    border-radius: 4px;
+}
+
+.el-button--large {
+    height: 60px;
+    font-size: large;
+}
+
+td.el-table__cell {
+    border: 2px solid #2667ab;
+}
+
+/* 里面的 */
+.el-tabs--border-card > .el-tabs__content,
+#pane-3 > div > div > div.el-tabs__content {
+    background-image: linear-gradient(rgba(9, 18, 34, 0.9), rgba(9, 18, 34, 1)), url('../assets/background.jpg');
+    background-color: #091222;
+    padding: 10px;
+}
+
+/* 外面的 */
+#app > section > section > main > section > main > div > div.el-tabs__content {
+    background-color: #141414;
+}
+
+div.el-tabs__content,
+div > div > div.el-tabs__header > div > div {
+    /* border: 1px solid #546db9; */
+    background-color: #091222;
+}
+
+.el-table {
+    --el-table-header-bg-color: #091222;
+    --el-fill-color-lighter: #151c31;
+    --el-bg-color: #0d1328;
+    --el-table-border: 0px;
+    --el-table-border-color: #2667ab;
+    --el-table-tr-bg-color: #0b11258c;
+}
+
+.el-table thead {
+    color: #ffffff;
+}
+
+.dv-border-box-1 .dv-border {
+    position: absolute;
+    display: block;
+    z-index: 10;
+}

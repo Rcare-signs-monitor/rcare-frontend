@@ -1,0 +1,76 @@
+.el-main {
+    margin-top: 20px;
+}
+
+.main-page > .is-guttered {
+    padding-bottom: 24px;
+}
+
+.el-card {
+    border: 1px solid #546db9;
+}
+.el-card.is-always-shadow {
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.05);
+}
+
+.el-row {
+    margin-bottom: 10px;
+}
+.el-row:last-child {
+    margin-bottom: 0;
+}
+.el-col {
+    border-radius: 4px;
+}
+
+.sign-icon {
+    height: 40px;
+    width: 40px;
+}
+
+.el-empty {
+    --el-empty-padding: 20% 0;
+}
+
+.warning-font {
+    color: red;
+}
+
+.normal-font {
+    color: white;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+
+#pane-second > div > div > div,
+#pane-second > div > div > div > div {
+    background-color: #091222;
+}
+
+.risk {
+    font-size: 35px;
+    color: red;
+    animation: blink 0.8s infinite;
+}
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.card-head,
+.card-body,
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.margin-bottom {
+    margin-bottom: 80px;
+}
