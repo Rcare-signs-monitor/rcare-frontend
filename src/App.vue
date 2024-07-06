@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { 
     BorderBox10 as DvBorderBox10, 
-    BorderBox9 as DvBorderBox9 
+    BorderBox9 as DvBorderBox9,
+    Button as DvButton
 } from '@kjgl77/datav-vue3'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Menu as IconMenu, PieChart, Setting, ArrowRightBold, ArrowLeftBold, List, Operation, LocationFilled } from '@element-plus/icons-vue'

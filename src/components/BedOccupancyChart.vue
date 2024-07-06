@@ -17,18 +17,18 @@
                         <dv-border-box12 style="overflow: hidden" v-if="item.id">
                             <el-card style="margin: 10px" @click="jump(item.room, item.id)">
                                 <template #footer>
-                                    <div :class="risky(item.signs) ? 'risk' : 'normal'">{{ idx1 }} - {{ item.bed }}</div>
+                                    <div :class="risky(item) ? 'risk' : 'normal'">{{ idx1 }} - {{ item.bed }}</div>
                                 </template>
-                                <div style="display: flex; align-items: center" :class="risky(item.signs) ? 'risk3' : ''">
-                                    <div :style="risky(item.signs) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
+                                <div style="display: flex; align-items: center" :class="risky(item) ? 'risk3' : ''">
+                                    <div :style="risky(item) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
                                         <img height="40px" width="40px" src="../assets/床位 患者.svg" />
                                     </div>
                                     <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
                                         <el-col style="height: 12px">姓名：{{ item.name }}</el-col>
-                                        <el-col style="height: 12px">心率：{{ item.signs.heart?.data }} </el-col>
-                                        <el-col style="height: 12px">呼吸：{{ item.signs.respire?.data }} </el-col>
+                                        <el-col style="height: 12px">心率：{{ item.heart }} </el-col>
+                                        <el-col style="height: 12px">呼吸：{{ item.respire }} </el-col>
                                         <el-col style="height: 12px"
-                                            >血压：{{ item.signs.sbp?.data.toFixed(0) }} / {{ item.signs.dbp?.data.toFixed(0) }}
+                                            >血压：{{ item.sbp.toFixed(0) }} / {{ item.dbp.toFixed(0) }}
                                         </el-col>
                                     </el-row>
                                 </div>
@@ -67,11 +67,10 @@ import { BorderBox11 as DvBorderBox11, BorderBox12 as DvBorderBox12 } from '@kjg
 const risky = (item: any) => {
     if (!item) return false
     return (
-        (item.heart && (item.heart.data > 120 || item.heart.data < 60)) ||
-        (item.respire && (item.respire.data < 12 || item.respire.data > 27)) ||
-        (item.sbp && (item.sbp.data < 80 || item.sbp.data > 120)) ||
-        (item.dbp && (item.dbp.data < 120 || item.dbp.data > 160)) ||
-        (item.ecg && (item.ecg.data > 120 || item.ecg.data < 60))
+        (item.heart && (item.heart > 120 || item.heart < 60)) ||
+        (item.respire && (item.respire < 12 || item.respire > 27)) ||
+        (item.sbp && (item.sbp < 80 || item.sbp > 120)) ||
+        (item.dbp && (item.dbp < 120 || item.dbp > 160))
     )
 }
 
@@ -79,7 +78,7 @@ const risk_num = computed(() => {
     var count = 0
     Object.keys(tableData.value).forEach((room) => {
         tableData.value[room].forEach((bed) => {
-            count += risky(bed.signs)
+            count += risky(bed)
         })
     })
     return count
@@ -105,7 +104,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getBeds } from './request'
 const router = useRouter()
-const jump = (room: string, id: number) => {
+const jump = (room: string, id: number|null) => {
+    if (!id) return
     router.push({
         path: `/person_info`,
         query: {
@@ -122,13 +122,10 @@ const tableData = ref<{
             bed: string
             id: number | null
             name: string | null
-            signs: {
-                heart: { time: string; data: number }
-                respire: { time: string; data: number }
-                sbp: { time: string; data: number }
-                dbp: { time: string; data: number }
-                ecg: { time: string; data: number }
-            }
+            heart: number
+            respire: number
+            sbp: number
+            dbp: number
         }
     ]
 }>({})

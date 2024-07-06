@@ -156,10 +156,6 @@ let timer: string | number | NodeJS.Timeout | undefined
 const loading = ref(false)
 
 const form = reactive({
-    name: '',
-    gender: null as number | null,
-    ageBegin: null as number | null,
-    ageEnd: null as number | null,
     room: '',
     num: 20
 })
@@ -198,7 +194,7 @@ const handleClose2 = () => {
                     loading.value = false
                 }, 400)
                 await addMember(form2)
-                data.value = await getMembers()
+                data.value = await getMembers(query)
                 ElMessage({
                     type: 'success',
                     message: 'Update completed'
@@ -252,11 +248,11 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response: Result) => {
 
 const updateMemberImpl = async (form3: any) => {
     await updateMember(form3)
-    data.value = await getMembers()
+    data.value = await getMembers(query)
 }
 provide('updateMember', updateMemberImpl)
 const getMember = async () => {
-    data.value = await getMembers()
+    data.value = await getMembers(query)
 }
 provide('getMember', getMember)
 </script>

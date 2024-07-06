@@ -36,14 +36,12 @@ export const getBeds = async () => {
         const data = response.data
         Object.keys(data).forEach((room) => {
             data[room].forEach((bed: any) => {
-                if (!bed.signs || !bed.signs.heart || !bed.signs.respire || !bed.signs.dbp || !bed.signs.sbp || !bed.signs.ecg) return bed.signs
-                bed.signs.heart.data = parseFloat(bed.signs.heart.data.toFixed(2))
-                bed.signs.respire.data = parseFloat(bed.signs.respire.data.toFixed(2))
-                bed.signs.ecg.data = parseFloat(bed.signs.ecg.data.toFixed(2))
-                bed.signs.dbp.data = parseFloat(bed.signs.dbp.data.toFixed(2))
-                bed.signs.sbp.data = parseFloat(bed.signs.sbp.data.toFixed(2))
+                bed.heart = bed.heart?parseFloat(bed.heart.toFixed(2)):0
+                bed.respire = bed.respire?parseFloat(bed.respire.toFixed(2)):0
+                bed.dbp = bed.dbp?parseFloat(bed.dbp.toFixed(2)):0
+                bed.sbp = bed.sbp?parseFloat(bed.sbp.toFixed(2)):0
             })
-        })
+        })        
         return data
     } else {
         throw Error('getSigns code: 0')
@@ -51,10 +49,6 @@ export const getBeds = async () => {
 }
 
 export const getMembers = async (param?: {
-    name?: string | null
-    gender?: number | null
-    ageBegin?: number | null
-    ageEnd?: number | null
     room?: string | null
     num?: number | null
 }): Promise<Person[]> => {
@@ -64,7 +58,7 @@ export const getMembers = async (param?: {
     if (response.code === 1) {
         const data = response.data
         data.forEach((item: Person) => {
-            item.signs = sign_sort(item.signs)
+            if(item.signs) item.signs = sign_sort(item.signs)
         })
         return data
     } else {
