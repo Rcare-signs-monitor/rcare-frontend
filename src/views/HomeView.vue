@@ -34,7 +34,11 @@
 
 <script setup lang="ts">
 import BedOccupancyChart from '@/components/BedOccupancyChart.vue'
-import { BorderBox13 as DvBorderBox13 } from '@kjgl77/datav-vue3'
+import { BorderBox13 as DvBorderBox13, 
+    Decoration10 as DvDecoration10, 
+    Decoration8 as DvDecoration8, 
+    Decoration6 as DvDecoration6 
+} from '@kjgl77/datav-vue3'
 </script>
 
 <style scoped>
