@@ -18,7 +18,6 @@
                 </el-descriptions>
                 <template #extra>
                     <el-row>
-                        <el-button plain :icon="Search" @click="dialog = true">条件查询成员列表</el-button>
                         <el-button plain :icon="Edit" @click="dialog2 = true">新增成员信息</el-button>
                     </el-row>
                 </template>
@@ -44,32 +43,6 @@
         </el-main>
     </el-container>
 
-    <!-- 表单 -->
-    <el-drawer v-model="dialog" title="条件查询成员列表" :before-close="cancelForm" direction="ltr" class="demo-drawer">
-        <div class="demo-drawer__content">
-            <el-form :model="form">
-                <el-form-item label="姓名" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.gender">
-                        <el-radio :label="1">男</el-radio>
-                        <el-radio :label="0">女</el-radio>
-                        <el-radio :label="null">全选</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="年龄" :label-width="formLabelWidth">
-                    <el-input-number v-model="form.ageBegin" :min="0" :max="100" @change="handleChange1" controls-position="right" />
-                    <el-text class="mx-1"> - </el-text>
-                    <el-input-number v-model="form.ageEnd" :min="0" :max="100" @change="handleChange2" controls-position="right" />
-                </el-form-item>
-            </el-form>
-            <div class="demo-drawer__footer" style="display: flex; justify-content: center">
-                <el-button @click="cancelForm">取消</el-button>
-                <el-button type="primary" :loading="loading" @click="handleClose">{{ loading ? '查询中 ...' : '查询' }}</el-button>
-            </div>
-        </div>
-    </el-drawer>
     <el-drawer v-model="dialog2" title="新增成员信息" :before-close="cancelForm2" direction="ltr" class="demo-drawer">
         <div class="demo-drawer__content">
             <el-form :model="form2">
@@ -117,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { Edit, Search } from '@element-plus/icons-vue'
+import { Edit } from '@element-plus/icons-vue'
 import { ElDrawer, ElMessageBox, ElMessage } from 'element-plus'
 import { onMounted, provide, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
@@ -180,7 +153,6 @@ onMounted(async () => {
 const formLabelWidth = '80px'
 let timer: string | number | NodeJS.Timeout | undefined
 
-const dialog = ref(false)
 const loading = ref(false)
 
 const form = reactive({
@@ -200,21 +172,6 @@ var query = reactive({
     room: '',
     num: 20
 })
-
-const handleClose = async () => {
-    query = form
-    data.value = await getMembers(query)
-    ElMessage({
-        type: 'success',
-        message: 'Update completed'
-    })
-}
-
-const cancelForm = () => {
-    loading.value = false
-    dialog.value = false
-    clearTimeout(timer)
-}
 
 /* 新增表单 */
 const dialog2 = ref(false)
@@ -291,14 +248,6 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response: Result) => {
     form2.image = import.meta.env.VITE_API_BASE_URL + '/images/' + response.data
-}
-
-// 年龄限制
-const handleChange1 = (cur: number, old: number) => {
-    if (form.ageEnd && cur > form.ageEnd) form.ageBegin = old
-}
-const handleChange2 = (cur: number, old: number) => {
-    if (form.ageBegin && cur < form.ageBegin) form.ageEnd = old
 }
 
 const updateMemberImpl = async (form3: any) => {

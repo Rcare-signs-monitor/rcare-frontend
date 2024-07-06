@@ -5,6 +5,8 @@
     "src/**/*",
     "src/**/*.vue",
     "src/**/*.ts",
+    "auto-import.d.ts",
+    "components.d.ts",
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",

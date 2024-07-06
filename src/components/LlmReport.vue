@@ -25,7 +25,7 @@
         <el-carousel-item name="page1" style="height: 500px">
             <el-row style="margin: -10px 0 -20px">
                 <el-col :span="24" style="display: flex; justify-content: center">
-                    <img src="/image.png" width="90%" style="filter: drop-shadow(#9cc0c67a 0px 0px 20px)" />
+                    <img src="/image.webp" width="90%" style="filter: drop-shadow(#9cc0c67a 0px 0px 20px)" />
                 </el-col>
             </el-row>
             <el-row :gutter="24" style="font-size: 24px; color: #fff">
@@ -52,7 +52,7 @@
                 </el-col>
             </el-row>
         </el-carousel-item>
-        <el-carousel-item name="page2" class="container" style="height: 650px; background-image: url('/image3.png'); background-size: 100% 100%">
+        <el-carousel-item name="page2" class="container" style="height: 650px; background-image: url('/image3.webp'); background-size: 100% 100%">
             <el-card body-class="page-card" id="span1" v-if="llmJson"
                 ><span
                     ><el-divider style="margin: -3px 0 15px 0; background-color: #9cc0c600" content-position="left">HEART RATE</el-divider>
@@ -95,8 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { defineEmits } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { Status } from './interface'
 import OpenAI from 'openai'
 
@@ -178,7 +177,7 @@ async function main(heartRate: number, respireRate: number, SBP: number, DBP: nu
 }
 
 onMounted(async () => {
-    // llmJson.value = await main(120, 30, 150, 100, 10, false)
+    llmJson.value = await main(120, 30, 150, 100, 10, false)
     console.log(llmJson)
 })
 // defineProps(['item'])

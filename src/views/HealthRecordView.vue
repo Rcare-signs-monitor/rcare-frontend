@@ -94,10 +94,6 @@ import LlmReport from '@/components/LlmReport.vue'
 const count = ref(50)
 const options = [
     {
-        value: null,
-        label: '全部显示'
-    },
-    {
         value: 15,
         label: '15条'
     },
@@ -118,7 +114,7 @@ const options = [
 const persons = ref<Person[]>()
 const activeName = ref<number>(0)
 const activeName2 = ref('data')
-const table = ref<{}>([])
+const table = ref([])
 const backroom = ref<string>('')
 
 const runFlag = ref(true) // 大模型调用flag
