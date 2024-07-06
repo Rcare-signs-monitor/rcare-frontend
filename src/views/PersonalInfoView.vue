@@ -95,7 +95,6 @@ import { ElDrawer, ElMessageBox, ElMessage } from 'element-plus'
 import { onMounted, provide, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
 import { getMembers, addMember, updateMember } from '@/components/request'
-import { angle_time, nebula } from '@/components/getTestData'
 
 import PersonInfoLeft from '../components/PersonInfoLeft.vue'
 import PersonInfoRight from '../components/PersonInfoRight.vue'
@@ -107,19 +106,11 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-const option = ref({})
-const option3 = ref({})
-
 const onBack = () => {
     router.push({ path: '/' })
 }
 
 const activeName = ref<{ [idx: number]: boolean }>([])
-
-onMounted(async () => {
-    option.value = await angle_time()
-    option3.value = await nebula()
-})
 
 var refresh: any
 onMounted(async () => {
