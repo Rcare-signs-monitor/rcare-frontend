@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { BorderBox6 as DvBorderBox6, BorderBox5 as DvBorderBox5} from '@kjgl77/datav-vue3'
 import { Grid, Postcard } from '@element-plus/icons-vue'
 import { getLineOption, getDoubleLineOption } from '@/components/getTestData'
 defineProps(['item'])

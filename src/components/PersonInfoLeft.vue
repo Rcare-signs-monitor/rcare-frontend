@@ -100,27 +100,6 @@
                 </dv-border-box9>
             </el-col>
         </el-row>
-        <!-- <el-row :gutter="50">
-            <el-col :span="24">
-                <dv-border-box9 style="background-color: #13161b">
-                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 14vh">
-                        <span style="display: flex; align-items: center">
-                            <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
-                            <span style="font-size: 18px">
-                                ECG
-                            </span>
-                        </span>
-                        <span>
-                            <span
-                                style="font-size: 25px"
-                            >
-                                {{ item.signs.ecg ? item.signs.ecg[item.signs.ecg.length - 1].data : 0 }} </span
-                            >
-                        </span>
-                    </div>
-                </dv-border-box9>
-            </el-col>
-        </el-row> -->
         <el-row :gutter="50">
             <el-col :span="24">
                 <dv-border-box9 style="background-color: #13161b">
@@ -211,7 +190,12 @@
 </template>
 
 <script setup lang="ts">
-import { BorderBox12 as DvBorderBox12 } from '@kjgl77/datav-vue3'
+import { 
+    BorderBox12 as DvBorderBox12, 
+    BorderBox8 as DvBorderBox8, 
+    BorderBox9 as DvBorderBox9 ,
+    Button as DvButton
+} from '@kjgl77/datav-vue3'
 import { Edit, Warning } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage, type UploadProps, type UploadInstance, genFileId, type UploadRawFile } from 'element-plus'
 import { inject, reactive, ref } from 'vue'

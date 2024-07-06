@@ -63,6 +63,7 @@
 
 <script lang="ts" setup>
 // 红 or 蓝？
+import { BorderBox11 as DvBorderBox11, BorderBox12 as DvBorderBox12 } from '@kjgl77/datav-vue3'
 const risky = (item: any) => {
     if (!item) return false
     return (
