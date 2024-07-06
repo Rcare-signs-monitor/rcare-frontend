@@ -70,7 +70,7 @@
                                 />
                             </el-tab-pane>
                             <el-tab-pane label="健康档案" name="archive" style="font-size: 20px; color: #b5bbc0; margin: 0 50px;" :lazy="true">
-                                <LlmReport :item="item"></LlmReport>
+                                <LlmReport :item="item" :runFlag="runFlag"></LlmReport>
                             </el-tab-pane>
                         </el-tabs>
                     </div>
@@ -120,6 +120,8 @@ const activeName = ref<number>(0)
 const activeName2 = ref('data')
 const table = ref<{}>([])
 const backroom = ref<string>('')
+
+const runFlag = ref(true) // 大模型调用flag
 
 var refresh: any
 onMounted(async () => {
