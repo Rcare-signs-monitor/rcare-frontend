@@ -18,7 +18,7 @@
         <el-col :span="6"><span class="bold-font">病房</span>: {{ props.item.info.room }} 室</el-col>
         <el-col :span="6"><span class="bold-font">床号</span>: 0{{ props.item.info.bed }} 床</el-col>
         <el-col :span="6"><span class="bold-font">住院天数</span>: {{ '12' }} 天</el-col>
-        <el-col :span="6" v-if="llmJson"><span class="bold-font">AI诊断</span>: {{ llmJson.possible_disease }}</el-col>
+        <el-col :span="6" v-if="llmJson.possible_disease"><span class="bold-font">AI诊断</span>: {{ llmJson.possible_disease }}</el-col>
     </el-row>
     <el-divider />
     <el-carousel :loop="false" indicator-position="outside" height="auto">
@@ -53,7 +53,7 @@
             </el-row>
         </el-carousel-item>
         <el-carousel-item name="page2" class="container" style="background-image: url('/image3.webp'); background-size: 100% 100%">
-            <el-card body-class="page-card" id="span1" v-if="llmJson"
+            <el-card body-class="page-card" id="span1" v-if="llmJson.hrAnalyze"
                 ><span
                     ><el-divider style="margin: -3px 0 15px 0; background-color: #9cc0c600" content-position="left">HEART RATE</el-divider>
                     <span class="result" @click="open(llmJson.hrAnalyze)">
@@ -61,7 +61,7 @@
                     </span>
                     <el-divider style="margin: 10px 0 -3px 0" /></span
             ></el-card>
-            <el-card body-class="page-card" id="span2" v-if="llmJson"
+            <el-card body-class="page-card" id="span2" v-if="llmJson.rrAnalyze"
                 ><span
                     ><el-divider style="margin: -3px 0 15px 0; background-color: #9cc0c600" content-position="right">RESIRATORY RATE</el-divider>
                     <span class="result" @click="open(llmJson.rrAnalyze)">
@@ -69,7 +69,7 @@
                     </span>
                     <el-divider style="margin: 10px 0 -3px 0" /></span
             ></el-card>
-            <el-card body-class="page-card" id="span3" v-if="llmJson"
+            <el-card body-class="page-card" id="span3" v-if="llmJson.bpAnalyze"
                 ><span
                     ><el-divider style="margin: -3px 0 15px 0; background-color: #9cc0c600" content-position="left">BLOOD PRESSURE</el-divider>
                     <span class="result" @click="open(llmJson.bpAnalyze)">
@@ -77,7 +77,7 @@
                     </span>
                     <el-divider style="margin: 10px 0 -3px 0" /></span
             ></el-card>
-            <el-card body-class="page-card" id="span4" v-if="llmJson"
+            <el-card body-class="page-card" id="span4" v-if="llmJson.ecgAnalyze"
                 ><span
                     ><el-divider style="margin: -3px 0 15px 0; background-color: #9cc0c600" contentf-position="right">ECG</el-divider>
                     <span class="result" @click="open(llmJson.ecgAnalyze)">
@@ -99,6 +99,16 @@ import type { Status } from './interface'
 import { ref, watch } from 'vue';
 
 let props = defineProps(['item', 'llm'])
+
+// const props = defineProps<{
+//     item: any,
+//     llm: {
+//         possible_disease?: string,
+//         hrAnalyze?: string,
+//         rrAnalyze?: string,
+//         bpAnalyze?: string
+//     }
+// }>()
 
 const tableStaus: { [key: string]: string[] } = {
     chestPain: [
@@ -127,28 +137,14 @@ const llmJson = ref({
     rrAnalyze: "",
     ecgAnalyze: "",
     possible_disease: ""
-})
+});
+
 watch(props, (newProps)=>{
     llmJson.value.possible_disease = newProps.llm.possible_disease
-    llmJson.value.hrAnalyze = `\
-患者的心率处于 ${ (newProps.llm['heart']-10).toFixed(2) }-${ (newProps.llm['heart']+12.34).toFixed(2) }。\
-正常成年人的心率通常在60至100次/分钟之间。根据患者的心率数据，我们发现${ newProps.llm.hrAnalyze }\
-[可能包括心率过快、过慢、不规律等情况]。建议患者在日常生活中避免过度劳累和情绪波动，并密切关注心率变化。如有必要，可以考虑进一步的心电图监测或咨询心脏专家。\
-`
-    llmJson.value.bpAnalyze = `\
-最新的血压测量显示收缩压为 ${ (newProps.llm['sbp']-10).toFixed(2) }-${ (newProps.llm['sbp']+12.34).toFixed(2) } mmHg，舒张压为 ${ (newProps.llm['dbp']-10).toFixed(2) }-${ (newProps.llm['dbp']+12.34).toFixed(2) } mmHg。\
-成人的理想血压应维持在收缩压120mmHg以下和舒张压80mmHg以下。根据患者的血压数据，我们发现${ newProps.llm.bpAnalyze }\
-[可能包括高血压、低血压等情况]。建议患者采取健康的生活方式，如控制饮食、适度运动、减少饮酒和戒烟，以维持血压在正常范围内。对于高血压患者，可能需要进一步的药物治疗和定期监测。\
-`
-    llmJson.value.rrAnalyze = `\
-患者的呼吸率在 ${ (newProps.llm['respire']-10).toFixed(2) }-${ (newProps.llm['respire']+12.34).toFixed(2) }。\
-成人的正常呼吸率一般在12至20次/分钟之间。根据患者的呼吸率数据，我们发现${ newProps.llm.rrAnalyze }\
-[可能包括呼吸过快、过慢、浅表等情况]。建议患者保持良好的呼吸习惯，避免吸入有害气体和粉尘，并及时就医处理任何呼吸不适症状。\
-`
-    llmJson.value.ecgAnalyze = `\
-最新的ECG数据显示[ECG状态分析结果]。ECG是评估心脏健康的重要工具，它可以检测心律失常、心肌缺血、心肌梗死等情况。\
-根据患者的ECG数据分析，我们发现[可能包括正常的窦性心律、房颤、心房扑动等情况]。建议患者在医生的指导下进行进一步的心电图监测和评估，以确定是否需要采取进一步的治疗措施。\
-`
+    llmJson.value.hrAnalyze = newProps.llm.hrAnalyze
+    llmJson.value.bpAnalyze = newProps.llm.bpAnalyze
+    llmJson.value.rrAnalyze = newProps.llm.rrAnalyze
+    llmJson.value.ecgAnalyze = newProps.llm.ecgAnalyze
 })
 
 const open = (text: string) => {

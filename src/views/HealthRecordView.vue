@@ -102,22 +102,10 @@ import { ElLoading } from 'element-plus'
 // 展示条数
 const count = ref(50)
 const options = [
-    {
-        value: 15,
-        label: '15条'
-    },
-    {
-        value: 50,
-        label: '50条'
-    },
-    {
-        value: 100,
-        label: '100条'
-    },
-    {
-        value: 200,
-        label: '200条'
-    }
+    { value: 15, label: '15条'},
+    { value: 50, label: '50条'},
+    { value: 100, label: '100条'},
+    { value: 200, label: '200条'}
 ]
 
 const persons = ref<Person[]>()
@@ -126,12 +114,17 @@ const activeName2 = ref('data')
 const table = ref([])
 const backroom = ref<string>('')
 
-var query = reactive({
-    num: 0
-})
+var query = reactive({ num: 0 })
 
-// 存放大模型返回的json数据
-const llmJson = ref()
+
+// 存放大模型返回的数据
+const llmJson = ref({
+    possible_disease: "",
+    hrAnalyze: "",
+    rrAnalyze: "",
+    bpAnalyze: "",
+    ecgAnalyze: ""
+});
 const currentItem = ref()
 
 // kimi api
@@ -141,121 +134,120 @@ const client = new OpenAI({
     baseURL: 'https://api.moonshot.cn/v1'
 })
 
-let history = [
-    { role: 'system', content: '你是我的智能医疗助理，负责回答各项医疗问题。' },
-    { role: 'system', content: '回答用json格式的字符串表示，且json的key用英文表示，value用中文表示，例如:"treatment": \'治疗手段\', "possible_disease": \'可能的疾病\' ' },
-    { role: 'system', content: 'json还需包括如下字段，"hrAnalyze": \'心率状态分析\', "rrAnalyze": \'呼吸率状态分析\', "bpAnalyze": \'血压状态分析\'' }
-]
+// let history = [
+//     { role: 'system', content: '你是我的智能医疗助理，负责协助进行病情分析及疾病诊断。' },
+// ]
 
-async function chat(prompt: string) {
-    history.push({
-        role: 'user',
-        content: prompt
-    })
+async function chat(prompt ,sign: string) {
+    console.log('Prompt:', prompt);
     const completion = await client.chat.completions.create({
         model: 'moonshot-v1-8k',
-        messages: history as any
-    })
-    history.push(completion.choices[0].message as { role: string; content: string })
-    return completion.choices[0].message.content
+        messages: [
+            { role: 'system', content: '你是我的智能医疗助理，负责协助进行病情分析及疾病诊断。' },
+            { role: 'user', content: prompt }
+        ],
+        stream: true,
+    });
+
+    // 处理流式传输
+    let content = ''
+    for await (const chunk of completion) {
+        if (chunk.choices[0].delta.content) {
+            content += chunk.choices[0].delta.content
+            llmJson.value[sign] = content
+        }
+    }
+    // history.push({ role: 'assistant', content })
+    return content;
 }
 
-function promptBuilder(heartRate: number, respireRate: number, SBP: number, DBP: number, pauseCount: number, isNormalECG: Boolean) {
-    let ecgString = ''
-    let pauseString = ''
-    let hrString = `最大静息心率${heartRate.toString()}次每分钟,`
-    let rrString = `呼吸率${respireRate.toString()}次每分钟,`
-    let sbpString = `收缩压150mmHg,`
-    let dbpString = `舒张压100mmHg,`
-    let endString = `分析一下他可能患有什么疾病（仅限最可能的一条），分析一下当前心率状态、呼吸率状态、血压状态，及如何治疗。`
-    if (isNormalECG) {
-        ecgString = `我的一位患者心电图数据表现正常,`
-    } else {
-        ecgString = `我的一位患者心电图数据表现异常,`
-    }
-    if (pauseCount) {
-        pauseString = `伴有每晚${pauseCount.toString()}次的呼吸暂停,`
-    }
-    return ecgString + hrString + rrString + sbpString + dbpString + pauseString + endString
-}
 // "我的一位患者心电图数据表现异常，最大静息心率120次每分钟，呼吸率30次每分钟，收缩压150mmHg，舒张压100mmHg，伴有每晚10次的呼吸暂停，分析一下他可能患有什么疾病（仅限最可能的一条），分析一下当前心率状态、呼吸率状态、血压状态，及如何治疗。"
 async function main(heartRate: number, respireRate: number, SBP: number, DBP: number, pauseCount: number, isNormalECG: Boolean) {
-    let reply = (await chat(promptBuilder(heartRate, respireRate, SBP, DBP, pauseCount, isNormalECG))) as string
-    console.log(reply)
-    let jsonReply
-    jsonReply = JSON.parse(reply)
-    console.log(jsonReply)
-    console.log(history)
-    return jsonReply
+    let ecgString = isNormalECG ? "我的一位患者心电图数据表现正常，" : "我的一位患者心电图数据表现异常，";
+    let pauseString = pauseCount ? `伴有每晚${pauseCount.toString()}次的呼吸暂停，` : "";
+    let hrString = `静息心率处在${(heartRate-10).toFixed(2).toString()}次每分钟-${(heartRate+12.34).toFixed(2).toString()}次每分钟区间内，`;
+    let rrString = `呼吸率处在${(respireRate-10).toFixed(2).toString()}次每分钟-${(respireRate+12.34).toFixed(2).toString()}次每分钟区间内，`;
+    let sbpString = `收缩压处在${(SBP-10).toFixed(2).toString()}mmhg-${(SBP+12.34).toFixed(2).toString()}mmhg区间内，`;
+    let dbpString = `舒张压处在${(DBP-10).toFixed(2).toString()}mmhg-${(DBP+12.34).toFixed(2).toString()}mmhg区间内，`;
+    let endString = "请回答该患者最可能的一种或两种疾病类型，疾病类型用逗号隔开，回答格式如下：[疾病类型1，疾病类型2]，除此之外，不用输出任何内容。";
+
+    let prompts = {
+        'possible_disease': ecgString + hrString + rrString + sbpString + dbpString + pauseString + endString,
+        'hrAnalyze': "一位患者的" + hrString + "请对患者的静息心率进行分析，要求按照如下方式进行输出：首先给出患者的静息心率区间，然后结合健康成年人的静息心率区间对患者的静息心率进行分析，给出其出现的情况，最后针对静息心率情况给出患者一些建议。注意，用一段话包括上面所有的内容。",
+        'rrAnalyze': "一位患者的" + rrString + "请对患者的呼吸率进行分析，要求按照如下方式进行输出：首先给出患者的呼吸率区间，然后结合健康成年人的呼吸率区间对患者的呼吸率进行分析，给出其出现的情况，最后针对呼吸率情况给出患者一些建议。注意，用一段话包括上面所有的内容。",
+        'bpAnalyze': "一位患者的" + sbpString + dbpString + "请对患者的血压进行分析，要求按照如下方式进行输出：首先给出患者的血压区间，然后结合健康成年人的血压区间对患者的血压进行分析，给出其出现的情况，最后针对血压情况给出患者一些建议。注意，用一段话包括上面所有的内容。",
+        'ecgAnalyze': ecgString + hrString + "请对患者的心电进行分析，要求按照如下方式进行输出：首先指出患者心率正常与否，然后结合患者心率进行分析，给出其出现的情况（可能包括窦性心律、房颤、心房扑动等情况）。最后针对心电情况给出患者一些建议。注意，用一段话包括上面所有的内容。\",",
+    };
+
+    const results = await Promise.all(Object.keys(prompts).map(key => chat(prompts[key], key)));
+
+    return results;
 }
 
-onMounted(async () => {
-})
+// 判断 llmjson 是否为空
+function isLlmJsonEmpty(llmJson: { possible_disease: string, hrAnalyze: string, rrAnalyze: string, bpAnalyze: string, ecgAnalyze: string }): boolean {
+    return Object.values(llmJson).every(value => value === "");
+}
 
-var refresh: any
+let refresh: any;
 onMounted(async () => {
-    persons.value = await getMembers(query)
+    persons.value = await getMembers(query);
     console.log(persons.value);
     
-    activeName.value = persons.value[0].info.id
-    backroom.value = persons.value[0].info.room
-    currentItem.value = persons.value[0]
-    table.value = await getSignsTable(activeName.value, count.value)
-    
+    activeName.value = persons.value[0].info.id;
+    backroom.value = persons.value[0].info.room;
+    currentItem.value = persons.value[0];
+    table.value = await getSignsTable(activeName.value, count.value);
+
     refresh = async () => {
         if (activeName2.value == 'data')
-            table.value = await getSignsTable(activeName.value, count.value)
-        else if(activeName2.value == 'archive' && !llmJson.value){
-            
-            const loadingInstance = ElLoading.service({
-                lock: true,
-                text: 'AI 分析中',
-                background: 'rgba(0, 0, 0, 0.7)',
-            })
-            llmJson.value = await main(
-                currentItem.value.signs.heart[currentItem.value.signs.heart.length-1].data, 
-                currentItem.value.signs.respire[currentItem.value.signs.respire.length-1].data, 
-                currentItem.value.signs.sbp[currentItem.value.signs.sbp.length-1].data, 
-                currentItem.value.signs.dbp[currentItem.value.signs.dbp.length-1].data, 
-                10, 
+            table.value = await getSignsTable(activeName.value, count.value);
+        else if(activeName2.value == 'archive' && isLlmJsonEmpty(llmJson.value)){
+
+            // const loadingInstance = ElLoading.service({
+            //     lock: true,
+            //     text: 'AI 分析中',
+            //     background: 'rgba(0, 0, 0, 0.7)',
+            // })
+            await main(
+                currentItem.value.signs.heart[currentItem.value.signs.heart.length-1].data,
+                currentItem.value.signs.respire[currentItem.value.signs.respire.length-1].data,
+                currentItem.value.signs.sbp[currentItem.value.signs.sbp.length-1].data,
+                currentItem.value.signs.dbp[currentItem.value.signs.dbp.length-1].data,
+                10,
                 false
             )
-            llmJson.value['heart'] = currentItem.value.signs.heart[currentItem.value.signs.heart.length-1].data
-            llmJson.value['respire'] = currentItem.value.signs.respire[currentItem.value.signs.respire.length-1].data
-            llmJson.value['sbp'] = currentItem.value.signs.sbp[currentItem.value.signs.sbp.length-1].data
-            llmJson.value['dbp'] = currentItem.value.signs.heart[currentItem.value.signs.dbp.length-1].data
-            await nextTick(() => {
-                loadingInstance.close()
-            })
-
+            // await nextTick(() => {
+            //     loadingInstance.close()
+            // })
         }
         else {
-            var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!
-            persons.value![person_idx].signs = await getSigns(activeName.value, count.value)
+            const person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!;
+            persons.value![person_idx].signs = await getSigns(activeName.value, count.value);
         }
-        if(route.path === '/health_record') setTimeout(refresh, 2000)      
+        if(route.path === '/health_record') setTimeout(refresh, 4000);
     }
-    refresh()
+    refresh();
 
-    const id = route.query.id as string
+    const id = route.query.id as string;
     if (id) {
-        activeName.value = parseInt(id)
+        activeName.value = parseInt(id);
     }
 })
 
 watch(
     () => activeName.value,
     async (newValue) => {
-        table.value = await getSignsTable(newValue, count.value)
-        var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!
-        persons.value![person_idx].signs = await getSigns(activeName.value, count.value)
+        table.value = await getSignsTable(newValue, count.value);
+        var person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!;
+        persons.value![person_idx].signs = await getSigns(activeName.value, count.value);
     }
-)
+);
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 const onBack = () => {
-    router.push({ path: '/person_info', query: { room: backroom.value } })
+    router.push({ path: '/person_info', query: { room: backroom.value } });
 }
 </script>
 
