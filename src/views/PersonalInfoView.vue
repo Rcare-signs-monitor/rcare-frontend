@@ -135,6 +135,8 @@ onMounted(async () => {
     }
     refresh = async () => {
         data.value = await getMembers(query)
+        console.log(data.value);
+        
         if (route.path === '/person_info') setTimeout(refresh, 2000)
     }
     refresh()

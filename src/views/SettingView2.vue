@@ -27,7 +27,7 @@
             <el-row style="margin-top: 30px">
                 <el-col :span="24">
                     <el-card>
-                        <div style="font-size: 40px">欢迎使用 VitalWave！</div>
+                        <div style="font-size: 40px">欢迎使用 Rcare!</div>
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
                                 <el-button :icon="Setting" size="large" plain @click="command5"> 数据采集 </el-button>

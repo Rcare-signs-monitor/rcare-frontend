@@ -106,7 +106,7 @@ export const getSigns = async (id: number, num?: number) => {
     const response = (await axios.get(url)).data as Result
 
     if (response.code === 1) {
-        let data = response.data as Signs
+        let data = response.data as Signs        
         data = sign_sort(data)
         return data
     } else {

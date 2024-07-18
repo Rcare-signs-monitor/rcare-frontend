@@ -204,11 +204,11 @@ onMounted(async () => {
             table.value = await getSignsTable(activeName.value, count.value);
         else if(activeName2.value == 'archive' && isLlmJsonEmpty(llmJson.value)){
 
-            // const loadingInstance = ElLoading.service({
-            //     lock: true,
-            //     text: 'AI 分析中',
-            //     background: 'rgba(0, 0, 0, 0.7)',
-            // })
+            const loadingInstance = ElLoading.service({
+                lock: true,
+                text: 'AI 分析中',
+                background: 'rgba(0, 0, 0, 0.7)',
+            })
             await main(
                 currentItem.value.signs.heart[currentItem.value.signs.heart.length-1].data,
                 currentItem.value.signs.respire[currentItem.value.signs.respire.length-1].data,
@@ -217,9 +217,9 @@ onMounted(async () => {
                 10,
                 false
             )
-            // await nextTick(() => {
-            //     loadingInstance.close()
-            // })
+            await nextTick(() => {
+                loadingInstance.close()
+            })
         }
         else {
             const person_idx = persons.value?.findIndex(ele => ele.info.id === activeName.value)!;

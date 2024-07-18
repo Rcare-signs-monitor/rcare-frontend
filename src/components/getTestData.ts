@@ -119,7 +119,11 @@ export const getDoubleLineOption = (data1: Sign[], data2: Sign[]) => {
         dateList1 = data1.map((item) => item.time)
         // dateList2 = data2.map(item => item.time)
         valueList1 = data1.map((item) => item.data)
-        valueList2 = data2.map((item) => item.data)
+        // valueList2 = data2.map((item) => item.data)
+        valueList2 = []
+        for(let i=0; i<data2.length; i++){
+            valueList2.push(data2[i].data - valueList1[i])
+        }
     }
 
     const option = {
