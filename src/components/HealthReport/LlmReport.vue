@@ -95,7 +95,7 @@
 <script setup lang="ts">
 import { BorderBox11 as DvBorderBox11 } from '@kjgl77/datav-vue3'
 import { ElMessageBox } from 'element-plus'
-import type { Status } from './interface'
+import type { Status } from '../interface'
 import { ref, watch } from 'vue';
 
 let props = defineProps(['item', 'llm'])
@@ -253,7 +253,7 @@ const open = (text: string) => {
 </style>
 
 <style>
-@import url('../assets/healthrecord.css');
+@import url('@/assets/healthrecord.css');
 .el-divider__text {
     background-color: #00000000;
     color: #cfc5a7;

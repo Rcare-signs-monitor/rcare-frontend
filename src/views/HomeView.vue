@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import BedOccupancyChart from '@/components/BedOccupancyChart.vue'
+import BedOccupancyChart from '../components/Home/BedOccupancyChart.vue'
 import { BorderBox13 as DvBorderBox13, 
     Decoration10 as DvDecoration10, 
     Decoration8 as DvDecoration8, 

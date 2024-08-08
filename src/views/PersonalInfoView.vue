@@ -96,8 +96,8 @@ import { onMounted, provide, reactive, ref } from 'vue'
 import type { Person, Result } from '../components/interface'
 import { getMembers, addMember, updateMember } from '@/components/request'
 
-import PersonInfoLeft from '../components/PersonInfoLeft.vue'
-import PersonInfoRight from '../components/PersonInfoRight.vue'
+import PersonInfoLeft from '../components/PersonalInfo/PersonInfoLeft.vue'
+import PersonInfoRight from '../components/PersonalInfo/PersonInfoRight.vue'
 
 const base_url = import.meta.env.VITE_API_BASE_URL
 const data = ref<Person[]>([])

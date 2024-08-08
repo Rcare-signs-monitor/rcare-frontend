@@ -100,7 +100,7 @@ import { getLineOption, getDoubleLineOption } from '@/components/getTestData'
 import { getSigns, getMembers, getSignsTable } from '@/components/request'
 
 import Echarts from '@/components/Recharts.vue'
-import LlmReport from '@/components/LlmReport.vue'
+import LlmReport from '@/components/HealthReport/LlmReport.vue'
 import OpenAI from 'openai'
 import { ElLoading } from 'element-plus'
 
@@ -123,7 +123,13 @@ var query = reactive({ num: 0 })
 
 
 // 存放大模型返回的数据
-const llmJson = ref({
+const llmJson = ref<{
+    possible_disease: string;
+    hrAnalyze: string;
+    rrAnalyze: string;
+    bpAnalyze: string;
+    ecgAnalyze: string;
+}>({
     possible_disease: "",
     hrAnalyze: "",
     rrAnalyze: "",

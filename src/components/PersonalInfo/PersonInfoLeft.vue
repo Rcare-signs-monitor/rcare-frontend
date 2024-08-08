@@ -42,7 +42,7 @@
                 <dv-border-box9 style="background-color: #13161b">
                     <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
-                            <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
+                            <img class="sign-icon" src="@/assets/xinlv.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
                                 心率
                                 <el-tooltip content="参考值: 60-120次/分" placement="top">
@@ -76,7 +76,7 @@
                 <dv-border-box9 style="background-color: #13161b">
                     <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
-                            <img class="sign-icon" src="../assets/呼吸.svg" style="margin-right: 20px" />
+                            <img class="sign-icon" src="@/assets/呼吸.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
                                 呼吸率
                                 <el-tooltip content="参考值：12-27次/分" placement="top">
@@ -109,7 +109,7 @@
                 <dv-border-box9 style="background-color: #13161b">
                     <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
-                            <img class="sign-icon" src="../assets/体温.svg" style="margin-right: 20px" />
+                            <img class="sign-icon" src="@/assets/体温.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
                                 体温
                                 <el-tooltip content="参考值: 36.3-37.2℃" placement="top">
@@ -143,7 +143,7 @@
                 <dv-border-box9 style="background-color: #13161b">
                     <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
-                            <img class="sign-icon" src="../assets/血压.svg" style="margin-right: 13px" />
+                            <img class="sign-icon" src="@/assets/血压.svg" style="margin-right: 13px" />
                             <span style="font-size: 18px">
                                 DBP / SBP
                                 <el-tooltip content="参考值: 80-120 / 120-160" placement="top">
@@ -267,9 +267,9 @@ import { Edit, Warning as WarningIcon } from '@element-plus/icons-vue'
 import { Picture as IconPicture } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage, type UploadProps, type UploadInstance, genFileId, type UploadRawFile } from 'element-plus'
 import { inject, onUnmounted, reactive, ref, watch } from 'vue'
-import type { BasePerson, Result } from './interface'
-import { cancelFace, delMember, getFace } from '@/components/request'
-import Warning from './WarningWindow.vue'
+import type { BasePerson, Result } from '../interface'
+import { cancelFace, delMember, getFace } from '../request'
+import Warning from '../WarningWindow.vue'
 const base_url = import.meta.env.VITE_API_BASE_URL
 defineProps(['item'])
 
@@ -440,5 +440,5 @@ const confirm = async () => {
 </script>
 
 <style scoped>
-@import url('../assets/personalinfo.css');
+@import url('@/assets/personalinfo.css');
 </style>

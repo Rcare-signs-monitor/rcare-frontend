@@ -21,7 +21,7 @@
                                 </template>
                                 <div style="display: flex; align-items: center" :class="risky(item) ? 'risk3' : ''">
                                     <div :style="risky(item) ? 'background-color: #e21017;' : 'background-color: #2186f0;'" class="bed-icon">
-                                        <img height="40px" width="40px" src="../assets/床位 患者.svg" />
+                                        <img height="40px" width="40px" src="@/assets/床位 患者.svg" />
                                     </div>
                                     <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
                                         <el-col style="height: 12px">姓名：{{ item.name }}</el-col>
@@ -43,7 +43,7 @@
                                 </template>
                                 <div style="display: flex; align-items: center">
                                     <div class="bed-icon" style="background-color: #a0a0a0">
-                                        <img height="42px" width="42px" src="../assets/床位 空床.svg" />
+                                        <img height="42px" width="42px" src="@/assets/床位 空床.svg" />
                                     </div>
                                     <el-row style="height: 80px; width: 50%; font-size: 14px; margin: 10px 0">
                                         <el-col style="height: 12px">姓名：-</el-col>
@@ -103,7 +103,7 @@ const empty_num = computed(() => {
 import { computed, onMounted, ref } from 'vue'
 // 修正组件间锚点跳转
 import { useRoute, useRouter } from 'vue-router'
-import { getBeds } from './request'
+import { getBeds } from '../request'
 const router = useRouter()
 const jump = (room: string, id: number|null) => {
     if (!id) return
