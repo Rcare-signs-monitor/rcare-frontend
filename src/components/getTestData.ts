@@ -23,7 +23,7 @@ export const getLineOption = (data: Sign[], type: string, smooth: boolean = fals
         blue: ['#4BA0C3', 'rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)'],
         green: ['#12DBDB', '#5ED1C1', 'rgba(109,171,169, 0)'],
         yellow: ['#F6D96D', '#F2D765', 'rgba(244,217,105, 0)'],
-        red: ["#fd9095", "#fea77b", "rgba(182,133,104, 0)"]
+        red: ['#fd9095', '#fea77b', 'rgba(182,133,104, 0)']
     }
 
     const option = {
@@ -212,3 +212,120 @@ export const getDoubleLineOption = (data1: Sign[], data2: Sign[]) => {
     } as EChartsOption
     return option
 }
+
+// 控制台界面假数据
+export const testOption = {
+    legend: {
+        top: 'bottom'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '6%',
+        containLabel: true
+    },
+    xAxis: [
+        {
+            type: 'category',
+            data: [
+                '0:00',
+                '1:00',
+                '2:00',
+                '3:00',
+                '4:00',
+                '5:00',
+                '6:00',
+                '7:00',
+                '8:00',
+                '9:00',
+                '10:00',
+                '11:00',
+                '12:00',
+                '13:00',
+                '14:00',
+                '15:00',
+                '16:00',
+                '17:00',
+                '18:00',
+                '19:00',
+                '20:00',
+                '21:00',
+                '22:00',
+                '23:00'
+            ]
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value'
+        }
+    ],
+    series: [
+        {
+            name: 'Union1',
+            type: 'bar',
+            stack: 'Ad',
+            emphasis: {
+                focus: 'series'
+            },
+            itemStyle: {
+                color: '#ff6f61'
+            },
+            data: [5, 5, 5, 5, 0, 10, 10, 10, 5, 5, 12, 20, 12, 15, 0, 0, 5, 15, 10, 0, 5, 10, 5, 5]
+        },
+        {
+            name: 'Union2',
+            type: 'bar',
+            stack: 'Ad',
+            emphasis: {
+                focus: 'series'
+            },
+            itemStyle: {
+                color: '#64b5f6'
+            },
+            data: [320, 232, 201, 94, 90, 80, 110, 150, 232, 201, 154, 190, 330, 410, 320, 332, 201, 134, 120, 182, 191, 234, 294, 234]
+        }
+    ]
+} as EChartsOption
+
+export const testOption2 = {
+    legend: {
+        top: 'bottom'
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true }
+        }
+    },
+    series: [
+        {
+            type: 'pie',
+            radius: [30, 150],
+            center: ['50%', '50%'],
+            roseType: 'area',
+            itemStyle: {
+                borderRadius: 8
+            },
+            data: [
+                { value: 40, name: 'name 1' },
+                { value: 38, name: 'name 2' },
+                { value: 32, name: 'name 3' },
+                { value: 30, name: 'name 4' },
+                { value: 28, name: 'name 5' },
+                { value: 26, name: 'name 6' },
+                { value: 22, name: 'name 7' },
+                { value: 18, name: 'name 8' }
+            ]
+        }
+    ]
+} as EChartsOption

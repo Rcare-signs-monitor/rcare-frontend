@@ -27,15 +27,27 @@
             <el-row style="margin-top: 30px">
                 <el-col :span="24">
                     <el-card>
-                        <div style="font-size: 40px">欢迎使用!</div>
+                        <div style="font-size: 40px">欢迎使用！</div>
                         <div style="width: 80%; margin: 40px auto 20px">
                             <el-row :gutter="80" justify="space-evenly">
-                                <el-button :icon="Setting" size="large" plain @click="command5"> 数据采集 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command6"> 数据分析 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command7"> 停止采集 </el-button>
-                                <el-button :icon="Setting" size="large" plain @click="command8"> 停止分析 </el-button>
-                            </el-row>
-                            <el-row :gutter="80" justify="space-evenly">
+                                <el-card style="width: 40%" shadow="hover" @click="command1">
+                                    <div style="font-size: 20px; margin-bottom: 15px; display: flex; align-items: center">
+                                        <el-icon style="margin-right: 10px"><Setting /></el-icon> 数据采集分析
+                                    </div>
+                                    <div>
+                                        系统将从指定的数据源收集数据，并对收集到的数据进行实时分析。<br />
+                                        请确保在启动前配置好数据源和分析参数，以便获取最准确的分析结果。
+                                    </div>
+                                </el-card>
+                                <el-card style="width: 40%" shadow="hover" @click="command3">
+                                    <div style="font-size: 20px; margin-bottom: 15px; display: flex; align-items: center">
+                                        <el-icon style="margin-right: 10px"><Setting /></el-icon> 停止采集分析
+                                    </div>
+                                    <div>
+                                        系统将中断对数据源的采集，并停止对数据的分析处理。<br />
+                                        请注意，停止数据采集可能会导致当前分析中的数据丢失，因此在停止前请确保保存所需的结果或报告。
+                                    </div>
+                                </el-card>
                             </el-row>
                         </div>
                     </el-card>
@@ -99,6 +111,20 @@
                     </el-card>
                 </el-col>
             </el-row>
+            <el-row :gutter="24">
+                <el-col :span="12">
+                    <el-card>
+                        <template #header>每小时数据收集</template>
+                        <Echarts :option="testOption" :style="{ height: '45vh', width: '40vw' }" :refresh="1000" />
+                    </el-card>
+                </el-col>
+                <el-col :span="12">
+                    <el-card>
+                        <template #header>指令调用频率</template>
+                        <Echarts :option="testOption2" :style="{ height: '45vh', width: '40vw' }" :refresh="1000" />
+                    </el-card>
+                </el-col>
+            </el-row>
         </el-main>
     </el-container>
 </template>
@@ -106,7 +132,9 @@
 <script setup lang="ts">
 import { User, Setting, Monitor, Cpu, Cloudy } from '@element-plus/icons-vue'
 import { ElNotification as notify } from 'element-plus'
-import { command5, command6, command7, command8 } from '@/components/request'
+import { command5 as command1, command7 as command3 } from '@/components/request'
+import Echarts from '@/components/Recharts.vue'
+import { testOption, testOption2 } from '@/components/getTestData'
 
 const onBack = () => {
     notify('Back')

@@ -129,7 +129,7 @@ const llmJson = ref<{
     rrAnalyze: string;
     bpAnalyze: string;
     ecgAnalyze: string;
-}>({
+} & { [key: string]: string }>({
     possible_disease: "",
     hrAnalyze: "",
     rrAnalyze: "",
@@ -140,7 +140,7 @@ const currentItem = ref()
 
 // kimi api
 const client = new OpenAI({
-    apiKey: 'sk-pdXAkGGIaE5mif4GDC7T9k4faBgsT9sP2V3Ba1VpnDe5S98Y',
+    apiKey: `${import.meta.env.VITE_API_KEY}`,
     dangerouslyAllowBrowser: true,
     baseURL: 'https://api.moonshot.cn/v1'
 })
@@ -182,7 +182,7 @@ async function main(heartRate: number, respireRate: number, SBP: number, DBP: nu
     let dbpString = `舒张压处在${(DBP-10).toFixed(2).toString()}mmhg-${(DBP+12.34).toFixed(2).toString()}mmhg区间内，`;
     let endString = "请回答该患者最可能的一种或两种疾病类型，疾病类型用逗号隔开，回答格式如下：[疾病类型1，疾病类型2]，除此之外，不用输出任何内容。";
 
-    let prompts = {
+    let prompts:{ [key: string]: string } = {
         'possible_disease': ecgString + hrString + rrString + sbpString + dbpString + pauseString + endString,
         'hrAnalyze': "一位患者的" + hrString + "请对患者的静息心率进行分析，要求按照如下方式进行输出：首先给出患者的静息心率区间，然后结合健康成年人的静息心率区间对患者的静息心率进行分析，给出其出现的情况，最后针对静息心率情况给出患者一些建议。注意，用一段话包括上面所有的内容。",
         'rrAnalyze': "一位患者的" + rrString + "请对患者的呼吸率进行分析，要求按照如下方式进行输出：首先给出患者的呼吸率区间，然后结合健康成年人的呼吸率区间对患者的呼吸率进行分析，给出其出现的情况，最后针对呼吸率情况给出患者一些建议。注意，用一段话包括上面所有的内容。",
