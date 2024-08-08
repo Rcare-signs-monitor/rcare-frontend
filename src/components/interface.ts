@@ -15,6 +15,7 @@ export interface Signs {
     sbp: Sign[]
     dbp: Sign[]
     ecg: Sign[]
+    temper: Sign[]
     status: Status
 }
 

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { 
     BorderBox10 as DvBorderBox10, 
-    BorderBox9 as DvBorderBox9,
     Button as DvButton
 } from '@kjgl77/datav-vue3'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Menu as IconMenu, PieChart, Setting, ArrowRightBold, ArrowLeftBold, List, Operation, LocationFilled } from '@element-plus/icons-vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { cancelCalling, getCalling } from './components/request'
+import Warning from './components/WarningWindow.vue'
 
 const isCollapse = ref(true)
 const activeIndex = ref('1')
@@ -54,33 +54,15 @@ const name = ref<string>(import.meta.env.WARNING_PATIENT_NAME)
 </script>
 
 <template>
-    <el-dialog v-model="isCalling" width="700" height="500" align-center center :show-close="false">
-        <template #header>
-            <div class="my-header">
-                <img src="./assets/warning.png" style="width: 100%" />
-            </div>
-        </template>
-        <dv-border-box9 :color="['#B00302', '#E18A3B']">
-            <div
-                style="
-                    height: 220px;
-                    margin-top: -10px;
-                    font-size: 50px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                    color: rgb(255 72 74);
-                "
-            >
+    <Warning v-model="isCalling">
+        <template #body>
+            <span>
                 101病房 1号病床 <br />
                 患者 {{ name }} 发起呼叫
-            </div>
-        </dv-border-box9>
-
-        <template #footer>
-            <div class="dialog-footer">
-                <dv-button
+            </span>
+        </template>
+        <template #button>
+            <dv-button
                     @click="confirm"
                     border="Border3"
                     color="#c8161d"
@@ -89,9 +71,9 @@ const name = ref<string>(import.meta.env.WARNING_PATIENT_NAME)
                 >
                     <span style="font-size: 40px">确认</span>
                 </dv-button>
-            </div>
         </template>
-    </el-dialog>
+    </Warning>
+    
     <el-container class="layout-container-demo">
         <el-aside width="collapse">
             <el-scrollbar>

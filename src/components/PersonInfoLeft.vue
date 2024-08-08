@@ -4,6 +4,7 @@
             <span>
                 <dv-border-box8>
                     <el-avatar
+                        @click="temperVisible = true"
                         style="height: 100px; width: 100px; margin: 5px; opacity: 0.7"
                         shape="square"
                         :src="item.info.image ? item.info.image : '/avatar.png'"
@@ -35,17 +36,18 @@
                 </el-row>
             </span>
         </el-row>
+        <!-- 心率 -->
         <el-row :gutter="50">
             <el-col :span="24">
                 <dv-border-box9 style="background-color: #13161b">
-                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 19vh">
+                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
                             <img class="sign-icon" src="../assets/xinlv.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
                                 心率
                                 <el-tooltip content="参考值: 60-120次/分" placement="top">
                                     <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
-                                        <Warning />
+                                        <WarningIcon />
                                     </el-icon>
                                 </el-tooltip>
                             </span>
@@ -56,7 +58,7 @@
                                 :class="[
                                     item.signs.heart &&
                                     (item.signs.heart[item.signs.heart.length - 1].data > 120 ||
-                                        item.signs.heart[item.signs.heart.length - 1].data < 60)
+                                        item.signs.heart[item.signs.heart.length - 1].data < 50)
                                         ? 'warning-font'
                                         : 'normal-font'
                                 ]"
@@ -68,17 +70,18 @@
                 </dv-border-box9>
             </el-col>
         </el-row>
+        <!-- 呼吸率 -->
         <el-row :gutter="50">
             <el-col :span="24">
                 <dv-border-box9 style="background-color: #13161b">
-                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 19vh">
+                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
                             <img class="sign-icon" src="../assets/呼吸.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
                                 呼吸率
                                 <el-tooltip content="参考值：12-27次/分" placement="top">
                                     <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
-                                        <Warning />
+                                        <WarningIcon />
                                     </el-icon>
                                 </el-tooltip>
                             </span>
@@ -88,8 +91,8 @@
                                 style="font-size: 25px"
                                 :class="[
                                     item.signs.respire &&
-                                    (item.signs.respire[item.signs.respire.length - 1].data > 27 ||
-                                        item.signs.respire[item.signs.respire.length - 1].data < 12)
+                                    (item.signs.respire[item.signs.respire.length - 1].data > 35 ||
+                                        item.signs.respire[item.signs.respire.length - 1].data < 5)
                                         ? 'warning-font'
                                         : 'normal-font'
                                 ]"
@@ -100,17 +103,52 @@
                 </dv-border-box9>
             </el-col>
         </el-row>
+        <!-- 体温 -->
         <el-row :gutter="50">
             <el-col :span="24">
                 <dv-border-box9 style="background-color: #13161b">
-                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 19vh">
+                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
+                        <span style="display: flex; align-items: center">
+                            <img class="sign-icon" src="../assets/体温.svg" style="margin-right: 20px" />
+                            <span style="font-size: 18px">
+                                体温
+                                <el-tooltip content="参考值: 36.3-37.2℃" placement="top">
+                                    <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
+                                        <WarningIcon />
+                                    </el-icon>
+                                </el-tooltip>
+                            </span>
+                        </span>
+                        <span>
+                            <span
+                                style="font-size: 25px"
+                                :class="[
+                                    item.signs.temper &&
+                                    (item.signs.temper[item.signs.temper.length - 1].data > 38 ||
+                                        item.signs.temper[item.signs.temper.length - 1].data < 36)
+                                        ? 'warning-font'
+                                        : 'normal-font'
+                                ]"
+                            >
+                                {{ item.signs.temper ? item.signs.temper[item.signs.temper.length - 1].data : 0 }} </span
+                            >℃
+                        </span>
+                    </div>
+                </dv-border-box9>
+            </el-col>
+        </el-row>
+        <!-- 血压 -->
+        <el-row :gutter="50">
+            <el-col :span="24">
+                <dv-border-box9 style="background-color: #13161b">
+                    <div style="display: flex; align-items: center; justify-content: space-evenly; height: 15vh">
                         <span style="display: flex; align-items: center">
                             <img class="sign-icon" src="../assets/血压.svg" style="margin-right: 13px" />
                             <span style="font-size: 18px">
                                 DBP / SBP
                                 <el-tooltip content="参考值: 80-120 / 120-160" placement="top">
                                     <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
-                                        <Warning />
+                                        <WarningIcon />
                                     </el-icon>
                                 </el-tooltip>
                             </span>
@@ -121,10 +159,10 @@
                                 :class="[
                                     item.signs.sbp &&
                                     item.signs.dbp &&
-                                    (item.signs.sbp[item.signs.sbp.length - 1].data > 120 ||
-                                        item.signs.sbp[item.signs.sbp.length - 1].data < 80 ||
-                                        item.signs.dbp[item.signs.dbp.length - 1].data > 160 ||
-                                        item.signs.dbp[item.signs.dbp.length - 1].data < 120)
+                                    (item.signs.sbp[item.signs.sbp.length - 1].data > 130 ||
+                                        item.signs.sbp[item.signs.sbp.length - 1].data < 50 ||
+                                        item.signs.dbp[item.signs.dbp.length - 1].data > 170 ||
+                                        item.signs.dbp[item.signs.dbp.length - 1].data < 90)
                                         ? 'warning-font'
                                         : 'normal-font'
                                 ]"
@@ -187,20 +225,51 @@
             </div>
         </template>
     </el-dialog>
+
+    <!-- 面部实时监测-图像 -->
+    <el-dialog v-model="temperVisible" title="面部表情识别热力图" width="800" align-center>
+        <div class="block">
+            <el-image :src="temperUrl">
+                <template #error>
+                    <div class="image-slot">
+                        <el-icon><icon-picture /></el-icon>
+                    </div>
+                </template>
+            </el-image>
+        </div>
+    </el-dialog>
+
+    <!-- 面部实时监测-提醒 -->
+    <Warning v-model="isFaceWarning">
+        <template #body>
+            <span style="font-size: 33px">
+                101病房 1号病床 <br />
+                检测到患者长时间表情痛苦，请及时处理
+            </span>
+        </template>
+        <template #button>
+            <dv-button
+                @click="confirm"
+                border="Border3"
+                color="#c8161d"
+                font-color="#e18a3b"
+                style="height: 60px; display: flex; align-items: center; justify-content: center"
+            >
+                <span style="font-size: 40px">确认</span>
+            </dv-button>
+        </template>
+    </Warning>
 </template>
 
 <script setup lang="ts">
-import { 
-    BorderBox12 as DvBorderBox12, 
-    BorderBox8 as DvBorderBox8, 
-    BorderBox9 as DvBorderBox9 ,
-    Button as DvButton
-} from '@kjgl77/datav-vue3'
-import { Edit, Warning } from '@element-plus/icons-vue'
+import { BorderBox12 as DvBorderBox12, BorderBox8 as DvBorderBox8, BorderBox9 as DvBorderBox9, Button as DvButton } from '@kjgl77/datav-vue3'
+import { Edit, Warning as WarningIcon } from '@element-plus/icons-vue'
+import { Picture as IconPicture } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage, type UploadProps, type UploadInstance, genFileId, type UploadRawFile } from 'element-plus'
-import { inject, reactive, ref } from 'vue'
+import { inject, onUnmounted, reactive, ref, watch } from 'vue'
 import type { BasePerson, Result } from './interface'
-import { delMember } from '@/components/request'
+import { cancelFace, delMember, getFace } from '@/components/request'
+import Warning from './WarningWindow.vue'
 const base_url = import.meta.env.VITE_API_BASE_URL
 defineProps(['item'])
 
@@ -304,6 +373,69 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
     const file = files[0] as UploadRawFile
     file.uid = genFileId()
     upload.value!.handleStart(file)
+}
+
+// 表情识别 & 面部热力图
+const temperVisible = ref(false)
+// 面部异常警告
+const isFaceWarning = ref(false)
+
+const url = import.meta.env.VITE_API_BASE_URL + '/images/temperature.jpg'
+const timestamp = ref(Date.now()) // 用于防止缓存的时间戳
+const temperUrl = ref(`${url}?t=${timestamp.value}`)
+
+let interval: string | number | NodeJS.Timeout | undefined
+var interval2: string | number | NodeJS.Timeout | undefined
+const updateImage = async () => {
+    try {
+        const timestamp = Date.now()
+        const newUrl = `${url}?t=${timestamp}`
+
+        // 预加载图片
+        const img = new Image()
+        img.setAttribute('crossorigin', 'anonymous')
+        img.src = newUrl
+        console.log(newUrl)
+
+        // 等待图片加载完成更新显示
+        img.onload = () => {
+            // 转为base64显示避免正式加载时的显示等待
+            const canvas = document.createElement('canvas')
+            canvas.width = img.width
+            canvas.height = img.height
+            canvas.getContext('2d')!.drawImage(img, 0, 0)
+            const base64Url = canvas.toDataURL('image/jpeg')
+
+            temperUrl.value = base64Url
+            interval = setTimeout(updateImage, 3000) // 加载完成后等待5秒后再更新
+        }
+    } catch (error) {
+        console.error('Failed to load image:', error)
+        interval = setTimeout(updateImage, 3000)
+    }
+}
+const updateFaceStatue = async () => {
+    if (temperVisible.value) {
+        isFaceWarning.value = await getFace()
+        interval2 = setTimeout(updateFaceStatue, 2000)
+    }
+}
+watch(temperVisible, (newVal) => {
+    // 监听 `temperVisible` 的变化，控制定时器的启动和停止
+    if (newVal) {
+        updateImage()
+        updateFaceStatue()
+    } else {
+        clearInterval(interval)
+        clearInterval(interval2)
+    }
+})
+onUnmounted(() => {
+    clearInterval(interval)
+    clearInterval(interval2)
+})
+const confirm = async () => {
+    isFaceWarning.value = await cancelFace()
 }
 </script>
 

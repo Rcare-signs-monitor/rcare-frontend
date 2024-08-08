@@ -35,20 +35,23 @@
             >
         </el-row>
         <el-row>
-            <Echarts :option="getLineOption(item.signs.heart, 'heart', false, 'blue')" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+            <Echarts :option="getLineOption(item.signs.heart, 'heart', false, 'red')" :style="{ height: '12vh', width: '58vw' }" :refresh="1000" />
         </el-row>
         <el-row>
             <Echarts
                 :option="getLineOption(item.signs.respire, 'respire', true, 'green')"
-                :style="{ height: '15vh', width: '58vw' }"
+                :style="{ height: '12vh', width: '58vw' }"
                 :refresh="1000"
             />
         </el-row>
         <el-row>
-            <Echarts :option="getLineOption(item.signs.ecg, 'ecg', true, 'yellow')" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+            <Echarts :option="getLineOption(item.signs.temper, 'temper', false, 'blue')" :style="{ height: '12vh', width: '58vw' }" :refresh="1000" />
         </el-row>
         <el-row>
-            <Echarts :option="getDoubleLineOption(item.signs.sbp, item.signs.dbp)" :style="{ height: '15vh', width: '58vw' }" :refresh="1000" />
+            <Echarts :option="getLineOption(item.signs.ecg, 'ecg', true, 'yellow')" :style="{ height: '12vh', width: '58vw' }" :refresh="1000" />
+        </el-row>
+        <el-row>
+            <Echarts :option="getDoubleLineOption(item.signs.sbp, item.signs.dbp)" :style="{ height: '12vh', width: '58vw' }" :refresh="1000" />
         </el-row>
     </dv-border-box6>
 </template>

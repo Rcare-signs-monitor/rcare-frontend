@@ -2,11 +2,12 @@ import axios from 'axios'
 import type { Person, Result, Sign, Signs } from './interface'
 
 const sign_sort = (signs: Signs) => {
-    if (!signs.heart || !signs.respire || !signs.dbp || !signs.sbp || !signs.ecg) return signs
+    if (!signs.heart || !signs.respire || !signs.dbp || !signs.sbp ||!signs.temper || !signs.ecg) return signs
     signs.heart = signs.heart.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
     signs.respire = signs.respire.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
     signs.dbp = signs.dbp.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
     signs.sbp = signs.sbp.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
+    signs.temper = signs.temper.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
     signs.ecg = signs.ecg.sort((a, b) => (new Date(a.time) > new Date(b.time) ? 1 : -1))
 
     signs.respire.forEach((e: Sign) => {
@@ -19,6 +20,9 @@ const sign_sort = (signs: Signs) => {
         e.data = parseFloat(e.data.toFixed(2))
     })
     signs.sbp.forEach((e: Sign) => {
+        e.data = parseFloat(e.data.toFixed(2))
+    })
+    signs.temper.forEach((e: Sign) => {
         e.data = parseFloat(e.data.toFixed(2))
     })
     signs.ecg.forEach((e: Sign) => {
@@ -40,6 +44,7 @@ export const getBeds = async () => {
                 bed.respire = bed.respire?parseFloat(bed.respire.toFixed(2)):0
                 bed.dbp = bed.dbp?parseFloat(bed.dbp.toFixed(2)):0
                 bed.sbp = bed.sbp?parseFloat(bed.sbp.toFixed(2)):0
+                bed.temper = bed.temper?parseFloat(bed.temper.toFixed(2)):0
             })
         })        
         return data
@@ -88,11 +93,12 @@ export const getSignsTable = async (id: number, num?: number) => {
 
     if (response.code === 1) {
         const data = response.data
-        data.forEach((element: { dbp: number; heart: number; respire: number; sbp: number }) => {
+        data.forEach((element: { dbp: number; heart: number; respire: number; sbp: number; temper: number }) => {
             element.dbp = parseFloat(element.dbp.toFixed(2))
             element.heart = parseFloat(element.heart.toFixed(2))
             element.respire = parseFloat(element.respire.toFixed(2))
             element.sbp = parseFloat(element.sbp.toFixed(2))
+            element.temper = parseFloat(element.temper.toFixed(2))
         })
         return data
     } else {
@@ -159,6 +165,38 @@ export const stopRadar = async () => {
         console.log('stop radar succussfully')
     } else {
         throw Error('failed to stop radar(signal.bat)')
+    }
+}
+
+/*
+表情异常警报
+*/
+export const getFace = async () => {
+    // TODO：现在只检测 id = 3 的病患表情识别异常
+    const url = `${import.meta.env.VITE_API_BASE_URL}/face/3`
+    const response = (await axios.get(url)).data as Result
+
+    if (response.code === 1) {
+        return response.data == 1
+    } else {
+        throw Error('get isFaceWarning code: 0')
+    }
+}
+
+export const cancelFace = async () => {
+    // TODO: 现在只实现 id = 3 的病患
+    const url = `${import.meta.env.VITE_API_BASE_URL}/face`
+    const response = (
+        await axios.post(url, {
+            id: 3,
+            data: 0
+        })
+    ).data as Result
+
+    if (response.code === 1) {
+        return response.data
+    } else {
+        throw Error('post isFaceWarning code: 0')
     }
 }
 

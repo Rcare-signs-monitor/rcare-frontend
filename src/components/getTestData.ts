@@ -11,17 +11,19 @@ export const getLineOption = (data: Sign[], type: string, smooth: boolean = fals
     }
 
     const thresh: { [type: string]: number[] } = {
-        heart: [60, 120],
-        respire: [12, 27],
-        sbp: [80, 120],
-        dbp: [120, 160],
-        ecg: [60, 120]
+        heart: [50, 120],
+        respire: [5, 35],
+        sbp: [50, 130],
+        dbp: [90, 170],
+        ecg: [60, 120],
+        temper: [36, 38]
     }
 
     const color_table: { [color: string]: string[] } = {
         blue: ['#4BA0C3', 'rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)'],
         green: ['#12DBDB', '#5ED1C1', 'rgba(109,171,169, 0)'],
-        yellow: ['#F6D96D', '#F2D765', 'rgba(244,217,105, 0)']
+        yellow: ['#F6D96D', '#F2D765', 'rgba(244,217,105, 0)'],
+        red: ["#fd9095", "#fea77b", "rgba(182,133,104, 0)"]
     }
 
     const option = {
@@ -119,11 +121,11 @@ export const getDoubleLineOption = (data1: Sign[], data2: Sign[]) => {
         dateList1 = data1.map((item) => item.time)
         // dateList2 = data2.map(item => item.time)
         valueList1 = data1.map((item) => item.data)
-        // valueList2 = data2.map((item) => item.data)
-        valueList2 = []
-        for(let i=0; i<data2.length; i++){
-            valueList2.push(data2[i].data - valueList1[i])
-        }
+        valueList2 = data2.map((item) => item.data)
+        // valueList2 = []
+        // for(let i=0; i<data2.length; i++){
+        //     valueList2.push(data2[i].data - valueList1[i])
+        // }
     }
 
     const option = {

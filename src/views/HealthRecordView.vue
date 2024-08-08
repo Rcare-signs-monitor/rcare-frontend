@@ -32,6 +32,7 @@
                                         <el-table-column sortable prop="time" label="测量时间" width="340" />
                                         <el-table-column sortable prop="heart" label="心率(bpm)" width="220" />
                                         <el-table-column sortable prop="respire" label="呼吸率(bpm)" width="220" />
+                                        <el-table-column sortable prop="temper" label="体温(°C)" width="220" />
                                         <el-table-column label="收缩压/舒张压(mmHg)">
                                             <template #default="scope">
                                                 <div style="display: flex; align-items: center">
@@ -56,6 +57,10 @@
                                     :style="{ height: '60vh', width: '80vw' }"
                                     :refresh="1000"
                                 />
+                            </el-tab-pane>
+
+                            <el-tab-pane label="体温" name="temperature" style="display: flex; justify-content: center">
+                                <Echarts v-if="item.signs" :option="getLineOption(item.signs.temper, 'temper')" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
                             </el-tab-pane>
                             
                             <el-tab-pane label="血压" name="pressure" style="display: flex; justify-content: center">
@@ -138,7 +143,7 @@ const client = new OpenAI({
 //     { role: 'system', content: '你是我的智能医疗助理，负责协助进行病情分析及疾病诊断。' },
 // ]
 
-async function chat(prompt ,sign: string) {
+async function chat(prompt:string ,sign: string) {
     console.log('Prompt:', prompt);
     const completion = await client.chat.completions.create({
         model: 'moonshot-v1-8k',
