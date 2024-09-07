@@ -29,15 +29,24 @@
                 </div>
             </dv-border-box13>
         </el-main>
+        <div>
+            <div style="display: flex; justify-content: center; align-items: center;background-color: #151E3E; height: 40px;">
+                <p style="margin-right: 30px;"><a href="" target="_blank">关于智慧医疗系统</a></p>
+                <p style="margin-right: 30px;"><a href="" target="_blank">About Smart Medical System</a></p>
+                <p style="margin-right: 30px;"><a href="https://beian.miit.gov.cn/" target="_blank">备案号：鲁ICP备2024068184号</a></p>
+                <p><a href="" target="_blank">©2024 IoT Vitalwave</a></p>
+            </div>
+        </div>
     </el-container>
 </template>
 
 <script setup lang="ts">
 import BedOccupancyChart from '../components/Home/BedOccupancyChart.vue'
-import { BorderBox13 as DvBorderBox13, 
-    Decoration10 as DvDecoration10, 
-    Decoration8 as DvDecoration8, 
-    Decoration6 as DvDecoration6 
+import {
+    BorderBox13 as DvBorderBox13,
+    Decoration10 as DvDecoration10,
+    Decoration8 as DvDecoration8,
+    Decoration6 as DvDecoration6
 } from '@kjgl77/datav-vue3'
 </script>
 

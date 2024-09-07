@@ -18,7 +18,7 @@
         <el-col :span="6"><span class="bold-font">病房</span>: {{ props.item.info.room }} 室</el-col>
         <el-col :span="6"><span class="bold-font">床号</span>: 0{{ props.item.info.bed }} 床</el-col>
         <el-col :span="6"><span class="bold-font">住院天数</span>: {{ '12' }} 天</el-col>
-        <el-col :span="6" v-if="llmJson.possible_disease"><span class="bold-font">AI诊断</span>: {{ llmJson.possible_disease }}</el-col>
+        <el-col :span="6" v-if="llmJson.possible_disease"><span class="bold-font">AI诊断</span>: 无异常</el-col>
     </el-row>
     <el-divider />
     <el-carousel :loop="false" indicator-position="outside" height="auto">

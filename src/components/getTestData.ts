@@ -16,7 +16,7 @@ export const getLineOption = (data: Sign[], type: string, smooth: boolean = fals
         sbp: [50, 130],
         dbp: [90, 170],
         ecg: [60, 120],
-        temper: [36, 38]
+        temper: [32, 36]
     }
 
     const color_table: { [color: string]: string[] } = {

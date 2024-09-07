@@ -111,8 +111,8 @@
                         <span style="display: flex; align-items: center">
                             <img class="sign-icon" src="@/assets/体温.svg" style="margin-right: 20px" />
                             <span style="font-size: 18px">
-                                体温
-                                <el-tooltip content="参考值: 36.3-37.2℃" placement="top">
+                                体表温度
+                                <el-tooltip content="参考值: 32-376℃" placement="top">
                                     <el-icon style="top: -10px; left: -5px; opacity: 0.5" :size="12">
                                         <WarningIcon />
                                     </el-icon>
@@ -124,8 +124,8 @@
                                 style="font-size: 25px"
                                 :class="[
                                     item.signs.temper &&
-                                    (item.signs.temper[item.signs.temper.length - 1].data > 38 ||
-                                        item.signs.temper[item.signs.temper.length - 1].data < 36)
+                                    (item.signs.temper[item.signs.temper.length - 1].data > 36 ||
+                                        item.signs.temper[item.signs.temper.length - 1].data < 32)
                                         ? 'warning-font'
                                         : 'normal-font'
                                 ]"
@@ -156,16 +156,7 @@
                         <span
                             ><span
                                 style="font-size: 25px"
-                                :class="[
-                                    item.signs.sbp &&
-                                    item.signs.dbp &&
-                                    (item.signs.sbp[item.signs.sbp.length - 1].data > 130 ||
-                                        item.signs.sbp[item.signs.sbp.length - 1].data < 50 ||
-                                        item.signs.dbp[item.signs.dbp.length - 1].data > 170 ||
-                                        item.signs.dbp[item.signs.dbp.length - 1].data < 90)
-                                        ? 'warning-font'
-                                        : 'normal-font'
-                                ]"
+                                class="normal-font"
                                 >{{
                                     item.signs && item.signs.dbp
                                         ? `${item.signs.sbp[item.signs.sbp.length - 1].data} / ${item.signs.dbp[item.signs.dbp.length - 1].data}`

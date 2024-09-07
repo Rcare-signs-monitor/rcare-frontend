@@ -59,7 +59,7 @@
                                 />
                             </el-tab-pane>
 
-                            <el-tab-pane label="体温" name="temperature" style="display: flex; justify-content: center">
+                            <el-tab-pane label="体表温度" name="temperature" style="display: flex; justify-content: center">
                                 <Echarts v-if="item.signs" :option="getLineOption(item.signs.temper, 'temper')" :style="{ height: '60vh', width: '80vw' }" :refresh="1000" />
                             </el-tab-pane>
                             
